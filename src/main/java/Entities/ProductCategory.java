@@ -1,0 +1,22 @@
+package src.main.java.Entities;
+
+public enum ProductCategory {
+    AGRICULTURAL,
+    FOOD_BEVERAGE,
+    TEXTILES,
+    ELECTRONICS,
+    MACHINERY,
+    CHEMICALS,
+    COSMETICS,
+    MEDICAL_DEVICES,
+    TOYS,
+    HANDICRAFTS,
+    OLIVE_OIL,
+    DATES,
+    SEAFOOD,
+    PHARMACEUTICAL,
+    AUTOMOTIVE_PARTS,
+    FURNITURE,
+    LEATHER_GOODS,
+    OTHER
+}
