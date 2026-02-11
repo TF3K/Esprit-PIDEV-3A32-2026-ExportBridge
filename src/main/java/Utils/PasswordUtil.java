@@ -1,4 +1,4 @@
-package src.main.java.Utils;
+package Utils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 

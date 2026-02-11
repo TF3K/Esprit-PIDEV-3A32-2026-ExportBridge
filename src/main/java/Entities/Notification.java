@@ -1,4 +1,4 @@
-package src.main.java.Entities;
+package Entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

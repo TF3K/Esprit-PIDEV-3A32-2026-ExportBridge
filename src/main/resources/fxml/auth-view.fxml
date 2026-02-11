@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="GUI.AuthViewController"
+           styleClass="auth-container">
+
+    <VBox alignment="CENTER" spacing="20" maxWidth="400">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Header -->
+        <VBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER" spacing="8">
+                <Text styleClass="app-title" text="ExportBridge"/>
+            </HBox>
+            <Text styleClass="app-subtitle" text="Global marketplace for international business"/>
+        </VBox>
+
+        <!-- Card Container -->
+        <VBox styleClass="auth-card" spacing="20">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Tab Buttons -->
+            <HBox styleClass="tab-container" spacing="4">
+                <Button fx:id="loginTabButton"
+                        text="Login"
+                        onAction="#switchToLogin"
+                        styleClass="tab-button, tab-active"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"/>
+                <Button fx:id="signupTabButton"
+                        text="Sign Up"
+                        onAction="#switchToSignup"
+                        styleClass="tab-button"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"/>
+            </HBox>
+
+            <!-- Form Container -->
+            <VBox fx:id="formContainer" spacing="16">
+
+                <!-- First Name (only visible on signup) -->
+                <VBox fx:id="firstNameField" spacing="8" managed="false" visible="false">
+                    <Label text="First Name" styleClass="field-label"/>
+                    <TextField fx:id="firstNameInput"
+                               promptText="Ahmed"
+                               styleClass="input-field"/>
+                </VBox>
+
+                <!-- Last Name (only visible on signup) -->
+                <VBox fx:id="lastNameField" spacing="8" managed="false" visible="false">
+                    <Label text="Last Name" styleClass="field-label"/>
+                    <TextField fx:id="lastNameInput"
+                               promptText="Ben Ali"
+                               styleClass="input-field"/>
+                </VBox>
+
+                <!-- Email -->
+                <VBox spacing="8">
+                    <Label text="Email Address" styleClass="field-label"/>
+                    <TextField fx:id="emailInput"
+                               promptText="hello@example.com"
+                               styleClass="input-field"/>
+                </VBox>
+
+                <!-- Password -->
+                <VBox spacing="8">
+                    <Label text="Password" styleClass="field-label"/>
+                    <PasswordField fx:id="passwordInput"
+                                   promptText="••••••••"
+                                   styleClass="input-field"/>
+                </VBox>
+
+                <!-- Confirm Password (only visible on signup) -->
+                <VBox fx:id="confirmPasswordField" spacing="8" managed="false" visible="false">
+                    <Label text="Confirm Password" styleClass="field-label"/>
+                    <PasswordField fx:id="confirmPasswordInput"
+                                   promptText="••••••••"
+                                   styleClass="input-field"/>
+                </VBox>
+
+                <!-- Remember Me / Forgot Password (only visible on login) -->
+                <HBox fx:id="loginOptions" alignment="CENTER_LEFT" spacing="10">
+                    <CheckBox fx:id="rememberMeCheck" text="Remember me" styleClass="checkbox-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Hyperlink text="Forgot password?" styleClass="link" onAction="#handleForgotPassword"/>
+                </HBox>
+
+                <!-- Error Label -->
+                <Label fx:id="errorLabel" styleClass="error-label" managed="false" visible="false" wrapText="true"/>
+
+                <!-- Submit Button -->
+                <Button fx:id="submitButton"
+                        text="Login"
+                        onAction="#handleSubmit"
+                        styleClass="submit-button"
+                        maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Footer -->
+            <HBox alignment="CENTER" spacing="5">
+                <Text fx:id="footerText" text="Don't have an account?" styleClass="footer-text"/>
+                <Hyperlink fx:id="footerLink" text="Sign up" styleClass="link" onAction="#toggleAuthMode"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

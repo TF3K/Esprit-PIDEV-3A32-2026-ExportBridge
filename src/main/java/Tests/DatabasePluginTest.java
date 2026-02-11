@@ -2,7 +2,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import src.main.java.Utils.DatabasePlugin;
+import Utils.DatabasePlugin;
 
 import java.io.File;
 import java.io.FileWriter;

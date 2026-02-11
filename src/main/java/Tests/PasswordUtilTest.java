@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import src.main.java.Utils.PasswordUtil;
+import Utils.PasswordUtil;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 

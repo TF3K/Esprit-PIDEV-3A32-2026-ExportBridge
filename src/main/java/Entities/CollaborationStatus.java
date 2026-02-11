@@ -1,4 +1,4 @@
-package src.main.java.Entities;
+package Entities;
 
 public enum CollaborationStatus {
     PLANNED,

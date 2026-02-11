@@ -1,6 +1,6 @@
-package src.main.java.Utils;
+package Utils;
 
-import src.main.java.Entities.Session;
+import Entities.Session;
 
 import java.time.LocalDateTime;
 import java.util.Map;

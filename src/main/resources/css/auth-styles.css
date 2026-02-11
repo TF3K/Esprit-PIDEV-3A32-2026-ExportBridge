@@ -1,0 +1,154 @@
+/* Container */
+.auth-container {
+    -fx-background-color: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+}
+
+/* Header */
+.app-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-fill: #1a1a1a;
+}
+
+.app-subtitle {
+    -fx-font-size: 14px;
+    -fx-fill: #6b7280;
+}
+
+/* Card */
+.auth-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+}
+
+/* Tab Container */
+.tab-container {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 8px;
+    -fx-padding: 4px;
+}
+
+/* Tab Buttons */
+.tab-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-font-weight: 500;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-padding: 8px 16px;
+}
+
+.tab-button:hover {
+    -fx-text-fill: #1a1a1a;
+}
+
+.tab-button.tab-active {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+/* Form Fields */
+.field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1a1a1a;
+}
+
+.input-field {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 14px;
+    -fx-font-size: 14px;
+}
+
+.input-field:focused {
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+.input-field .text {
+    -fx-fill: #1a1a1a;
+}
+
+.input-field:focused .text {
+    -fx-fill: #1a1a1a;
+}
+
+/* Prompt text (placeholder) */
+.input-field > .text-field {
+    -fx-prompt-text-fill: #9ca3af;
+}
+
+/* Checkbox */
+.checkbox-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 4px;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #3b82f6;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #3b82f6;
+    -fx-border-color: #3b82f6;
+}
+
+/* Links */
+.link {
+    -fx-text-fill: #3b82f6;
+    -fx-font-size: 13px;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.link:hover {
+    -fx-underline: true;
+}
+
+/* Error Label */
+.error-label {
+    -fx-font-size: 13px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #fee2e2;
+    -fx-background-radius: 6px;
+    -fx-text-fill: #ef4444;
+}
+
+/* Submit Button */
+.submit-button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-weight: 500;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-padding: 10px 16px;
+    -fx-font-size: 14px;
+}
+
+.submit-button:hover {
+    -fx-background-color: #2563eb;
+}
+
+.submit-button:pressed {
+    -fx-background-color: #1d4ed8;
+}
+
+/* Footer */
+.footer-text {
+    -fx-font-size: 13px;
+    -fx-fill: #6b7280;
+}
