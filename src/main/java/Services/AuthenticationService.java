@@ -49,7 +49,7 @@ public class AuthenticationService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        Manager created = managerDAO.createManager(manager);
+        Manager created = managerDAO.create(manager);
         settingsDAO.createDefaultSettings(created.getId());
 
         created.setPassword(null);
@@ -80,7 +80,7 @@ public class AuthenticationService {
             throw new IllegalArgumentException("New password must be at least 8 characters long");
         }
 
-        Manager manager = managerDAO.findManagerById(managerId);
+        Manager manager = managerDAO.findById(managerId);
 
         if (manager == null) return false;
 
@@ -93,7 +93,7 @@ public class AuthenticationService {
     }
 
     public Manager getManagerById(Long id) throws SQLException {
-        Manager manager = managerDAO.findManagerById(id);
+        Manager manager = managerDAO.findById(id);
 
         if (manager != null) manager.setPassword(null);
         return manager;

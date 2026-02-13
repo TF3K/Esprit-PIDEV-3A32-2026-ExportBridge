@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,4 +24,6 @@ public class Company {
     private Integer warnings;
     private boolean isBanned;
     private Long companyManagerId;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdated;
 }

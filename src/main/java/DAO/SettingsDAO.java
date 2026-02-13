@@ -4,8 +4,12 @@ import Entities.Settings;
 import Utils.DatabasePlugin;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SettingsDAO {
+public class SettingsDAO implements GenericDAO<Settings, Long> {
+
+    @Override
     public Settings create(Settings settings) throws SQLException {
         String sql = "INSERT INTO settings (manager_id, language, theme, " +
                 "email_notifications, push_notifications, certificate_expiry_alerts, " +
@@ -26,11 +30,17 @@ public class SettingsDAO {
             stmt.setString(9, settings.getCurrency());
             stmt.setString(10, settings.getTimezone());
 
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating settings failed, no rows affected.");
+            }
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     settings.setId(rs.getLong(1));
+                } else {
+                    throw new SQLException("Creating settings failed, no ID obtained.");
                 }
             }
         }
@@ -38,9 +48,41 @@ public class SettingsDAO {
         return settings;
     }
 
-    /**
-     * Find settings by manager ID
-     */
+    @Override
+    public Settings findById(Long id) throws SQLException {
+        String sql = "SELECT * FROM settings WHERE id = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToSettings(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Settings> findAll() throws SQLException {
+        String sql = "SELECT * FROM settings";
+        List<Settings> settingsList = new ArrayList<>();
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                settingsList.add(mapResultSetToSettings(rs));
+            }
+        }
+        return settingsList;
+    }
+
+    // Custom method specific to Settings (One-to-One relationship)
     public Settings findByManagerId(Long managerId) throws SQLException {
         String sql = "SELECT * FROM settings WHERE manager_id = ?";
 
@@ -59,12 +101,14 @@ public class SettingsDAO {
         return null;
     }
 
+    @Override
     public boolean update(Settings settings) throws SQLException {
+        // Updated to target 'id' (Primary Key) to match GenericDAO pattern
         String sql = "UPDATE settings SET language = ?, theme = ?, " +
                 "email_notifications = ?, push_notifications = ?, " +
                 "certificate_expiry_alerts = ?, alert_days_before = ?, " +
                 "date_format = ?, currency = ?, timezone = ? " +
-                "WHERE manager_id = ?";
+                "WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -78,15 +122,60 @@ public class SettingsDAO {
             stmt.setString(7, settings.getDateFormat());
             stmt.setString(8, settings.getCurrency());
             stmt.setString(9, settings.getTimezone());
-            stmt.setLong(10, settings.getManagerId());
+            stmt.setLong(10, settings.getId());
 
             return stmt.executeUpdate() > 0;
         }
     }
 
+    @Override
+    public boolean delete(Long id) throws SQLException {
+        String sql = "DELETE FROM settings WHERE id = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    @Override
+    public boolean exists(Long id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM settings WHERE id = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public long count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM settings";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        }
+        return 0;
+    }
+
     public Settings createDefaultSettings(Long managerId) throws SQLException {
         Settings settings = new Settings();
         settings.setManagerId(managerId);
+        // Defaults matching the SQL Schema
         settings.setLanguage("fr");
         settings.setTheme("light");
         settings.setEmailNotifications(true);

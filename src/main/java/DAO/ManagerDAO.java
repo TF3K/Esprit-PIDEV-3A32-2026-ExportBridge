@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManagerDAO {
-
-    public Manager createManager(Manager manager) throws SQLException {
+public class ManagerDAO implements GenericDAO<Manager,Long> {
+    @Override
+    public Manager create(Manager manager) throws SQLException {
         String sql = "INSERT INTO managers (first_name, last_name, email, password, company_id, created_at) " +
                 "VALUES (?,?,?,?,?,?)";
         try (Connection conn = DatabasePlugin.getInstance().getConn();
@@ -43,7 +43,8 @@ public class ManagerDAO {
         return manager;
     }
 
-    public Manager findManagerById(Long id) throws SQLException {
+    @Override
+    public Manager findById(Long id) throws SQLException {
         String sql = "SELECT * FROM managers WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
@@ -57,6 +58,11 @@ public class ManagerDAO {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Manager> findAll() throws SQLException {
+        return List.of();
     }
 
     public Manager findByEmail(String email) throws SQLException {
@@ -77,6 +83,7 @@ public class ManagerDAO {
         return null;
     }
 
+    @Override
     public boolean update(Manager manager) throws SQLException {
         String sql = "UPDATE managers SET first_name = ?, last_name = ?, " +
                 "email = ?, password = ?, company_id = ?, last_login = ? " +
@@ -107,6 +114,7 @@ public class ManagerDAO {
         }
     }
 
+    @Override
     public boolean delete(Long id) throws SQLException {
         String sql = "DELETE FROM managers WHERE id = ?";
 
@@ -115,6 +123,41 @@ public class ManagerDAO {
             stmt.setLong(1, id);
             return stmt.executeUpdate() > 0;
         }
+    }
+
+    @Override
+    public boolean exists(Long id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM managers WHERE id = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public long count() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM managers";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        }
+
+        return 0;
     }
 
     public boolean updateLastLogin(Long managerId) throws SQLException {
@@ -128,6 +171,7 @@ public class ManagerDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+
 
     public boolean emailExists(String email) throws SQLException {
         String sql = "SELECT COUNT(*) FROM managers WHERE email = ?";

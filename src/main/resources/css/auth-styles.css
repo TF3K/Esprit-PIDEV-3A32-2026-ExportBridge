@@ -1,6 +1,6 @@
 /* Container */
 .auth-container {
-    -fx-background-color: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+    -fx-background-color: linear-gradient(from 0% 100% to 0% 0%, #001BCA 0%, #A0ABF3 40%, #FFFFFF 75%);
 }
 
 /* Header */
@@ -11,8 +11,10 @@
 }
 
 .app-subtitle {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
+    -fx-font-weight: 400;
     -fx-fill: #6b7280;
+    -fx-translate-y: -70px;
 }
 
 /* Card */
@@ -23,6 +25,11 @@
     -fx-border-color: #e5e7eb;
     -fx-border-radius: 12px;
     -fx-border-width: 1px;
+    -fx-translate-y: -80px;
+}
+
+.auth-image {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
 }
 
 /* Tab Container */
@@ -36,10 +43,11 @@
 .tab-button {
     -fx-background-color: transparent;
     -fx-text-fill: #6b7280;
-    -fx-font-weight: 500;
+    -fx-font-weight: 700;
     -fx-background-radius: 6px;
     -fx-cursor: hand;
     -fx-padding: 8px 16px;
+
 }
 
 .tab-button:hover {
@@ -47,7 +55,7 @@
 }
 
 .tab-button.tab-active {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #5269FF;
     -fx-text-fill: white;
 }
 
@@ -68,7 +76,7 @@
 }
 
 .input-field:focused {
-    -fx-border-color: #3b82f6;
+    -fx-border-color: #5269FF;
     -fx-border-width: 2px;
     -fx-background-color: white;
 }
@@ -99,17 +107,17 @@
 }
 
 .check-box:selected .mark {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #5269FF;
 }
 
 .check-box:selected .box {
-    -fx-background-color: #3b82f6;
-    -fx-border-color: #3b82f6;
+    -fx-background-color: #5269FF;
+    -fx-border-color: #6D81FF;
 }
 
 /* Links */
 .link {
-    -fx-text-fill: #3b82f6;
+    -fx-text-fill: #5269FF;
     -fx-font-size: 13px;
     -fx-border-color: transparent;
     -fx-padding: 0;
@@ -130,7 +138,7 @@
 
 /* Submit Button */
 .submit-button {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #5269FF;
     -fx-text-fill: white;
     -fx-font-weight: 500;
     -fx-background-radius: 8px;
@@ -140,11 +148,11 @@
 }
 
 .submit-button:hover {
-    -fx-background-color: #2563eb;
+    -fx-background-color: #3C56FF;
 }
 
 .submit-button:pressed {
-    -fx-background-color: #1d4ed8;
+    -fx-background-color: #1A38FF;
 }
 
 /* Footer */

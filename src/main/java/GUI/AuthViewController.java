@@ -1,6 +1,7 @@
 package GUI;
 
 import Controllers.AuthenticationController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -15,11 +16,9 @@ import java.io.IOException;
 
 public class AuthViewController {
 
-    // Tab buttons
     @FXML private Button loginTabButton;
     @FXML private Button signupTabButton;
 
-    // Form fields
     @FXML private VBox formContainer;
     @FXML private VBox firstNameField;
     @FXML private TextField firstNameInput;
@@ -30,11 +29,9 @@ public class AuthViewController {
     @FXML private VBox confirmPasswordField;
     @FXML private PasswordField confirmPasswordInput;
 
-    // Login options
     @FXML private HBox loginOptions;
     @FXML private CheckBox rememberMeCheck;
 
-    // Submit button and labels
     @FXML private Button submitButton;
     @FXML private Label errorLabel;
     @FXML private Text footerText;
@@ -47,13 +44,10 @@ public class AuthViewController {
     public void initialize() {
         authController = new AuthenticationController();
 
-        // Set focus on email field when view loads
         emailInput.requestFocus();
 
-        // Initialize in login mode
         updateUIForMode();
 
-        // Add Enter key handlers
         emailInput.setOnAction(e -> passwordInput.requestFocus());
         passwordInput.setOnAction(e -> {
             if (isLoginMode) {
@@ -71,6 +65,7 @@ public class AuthViewController {
             isLoginMode = true;
             updateUIForMode();
             clearForm();
+            resizeWindow(-100);
         }
     }
 
@@ -80,6 +75,7 @@ public class AuthViewController {
             isLoginMode = false;
             updateUIForMode();
             clearForm();
+            resizeWindow(100);
         }
     }
 
@@ -99,13 +95,11 @@ public class AuthViewController {
         String email = emailInput.getText().trim();
         String password = passwordInput.getText();
 
-        // Basic validation
         if (email.isEmpty() || password.isEmpty()) {
             showError("Email and password are required");
             return;
         }
 
-        // Disable button to prevent double submission
         submitButton.setDisable(true);
 
         if (isLoginMode) {
@@ -114,7 +108,6 @@ public class AuthViewController {
             handleSignup(email, password);
         }
 
-        // Re-enable button
         submitButton.setDisable(false);
     }
 
@@ -123,7 +116,16 @@ public class AuthViewController {
 
         if (token != null) {
             System.out.println("Login successful!");
-            navigateToDashboard();
+            showSuccess("Login successful!");
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    Platform.runLater(this::closeApplication);
+                } catch (InterruptedException e) {
+                    System.err.println("Thread interrupted: " + e.getMessage());
+                }
+            }).start();
         } else {
             showError("Invalid email or password");
         }
@@ -134,7 +136,6 @@ public class AuthViewController {
         String lastName = lastNameInput.getText().trim();
         String confirmPassword = confirmPasswordInput.getText();
 
-        // Validation
         if (firstName.isEmpty()) {
             showError("First name is required");
             return;
@@ -155,29 +156,27 @@ public class AuthViewController {
             return;
         }
 
-        // Register
         boolean success = authController.register(
                 firstName,
                 lastName,
                 email,
                 password,
                 confirmPassword,
-                null  // companyId - null for now
+                null
         );
 
         if (success) {
             showSuccess("Account created successfully! Please login.");
-            // Auto-switch to login after 2 seconds
             new Thread(() -> {
                 try {
                     Thread.sleep(2000);
-                    javafx.application.Platform.runLater(() -> {
+                    Platform.runLater(() -> {
                         switchToLogin();
                         emailInput.setText(email);  // Pre-fill email
                         passwordInput.requestFocus();
                     });
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.err.println("Thread interrupted: " + e.getMessage());
                 }
             }).start();
         } else {
@@ -196,11 +195,11 @@ public class AuthViewController {
 
     private void updateUIForMode() {
         if (isLoginMode) {
-            // Update tab buttons
-            loginTabButton.getStyleClass().add("tab-active");
+            if (!loginTabButton.getStyleClass().contains("tab-active")) {
+                loginTabButton.getStyleClass().add("tab-active");
+            }
             signupTabButton.getStyleClass().remove("tab-active");
 
-            // Show/hide fields
             firstNameField.setVisible(false);
             firstNameField.setManaged(false);
             lastNameField.setVisible(false);
@@ -210,17 +209,16 @@ public class AuthViewController {
             loginOptions.setVisible(true);
             loginOptions.setManaged(true);
 
-            // Update button and footer
             submitButton.setText("Login");
             footerText.setText("Don't have an account?");
             footerLink.setText("Sign up");
 
         } else {
-            // Update tab buttons
-            signupTabButton.getStyleClass().add("tab-active");
+            if (!signupTabButton.getStyleClass().contains("tab-active")) {
+                signupTabButton.getStyleClass().add("tab-active");
+            }
             loginTabButton.getStyleClass().remove("tab-active");
 
-            // Show/hide fields
             firstNameField.setVisible(true);
             firstNameField.setManaged(true);
             lastNameField.setVisible(true);
@@ -230,7 +228,6 @@ public class AuthViewController {
             loginOptions.setVisible(false);
             loginOptions.setManaged(false);
 
-            // Update button and footer
             submitButton.setText("Create Account");
             footerText.setText("Already have an account?");
             footerLink.setText("Login");
@@ -266,35 +263,27 @@ public class AuthViewController {
         errorLabel.setManaged(false);
     }
 
-    private void navigateToDashboard() {
-        try {
-            // Load dashboard view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/dashboard-view.fxml"));
-            Parent root = loader.load();
+    private void closeApplication() {
+        Stage stage = (Stage) submitButton.getScene().getWindow();
 
-            // Get current stage
+        System.out.println("Closing application...");
+        System.out.println("User: " + authController.getCurrentManager().getEmail());
+
+        stage.close();
+
+        javafx.application.Platform.exit();
+    }
+
+    private void resizeWindow(double heightChange) {
+        if (submitButton.getScene() != null) {
             Stage stage = (Stage) submitButton.getScene().getWindow();
+            if (stage != null) {
+                double verticalShift = heightChange / 2;
 
-            // Create new scene
-            Scene scene = new Scene(root, 1200, 800);
+                stage.setY(stage.getY() - verticalShift);
 
-            // Add dashboard stylesheet if exists
-            try {
-                String css = getClass().getResource("/css/dashboard-styles.css").toExternalForm();
-                scene.getStylesheets().add(css);
-            } catch (Exception e) {
-                // CSS not found, continue without it
+                stage.setHeight(stage.getHeight() + heightChange);
             }
-
-            // Set new scene
-            stage.setScene(scene);
-            stage.setTitle("ExportBridge - Dashboard");
-            stage.setResizable(true);
-            stage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showError("Failed to load dashboard");
         }
     }
 }
