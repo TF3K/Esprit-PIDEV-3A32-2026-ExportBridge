@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.PartnershipDetailsDialogController"
+      styleClass="dialog-container"
+      spacing="20"
+      prefWidth="700">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <HBox spacing="16" alignment="CENTER_LEFT">
+        <Text fx:id="flagText" style="-fx-font-size: 48px;"/>
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Text fx:id="companyName" styleClass="dialog-title"/>
+            <HBox spacing="12">
+                <Label fx:id="statusBadge" styleClass="status-badge"/>
+                <Label fx:id="typeBadge" styleClass="type-badge"/>
+            </HBox>
+        </VBox>
+        <Button fx:id="terminateBtn" text="Terminate" styleClass="danger-button" onAction="#handleTerminate" managed="false" visible="false"/>
+    </HBox>
+
+    <GridPane hgap="20" vgap="12" styleClass="info-grid">
+        <Label text="Country:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="info-label"/>
+        <Text fx:id="countryText" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="info-value"/>
+
+        <Label text="Contact Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="info-label"/>
+        <Text fx:id="emailText" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="info-value"/>
+
+        <Label text="Contact Phone:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="info-label"/>
+        <Text fx:id="phoneText" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="info-value"/>
+
+        <Label text="Established:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="info-label"/>
+        <Text fx:id="establishedText" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="info-value"/>
+
+        <columnConstraints>
+            <ColumnConstraints minWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+    </GridPane>
+
+    <VBox fx:id="notesBox" spacing="8" managed="false" visible="false">
+        <Label text="Notes:" styleClass="info-label"/>
+        <TextArea fx:id="notesArea" editable="false" wrapText="true" prefRowCount="3" styleClass="notes-area"/>
+    </VBox>
+
+    <VBox spacing="12">
+        <Text text="Orders and Collaborations" styleClass="section-title"/>
+
+        <ScrollPane fitToWidth="true" prefHeight="200" styleClass="collab-scroll">
+            <VBox fx:id="collabList" spacing="8" padding="8"/>
+        </ScrollPane>
+
+        <Button text="+ New Collaboration" styleClass="secondary-button" onAction="#handleAddCollaboration"/>
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" styleClass="primary-button" onAction="#handleClose"/>
+    </HBox>
+</VBox>

@@ -15,9 +15,6 @@ public class CertificateController {
         this.certificateService = new CertificateService();
     }
 
-    /**
-     * Create certificate
-     */
     public Certificate createCertificate(Long companyId, CertificateType type,
                                          String certificateNumber, LocalDateTime issueDate,
                                          LocalDateTime expiryDate, String countryOfOrigin,
@@ -35,9 +32,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Get certificate by ID
-     */
     public Certificate getCertificate(Long id) {
         try {
             return certificateService.getCertificateById(id);
@@ -47,9 +41,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Get all certificates for a company
-     */
     public List<Certificate> getCompanyCertificates(Long companyId) {
         try {
             return certificateService.getCompanyCertificates(companyId);
@@ -59,9 +50,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Get valid certificates
-     */
     public List<Certificate> getValidCertificates(Long companyId) {
         try {
             return certificateService.getValidCertificates(companyId);
@@ -71,9 +59,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Get expiring soon certificates
-     */
     public List<Certificate> getExpiringSoon(Long companyId, int daysBeforeExpiry) {
         try {
             return certificateService.getExpiringSoonCertificates(companyId, daysBeforeExpiry);
@@ -83,9 +68,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Update certificate
-     */
     public boolean updateCertificate(Certificate certificate) {
         try {
             return certificateService.updateCertificate(certificate);
@@ -98,9 +80,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Delete certificate
-     */
     public boolean deleteCertificate(Long certificateId) {
         try {
             return certificateService.deleteCertificate(certificateId);
@@ -110,9 +89,6 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Verify certificate validity
-     */
     public boolean verifyCertificate(Long certificateId) {
         try {
             return certificateService.verifyCertificate(certificateId);

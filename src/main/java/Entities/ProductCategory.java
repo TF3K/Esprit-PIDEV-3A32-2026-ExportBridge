@@ -18,5 +18,5 @@ public enum ProductCategory {
     AUTOMOTIVE_PARTS,
     FURNITURE,
     LEATHER_GOODS,
-    OTHER
+    CERAMICS, OTHER
 }

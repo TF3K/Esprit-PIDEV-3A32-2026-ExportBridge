@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.MarketsViewController"
+      styleClass="page-container">
+
+    <VBox styleClass="page-header">
+        <Text styleClass="page-title" text="International Markets"/>
+        <Text styleClass="page-subtitle" text="Explore export opportunities across Europe"/>
+    </VBox>
+
+    <HBox styleClass="filter-tabs" spacing="12">
+        <Button fx:id="tabAll" text="All" styleClass="filter-tab, filter-tab-active" onAction="#filterAll"/>
+        <Button fx:id="tabWestern" text="Western Europe" styleClass="filter-tab" onAction="#filterWestern"/>
+        <Button fx:id="tabSouthern" text="Southern Europe" styleClass="filter-tab" onAction="#filterSouthern"/>
+        <Button fx:id="tabCentral" text="Central Europe" styleClass="filter-tab" onAction="#filterCentral"/>
+    </HBox>
+
+    <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   styleClass="search-field"
+                   promptText="Search markets by country name..."
+                   onKeyReleased="#handleSearch"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Text fx:id="resultCount" styleClass="result-count" text="0 markets"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="markets-scroll" VBox.vgrow="ALWAYS">
+        <VBox>
+            <GridPane fx:id="marketsGrid"
+                      styleClass="markets-grid"
+                      hgap="20"
+                      vgap="20">
+            </GridPane>
+
+            <VBox fx:id="emptyState"
+                  styleClass="empty-state"
+                  alignment="CENTER"
+                  spacing="16"
+                  managed="false"
+                  visible="false">
+                <Text styleClass="empty-state-title" text="No markets found"/>
+                <Text styleClass="empty-state-subtitle" text="Try adjusting your search or filters"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

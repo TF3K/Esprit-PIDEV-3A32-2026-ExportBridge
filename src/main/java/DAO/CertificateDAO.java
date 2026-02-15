@@ -151,7 +151,6 @@ public class CertificateDAO implements GenericDAO<Certificate, Long> {
         return 0;
     }
 
-    // Custom methods
     public List<Certificate> findByCompanyId(Long companyId) throws SQLException {
         String sql = "SELECT * FROM certificates WHERE company_id = ? ORDER BY expiry_date DESC";
         List<Certificate> certificates = new ArrayList<>();
@@ -253,7 +252,7 @@ public class CertificateDAO implements GenericDAO<Certificate, Long> {
         certificate.setStatus(CertificateStatus.valueOf(rs.getString("status")));
         certificate.setCountryOfOrigin(rs.getString("country_of_origin"));
         certificate.setIssuingAuthority(rs.getString("issuing_authority"));
-        certificate.setDocumentFile(rs.getString("document_path"));
+        certificate.setDocumentFile(rs.getString("document_file"));
 
         return certificate;
     }

@@ -150,7 +150,6 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         return 0;
     }
 
-    // Custom methods
     public List<Product> findByCompanyId(Long companyId) throws SQLException {
         String sql = "SELECT * FROM products WHERE company_id = ? ORDER BY name";
         List<Product> products = new ArrayList<>();

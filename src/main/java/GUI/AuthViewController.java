@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class AuthViewController {
 
@@ -112,16 +113,19 @@ public class AuthViewController {
     }
 
     private void handleLogin(String email, String password) {
-        String token = authController.login(email, password);
+        boolean rememberMe = rememberMeCheck.isSelected();
+
+        String token = authController.login(email, password, rememberMe);
 
         if (token != null) {
             System.out.println("Login successful!");
-            showSuccess("Login successful!");
+            showSuccess("Login successful! Opening ExportBridge...");
 
+            // Transition to main window after brief delay
             new Thread(() -> {
                 try {
-                    Thread.sleep(2000);
-                    Platform.runLater(this::closeApplication);
+                    Thread.sleep(1000);  // 1 second delay
+                    Platform.runLater(this::openMainWindow);
                 } catch (InterruptedException e) {
                     System.err.println("Thread interrupted: " + e.getMessage());
                 }
@@ -172,7 +176,7 @@ public class AuthViewController {
                     Thread.sleep(2000);
                     Platform.runLater(() -> {
                         switchToLogin();
-                        emailInput.setText(email);  // Pre-fill email
+                        emailInput.setText(email);
                         passwordInput.requestFocus();
                     });
                 } catch (InterruptedException e) {
@@ -263,15 +267,38 @@ public class AuthViewController {
         errorLabel.setManaged(false);
     }
 
-    private void closeApplication() {
-        Stage stage = (Stage) submitButton.getScene().getWindow();
+    private void openMainWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-window.fxml"));
+            Parent root = loader.load();
 
-        System.out.println("Closing application...");
-        System.out.println("User: " + authController.getCurrentManager().getEmail());
+            Stage stage = (Stage) submitButton.getScene().getWindow();
 
-        stage.close();
+            Scene scene = new Scene(root, 1400, 900);
 
-        javafx.application.Platform.exit();
+            try {
+                String css = Objects.requireNonNull(getClass().getResource("/css/main-styles.css")).toExternalForm();
+                scene.getStylesheets().add(css);
+            } catch (Exception e) {
+                System.err.println("Could not load main-styles.css: " + e.getMessage());
+            }
+
+            stage.setScene(scene);
+            stage.setTitle("ExportBridge - International Markets");
+            stage.setResizable(true);
+            stage.setMaximized(false);
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to load main window: " + e.getMessage());
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Failed to load main window");
+            alert.setContentText("An error occurred while loading the main application window.");
+            alert.showAndWait();
+        }
     }
 
     private void resizeWindow(double heightChange) {

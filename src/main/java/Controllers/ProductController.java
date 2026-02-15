@@ -14,9 +14,6 @@ public class ProductController {
         this.productService = new ProductService();
     }
 
-    /**
-     * Create product
-     */
     public Product createProduct(Long companyId, String name, String description,
                                  String hsCode, ProductCategory category,
                                  Double quantity, String unit, Double unitPrice) {
@@ -32,9 +29,6 @@ public class ProductController {
         }
     }
 
-    /**
-     * Get product by ID
-     */
     public Product getProduct(Long id) {
         try {
             return productService.getProductById(id);
@@ -44,9 +38,6 @@ public class ProductController {
         }
     }
 
-    /**
-     * Get all products for a company
-     */
     public List<Product> getCompanyProducts(Long companyId) {
         try {
             return productService.getCompanyProducts(companyId);
@@ -56,9 +47,6 @@ public class ProductController {
         }
     }
 
-    /**
-     * Get all products
-     */
     public List<Product> getAllProducts() {
         try {
             return productService.getAllProducts();
@@ -68,9 +56,6 @@ public class ProductController {
         }
     }
 
-    /**
-     * Update product
-     */
     public boolean updateProduct(Product product) {
         try {
             return productService.updateProduct(product);
@@ -83,9 +68,6 @@ public class ProductController {
         }
     }
 
-    /**
-     * Delete product
-     */
     public boolean deleteProduct(Long productId) {
         try {
             return productService.deleteProduct(productId);

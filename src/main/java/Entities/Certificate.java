@@ -31,6 +31,11 @@ public class Certificate {
     }
 
     public boolean isExpiringSoon() {
-        return expiryDate != null && LocalDateTime.now().plusHours(1).isAfter(expiryDate);
+        if (expiryDate == null) return false;
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyDaysFromNow = now.plusDays(30);
+
+        return expiryDate.isAfter(now) && expiryDate.isBefore(thirtyDaysFromNow);
     }
 }

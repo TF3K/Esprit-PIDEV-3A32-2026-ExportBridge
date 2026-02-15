@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.PartnersViewController"
+      styleClass="page-container"
+      spacing="0">
+
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS">
+                <Text styleClass="page-title" text="Partners"/>
+                <Text styleClass="page-subtitle" text="Manage your business relationships"/>
+            </VBox>
+            <Button text="+ Add Partner" styleClass="primary-button" onAction="#handleAddPartner"/>
+        </HBox>
+    </VBox>
+
+    <HBox spacing="20" styleClass="stats-container">
+        <VBox fx:id="allPartnersCard" styleClass="stat-card, stat-card-primary" HBox.hgrow="ALWAYS" onMouseClicked="#filterAll">
+            <Text fx:id="totalCount" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-label" text="All Partners"/>
+        </VBox>
+
+        <VBox fx:id="activePartnersCard" styleClass="stat-card, stat-card-success" HBox.hgrow="ALWAYS" onMouseClicked="#filterActive">
+            <Text fx:id="activeCount" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-label" text="Active Partners"/>
+        </VBox>
+
+        <VBox fx:id="pendingPartnersCard" styleClass="stat-card, stat-card-warning" HBox.hgrow="ALWAYS" onMouseClicked="#filterPending">
+            <Text fx:id="pendingCount" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-label" text="Pending"/>
+        </VBox>
+
+        <VBox fx:id="inactivePartnersCard" styleClass="stat-card, stat-card-inactive" HBox.hgrow="ALWAYS" onMouseClicked="#filterInactive">
+            <Text fx:id="inactiveCount" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-label" text="Inactive"/>
+        </VBox>
+    </HBox>
+
+    <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   styleClass="search-field"
+                   promptText="Search partners by company name..."
+                   onKeyReleased="#handleSearch"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Text fx:id="resultCount" styleClass="result-count" text="0 partners"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="partners-scroll" VBox.vgrow="ALWAYS">
+        <VBox>
+            <VBox fx:id="partnersList" spacing="12" styleClass="partners-list">
+            </VBox>
+
+            <VBox fx:id="emptyState"
+                  styleClass="empty-state"
+                  alignment="CENTER"
+                  spacing="16"
+                  managed="false"
+                  visible="false">
+                <Text styleClass="empty-state-title" text="No partners yet"/>
+                <Text styleClass="empty-state-subtitle" text="Start building your business network"/>
+                <Button text="+ Add Partner" styleClass="primary-button" onAction="#handleAddPartner"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

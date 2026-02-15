@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.MarketDetailsDialogController"
+      styleClass="dialog-container"
+      spacing="20"
+      prefWidth="700">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <Text fx:id="flagText" style="-fx-font-size: 48px;"/>
+        <VBox spacing="4">
+            <Text fx:id="marketName" styleClass="dialog-title"/>
+            <Text fx:id="regionText" styleClass="market-region"/>
+        </VBox>
+    </HBox>
+
+    <VBox fx:id="tradeAgreementBox" styleClass="info-box" spacing="8" managed="false" visible="false">
+        <Text text="Trade Agreement" styleClass="info-label"/>
+        <Text fx:id="tradeAgreementText" styleClass="info-value"/>
+    </VBox>
+
+    <VBox fx:id="descriptionBox" styleClass="info-box" spacing="8" managed="false" visible="false" >
+        <Text text="Market Overview" styleClass="info-label"/>
+        <Text fx:id="descriptionText" styleClass="info-value"/>
+    </VBox>
+
+    <VBox spacing="12">
+        <Text text="Certificate Requirements by Product Category" styleClass="section-title"/>
+
+        <ComboBox fx:id="categorySelector"
+                  styleClass="form-field"
+                  promptText="Select product category"
+                  onAction="#handleCategoryChange"/>
+
+        <ScrollPane fitToWidth="true" prefHeight="250" styleClass="requirements-scroll">
+            <VBox fx:id="requirementsList" spacing="12" styleClass="requirements-container"/>
+        </ScrollPane>
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" styleClass="primary-button" onAction="#handleClose"/>
+    </HBox>
+</VBox>

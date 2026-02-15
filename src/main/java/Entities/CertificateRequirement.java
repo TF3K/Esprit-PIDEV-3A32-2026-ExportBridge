@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class CertificateRequirement {
     private Long id;
     private ProductCategory productCategory;
-    private CertificateType requiredCertificate;
+    private CertificateType certificateType;
     private boolean mandatory;
     private String description;
-    private Market targetMarket;
+    private Long marketId;
 }

@@ -17,4 +17,11 @@ public class Collaboration {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CollaborationStatus status;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdated;
+
+    public boolean isOngoing() {
+        return status == CollaborationStatus.ONGOING &&
+                (endDate == null || endDate.isAfter(LocalDateTime.now()));
+    }
 }

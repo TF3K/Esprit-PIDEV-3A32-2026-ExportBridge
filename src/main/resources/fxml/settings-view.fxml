@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.SettingsViewController"
+      styleClass="page-container">
+
+    <VBox styleClass="page-header">
+        <Text styleClass="page-title" text="Settings"/>
+        <Text styleClass="page-subtitle" text="Manage your account and preferences"/>
+    </VBox>
+
+    <HBox VBox.vgrow="ALWAYS">
+        <VBox styleClass="settings-sidebar" spacing="4" prefWidth="250">
+            <Button fx:id="tabProfile" text="👤  Profile" styleClass="settings-tab, settings-tab-active" onAction="#showProfile"/>
+            <Button fx:id="tabCompany" text="🏢  Company" styleClass="settings-tab" onAction="#showCompany"/>
+            <Button fx:id="tabNotifications" text="🔔  Notifications" styleClass="settings-tab" onAction="#showNotifications"/>
+            <Button fx:id="tabSecurity" text="🔒  Security" styleClass="settings-tab" onAction="#showSecurity"/>
+            <Button fx:id="tabCertifications" text="🏆  Certifications" styleClass="settings-tab" onAction="#showCertifications"/>
+        </VBox>
+
+        <StackPane fx:id="settingsContent" styleClass="settings-content" HBox.hgrow="ALWAYS">
+        </StackPane>
+    </HBox>
+</VBox>

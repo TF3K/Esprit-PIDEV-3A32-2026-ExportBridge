@@ -38,40 +38,34 @@ public class AuthenticationController {
        }
     }
 
-    public String login(String email, String password) {
+    public String login(String email, String password, boolean rememberMe) {
         try {
-            Manager manager = authService.authenticate(email, password);
+            return authService.authenticate(email, password, rememberMe);
+        } catch (SQLException e) {
+            System.err.println("Authentication error: " + e.getMessage());
+            return null;
+        }
+    }
 
-            if (manager == null) {
-                System.err.println("Invalid credentials");
+    public Manager tryRestoreSession() {
+        try {
+            String sessionId = AppState.loadSessionFromFile();
+            if (sessionId == null) {
                 return null;
             }
 
-            String sessionId = SessionManager.createSession(manager.getId(), "LocalClient");
-
-            AppState.setCurrentSessionId(sessionId);
-            AppState.setCurrentManager(manager);
-
-            System.out.println("Login successful for: " + manager.getEmail());
-            System.out.println("Session created: " + sessionId);
-
-            return sessionId;
+            return authService.restoreSession(sessionId);
 
         } catch (SQLException e) {
-            System.err.println("Database error during login: " + e.getMessage());
+            System.err.println("Session restoration error: " + e.getMessage());
+            AppState.clearSession();
             return null;
         }
     }
 
     public void logout() {
         String sessionId = AppState.getCurrentSessionId();
-
-        if (sessionId != null) {
-            SessionManager.invalidateSession(sessionId);
-        }
-
-        AppState.clearSession();
-        System.out.println("Logged out successfully");
+        authService.logout(sessionId);
     }
 
     public boolean changePassword(String oldPassword, String newPassword, String confirmPassword) {
@@ -131,5 +125,9 @@ public class AuthenticationController {
         SessionManager.updateLastAccess(sessionId);
 
         return AppState.getCurrentManager();
+    }
+
+    public boolean isLoggedIn() {
+        return AppState.isLoggedIn();
     }
 }

@@ -18,4 +18,11 @@ public class Partnership {
     private LocalDateTime establishedDate;
     private LocalDateTime terminatedDate;
     private String notes;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdated;
+
+    public boolean isActive() {
+        return status == PartnershipStatus.ACTIVE &&
+                (terminatedDate == null || terminatedDate.isAfter(LocalDateTime.now()));
+    }
 }

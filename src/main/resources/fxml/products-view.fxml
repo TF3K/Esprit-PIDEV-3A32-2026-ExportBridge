@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.ProductsViewController"
+      styleClass="page-container"
+      spacing="0">
+
+    <VBox styleClass="page-header">
+        <HBox alignment="CENTER_LEFT">
+            <VBox HBox.hgrow="ALWAYS">
+                <Text styleClass="page-title" text="Products"/>
+                <Text styleClass="page-subtitle" text="Manage your product catalog"/>
+            </VBox>
+            <Button text="+ Add Product" styleClass="primary-button" onAction="#handleAddProduct"/>
+        </HBox>
+    </VBox>
+
+    <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   styleClass="search-field"
+                   promptText="Search by product name or SKU..."
+                   onKeyReleased="#handleSearch"/>
+
+        <ComboBox fx:id="categoryFilter"
+                  styleClass="filter-dropdown"
+                  promptText="All Categories"
+                  onAction="#handleCategoryFilter"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Text fx:id="resultCount" styleClass="result-count" text="0 products"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="products-scroll" VBox.vgrow="ALWAYS">
+        <VBox>
+            <GridPane fx:id="productsGrid"
+                      styleClass="products-grid"
+                      hgap="20"
+                      vgap="20">
+            </GridPane>
+
+            <VBox fx:id="emptyState"
+                  styleClass="empty-state"
+                  alignment="CENTER"
+                  spacing="16"
+                  managed="false"
+                  visible="false">
+                <Text styleClass="empty-state-title" text="No products found"/>
+                <Text styleClass="empty-state-subtitle" text="Add your first product to get started"/>
+                <Button text="+ Add Product" styleClass="primary-button" onAction="#handleAddProduct"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

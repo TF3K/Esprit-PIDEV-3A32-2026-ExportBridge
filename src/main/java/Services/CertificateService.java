@@ -16,15 +16,11 @@ public class CertificateService {
         this.certificateDAO = new CertificateDAO();
     }
 
-    /**
-     * Create a new certificate
-     */
     public Certificate createCertificate(Long companyId, CertificateType type,
                                          String certificateNumber, LocalDateTime issueDate,
                                          LocalDateTime expiryDate, String countryOfOrigin,
                                          String issuingAuthority) throws SQLException {
 
-        // Validation
         if (companyId == null) {
             throw new IllegalArgumentException("Company ID is required");
         }
@@ -45,13 +41,11 @@ public class CertificateService {
             throw new IllegalArgumentException("Expiry date cannot be before issue date");
         }
 
-        // Check for duplicate certificate number
         Certificate existing = certificateDAO.findByCertificateNumber(certificateNumber);
         if (existing != null) {
             throw new IllegalArgumentException("Certificate number already exists");
         }
 
-        // Create certificate
         Certificate certificate = new Certificate();
         certificate.setCompanyId(companyId);
         certificate.setType(type);
@@ -65,43 +59,27 @@ public class CertificateService {
         return certificateDAO.create(certificate);
     }
 
-    /**
-     * Get certificate by ID
-     */
     public Certificate getCertificateById(Long id) throws SQLException {
         return certificateDAO.findById(id);
     }
 
-    /**
-     * Get all certificates for a company
-     */
     public List<Certificate> getCompanyCertificates(Long companyId) throws SQLException {
         return certificateDAO.findByCompanyId(companyId);
     }
 
-    /**
-     * Get only valid certificates
-     */
     public List<Certificate> getValidCertificates(Long companyId) throws SQLException {
         return certificateDAO.findValidByCompanyId(companyId);
     }
 
-    /**
-     * Get certificates expiring soon
-     */
     public List<Certificate> getExpiringSoonCertificates(Long companyId, int daysBeforeExpiry) throws SQLException {
         return certificateDAO.findExpiringSoon(companyId, daysBeforeExpiry);
     }
 
-    /**
-     * Update certificate
-     */
     public boolean updateCertificate(Certificate certificate) throws SQLException {
         if (certificate.getId() == null) {
             throw new IllegalArgumentException("Certificate ID is required for update");
         }
 
-        // Auto-update status based on expiry
         if (certificate.getExpiryDate().isBefore(LocalDateTime.now())) {
             certificate.setStatus(CertificateStatus.EXPIRED);
         }
@@ -109,16 +87,10 @@ public class CertificateService {
         return certificateDAO.update(certificate);
     }
 
-    /**
-     * Delete certificate
-     */
     public boolean deleteCertificate(Long certificateId) throws SQLException {
         return certificateDAO.delete(certificateId);
     }
 
-    /**
-     * Check and update expired certificates
-     */
     public int updateExpiredCertificates(Long companyId) throws SQLException {
         List<Certificate> certificates = certificateDAO.findByCompanyId(companyId);
         int updated = 0;
@@ -136,9 +108,6 @@ public class CertificateService {
         return updated;
     }
 
-    /**
-     * Verify if certificate is valid
-     */
     public boolean verifyCertificate(Long certificateId) throws SQLException {
         Certificate certificate = certificateDAO.findById(certificateId);
         if (certificate == null) {

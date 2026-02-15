@@ -14,8 +14,8 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
     public Company create(Company company) throws SQLException {
         String sql = "INSERT INTO companies (company_name, domain, tax_number, registration_number, " +
                 "country, address, contact_email, contact_phone, rating, warnings, is_banned, " +
-                "company_manager_id, created_at, last_updated) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "company_manager_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -24,39 +24,24 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
             stmt.setString(2, company.getDomain());
             stmt.setString(3, company.getTaxNumber());
             stmt.setString(4, company.getRegistrationNumber());
-            stmt.setString(5, company.getCountry());
+            stmt.setString(5, company.getCountry() != null ? company.getCountry() : "Tunisia");
             stmt.setString(6, company.getAddress());
             stmt.setString(7, company.getContactEmail());
             stmt.setString(8, company.getContactPhone());
 
-            if (company.getRating() != null) {
-                stmt.setInt(9, company.getRating());
-            } else {
-                stmt.setNull(9, Types.INTEGER);
+            int rating = 3;
+            if (company.getRating() != null && company.getRating() >= 1 && company.getRating() <= 5) {
+                rating = company.getRating();
             }
-
-            if (company.getWarnings() != null) {
-                stmt.setInt(10, company.getWarnings());
-            } else {
-                stmt.setInt(10, 0);
-            }
-
-            stmt.setBoolean(11, company.isBanned());
+            stmt.setInt(9, rating);
+            stmt.setInt(10, company.getWarnings() != null ? company.getWarnings() : 0);
+            stmt.setBoolean(11, company.isBanned() ? company.isBanned() : false);
 
             if (company.getCompanyManagerId() != null) {
                 stmt.setLong(12, company.getCompanyManagerId());
             } else {
                 stmt.setNull(12, Types.BIGINT);
             }
-
-            LocalDateTime created = company.getCreatedAt() != null ? company.getCreatedAt() : LocalDateTime.now();
-            LocalDateTime updated = company.getLastUpdated() != null ? company.getLastUpdated() : LocalDateTime.now();
-
-            company.setCreatedAt(created);
-            company.setLastUpdated(updated);
-
-            stmt.setTimestamp(13, Timestamp.valueOf(created));
-            stmt.setTimestamp(14, Timestamp.valueOf(updated));
 
             int affectedRows = stmt.executeUpdate();
 
@@ -70,6 +55,13 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
                 } else {
                     throw new SQLException("Creating company failed, no ID obtained.");
                 }
+            }
+
+            // Fetch timestamps set by database
+            Company created = findById(company.getId());
+            if (created != null) {
+                company.setCreatedAt(created.getCreatedAt());
+                company.setLastUpdated(created.getLastUpdated());
             }
         }
         return company;
@@ -86,7 +78,7 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return mapResultSetToCompany(rs);
+                    return mapResultSetToEntity(rs);
                 }
             }
         }
@@ -95,7 +87,7 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
 
     @Override
     public List<Company> findAll() throws SQLException {
-        String sql = "SELECT * FROM companies";
+        String sql = "SELECT * FROM companies ORDER BY company_name";
         List<Company> companies = new ArrayList<>();
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
@@ -103,27 +95,10 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                companies.add(mapResultSetToCompany(rs));
+                companies.add(mapResultSetToEntity(rs));
             }
         }
         return companies;
-    }
-
-    public Company findByTaxNumber(String taxNumber) throws SQLException {
-        String sql = "SELECT * FROM companies WHERE tax_number = ?";
-
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, taxNumber);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToCompany(rs);
-                }
-            }
-        }
-        return null;
     }
 
     @Override
@@ -131,7 +106,7 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
         String sql = "UPDATE companies SET company_name = ?, domain = ?, tax_number = ?, " +
                 "registration_number = ?, country = ?, address = ?, contact_email = ?, " +
                 "contact_phone = ?, rating = ?, warnings = ?, is_banned = ?, " +
-                "company_manager_id = ?, last_updated = ? " +
+                "company_manager_id = ? " +
                 "WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
@@ -145,20 +120,9 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
             stmt.setString(6, company.getAddress());
             stmt.setString(7, company.getContactEmail());
             stmt.setString(8, company.getContactPhone());
-
-            if (company.getRating() != null) {
-                stmt.setInt(9, company.getRating());
-            } else {
-                stmt.setNull(9, Types.INTEGER);
-            }
-
-            if (company.getWarnings() != null) {
-                stmt.setInt(10, company.getWarnings());
-            } else {
-                stmt.setInt(10, 0);
-            }
-
-            stmt.setBoolean(11, company.isBanned());
+            stmt.setInt(9, company.getRating() != null ? company.getRating() : 0);
+            stmt.setInt(10, company.getWarnings() != null ? company.getWarnings() : 0);
+            stmt.setBoolean(11, company.isBanned() ? company.isBanned() : false);
 
             if (company.getCompanyManagerId() != null) {
                 stmt.setLong(12, company.getCompanyManagerId());
@@ -166,9 +130,7 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
                 stmt.setNull(12, Types.BIGINT);
             }
 
-            stmt.setTimestamp(13, Timestamp.valueOf(LocalDateTime.now()));
-
-            stmt.setLong(14, company.getId());
+            stmt.setLong(13, company.getId());
 
             return stmt.executeUpdate() > 0;
         }
@@ -218,7 +180,109 @@ public class CompanyDAO implements GenericDAO<Company, Long> {
         return 0;
     }
 
-    private Company mapResultSetToCompany(ResultSet rs) throws SQLException {
+    public Company findByTaxNumber(String taxNumber) throws SQLException {
+        String sql = "SELECT * FROM companies WHERE tax_number = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, taxNumber);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToEntity(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public Company findByManagerId(Long managerId) throws SQLException {
+        String sql = "SELECT * FROM companies WHERE company_manager_id = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, managerId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToEntity(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Company> findByCountry(String country) throws SQLException {
+        String sql = "SELECT * FROM companies WHERE country = ? ORDER BY company_name";
+        List<Company> companies = new ArrayList<>();
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, country);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    companies.add(mapResultSetToEntity(rs));
+                }
+            }
+        }
+        return companies;
+    }
+
+    public List<Company> searchByName(String searchQuery) throws SQLException {
+        String sql = "SELECT * FROM companies WHERE company_name LIKE ? ORDER BY company_name";
+        List<Company> companies = new ArrayList<>();
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + searchQuery + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    companies.add(mapResultSetToEntity(rs));
+                }
+            }
+        }
+        return companies;
+    }
+
+    public List<Company> findActiveCompanies() throws SQLException {
+        String sql = "SELECT * FROM companies WHERE is_banned = false ORDER BY company_name";
+        List<Company> companies = new ArrayList<>();
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                companies.add(mapResultSetToEntity(rs));
+            }
+        }
+        return companies;
+    }
+
+    public boolean taxNumberExists(String taxNumber) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM companies WHERE tax_number = ?";
+
+        try (Connection conn = DatabasePlugin.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, taxNumber);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Company mapResultSetToEntity(ResultSet rs) throws SQLException {
         Company company = new Company();
         company.setId(rs.getLong("id"));
         company.setCompanyName(rs.getString("company_name"));

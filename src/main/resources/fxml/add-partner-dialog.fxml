@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.AddPartnerDialogController"
+      styleClass="dialog-container"
+      spacing="20"
+      prefWidth="500">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <Text styleClass="dialog-title" text="Add Partner"/>
+
+    <GridPane hgap="16" vgap="16">
+        <Label text="Partner Company *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
+        <ComboBox fx:id="companyField" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="form-field" promptText="Select company" maxWidth="Infinity"/>
+
+        <Label text="Partnership Type" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
+        <ComboBox fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-field" promptText="Select type" maxWidth="Infinity"/>
+
+        <Label text="Notes" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
+        <TextArea fx:id="notesField" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="form-field" promptText="Partnership details..." prefRowCount="3"/>
+
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+    </GridPane>
+
+    <Label fx:id="errorLabel" styleClass="error-label" managed="false" visible="false" wrapText="true"/>
+
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button text="Cancel" styleClass="secondary-button" onAction="#handleCancel"/>
+        <Button text="Send Request" styleClass="primary-button" onAction="#handleSave"/>
+    </HBox>
+</VBox>

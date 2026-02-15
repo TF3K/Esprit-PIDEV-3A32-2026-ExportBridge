@@ -82,7 +82,6 @@ public class SettingsDAO implements GenericDAO<Settings, Long> {
         return settingsList;
     }
 
-    // Custom method specific to Settings (One-to-One relationship)
     public Settings findByManagerId(Long managerId) throws SQLException {
         String sql = "SELECT * FROM settings WHERE manager_id = ?";
 
@@ -103,7 +102,6 @@ public class SettingsDAO implements GenericDAO<Settings, Long> {
 
     @Override
     public boolean update(Settings settings) throws SQLException {
-        // Updated to target 'id' (Primary Key) to match GenericDAO pattern
         String sql = "UPDATE settings SET language = ?, theme = ?, " +
                 "email_notifications = ?, push_notifications = ?, " +
                 "certificate_expiry_alerts = ?, alert_days_before = ?, " +
@@ -175,7 +173,6 @@ public class SettingsDAO implements GenericDAO<Settings, Long> {
     public Settings createDefaultSettings(Long managerId) throws SQLException {
         Settings settings = new Settings();
         settings.setManagerId(managerId);
-        // Defaults matching the SQL Schema
         settings.setLanguage("fr");
         settings.setTheme("light");
         settings.setEmailNotifications(true);
