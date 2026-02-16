@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.ProduitController"
+      spacing="14"
+      alignment="TOP_CENTER"
+      prefWidth="900"
+      prefHeight="650"
+      style="-fx-padding: 18;">
+
+    <!-- Header -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12" prefWidth="860">
+        <VBox spacing="4">
+            <Label text="Gestion Produits" styleClass="title"/>
+            <Label text="CRUD + validation + relation catégorie" styleClass="subtitle"/>
+        </VBox>
+    </HBox>
+
+    <!-- Form Card -->
+    <VBox styleClass="card" spacing="12" prefWidth="860">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="tfName" promptText="Nom du produit" prefWidth="220"/>
+            <TextField fx:id="tfPrice" promptText="Prix (ex: 12.5)" prefWidth="160"/>
+            <TextField fx:id="tfQty" promptText="Stock" prefWidth="140"/>
+            <ComboBox fx:id="cbCategory" promptText="Catégorie" prefWidth="220"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Ajouter" onAction="#addProduit" styleClass="btn-primary" prefWidth="120"/>
+            <Button text="Modifier" onAction="#updateProduit" styleClass="btn-warning" prefWidth="120"/>
+            <Button text="Supprimer" onAction="#deleteProduit" styleClass="btn-danger" prefWidth="120"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblError" styleClass="error"/>
+        </HBox>
+    </VBox>
+
+    <!-- Table Card -->
+    <VBox styleClass="card" spacing="10" prefWidth="860">
+        <Label text="Liste des Produits" styleClass="title" style="-fx-font-size: 16px;"/>
+        <TableView fx:id="tvProduit" prefHeight="420" prefWidth="820">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+                <TableColumn fx:id="colName" text="Nom" prefWidth="240"/>
+                <TableColumn fx:id="colPrice" text="Prix" prefWidth="120"/>
+                <TableColumn fx:id="colQty" text="Stock" prefWidth="110"/>
+                <TableColumn fx:id="colCategory" text="Catégorie" prefWidth="220"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="GUI.CategoryController">
+
+    <children>
+
+        <!-- Label -->
+        <Label layoutX="240.0" layoutY="40.0" text="Gestion Category" />
+
+        <!-- ID -->
+        <Label layoutX="200.0" layoutY="80.0" text="Category ID" />
+        <TextField fx:id="tfId"
+                   layoutX="200.0"
+                   layoutY="100.0"
+                   prefWidth="200.0"
+                   promptText="Ex: 1" />
+
+        <!-- Name -->
+        <Label layoutX="200.0" layoutY="140.0" text="Category Name" />
+        <TextField fx:id="tfName"
+                   layoutX="200.0"
+                   layoutY="160.0"
+                   prefWidth="200.0"
+                   promptText="Ex: Fruits" />
+
+        <!-- Buttons -->
+        <Button text="Add"
+                layoutX="270.0"
+                layoutY="220.0"
+                onAction="#handleAdd" />
+
+        <Button text="Update"
+                layoutX="262.0"
+                layoutY="260.0"
+                onAction="#handleUpdate" />
+
+        <Button text="Delete"
+                layoutX="262.0"
+                layoutY="300.0"
+                onAction="#handleDelete" />
+
+    </children>
+</AnchorPane>
