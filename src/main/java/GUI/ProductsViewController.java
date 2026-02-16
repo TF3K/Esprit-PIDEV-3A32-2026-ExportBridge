@@ -103,27 +103,23 @@ public class ProductsViewController {
         card.setPrefWidth(350);
         card.setAlignment(Pos.TOP_LEFT);
 
-        // Product icon/image placeholder
         StackPane imagePlaceholder = new StackPane();
         imagePlaceholder.getStyleClass().add("product-image");
         imagePlaceholder.setPrefHeight(180);
-        Text emoji = new Text(getCategoryEmoji(product.getCategory()));
-        emoji.setStyle("-fx-font-size: 64px;");
-        imagePlaceholder.getChildren().add(emoji);
+//        Text emoji = new Text(getCategoryEmoji(product.getCategory()));
+//        emoji.setStyle("-fx-font-size: 64px;");
+//        imagePlaceholder.getChildren().add(emoji);
 
-        // Product name
         Text name = new Text(product.getName());
         name.getStyleClass().add("product-name");
         name.setWrappingWidth(330);
 
-        // SKU
         if (product.getHsCode() != null && !product.getHsCode().isEmpty()) {
             Text sku = new Text("SKU: " + product.getHsCode());
             sku.getStyleClass().add("product-sku");
             card.getChildren().add(sku);
         }
 
-        // Description
         if (product.getDescription() != null && !product.getDescription().isEmpty()) {
             Text description = new Text(product.getDescription());
             description.getStyleClass().add("product-description");
@@ -131,7 +127,6 @@ public class ProductsViewController {
             card.getChildren().add(description);
         }
 
-        // Price and stock info
         HBox infoRow = new HBox(20);
         infoRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -151,13 +146,11 @@ public class ProductsViewController {
 
         infoRow.getChildren().addAll(priceBox, stockBox);
 
-        // Category badge
         HBox categoryBox = new HBox();
         Label categoryBadge = new Label(formatCategoryName(product.getCategory().name()));
         categoryBadge.getStyleClass().add("category-badge");
         categoryBox.getChildren().add(categoryBadge);
 
-        // Action buttons
         HBox buttonRow = new HBox(8);
         buttonRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -278,21 +271,21 @@ public class ProductsViewController {
         return formatted.toString().trim();
     }
 
-    private String getCategoryEmoji(ProductCategory category) {
-        switch (category) {
-            case OLIVE_OIL: return "🫒";
-            case DATES: return "🌴";
-            case TEXTILES: return "🧵";
-            case ELECTRONICS: return "📱";
-            case FOOD_BEVERAGE: return "🍽️";
-            case SEAFOOD: return "🐟";
-            case HANDICRAFTS: return "🎨";
-            case MACHINERY: return "⚙️";
-            case COSMETICS: return "💄";
-            case CERAMICS: return "🏺";
-            default: return "📦";
-        }
-    }
+//    private String getCategoryEmoji(ProductCategory category) {
+//        switch (category) {
+//            case OLIVE_OIL: return "🫒";
+//            case DATES: return "🌴";
+//            case TEXTILES: return "🧵";
+//            case ELECTRONICS: return "📱";
+//            case FOOD_BEVERAGE: return "🍽️";
+//            case SEAFOOD: return "🐟";
+//            case HANDICRAFTS: return "🎨";
+//            case MACHINERY: return "⚙️";
+//            case COSMETICS: return "💄";
+//            case CERAMICS: return "🏺";
+//            default: return "📦";
+//        }
+//    }
 
     private void showSuccess(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

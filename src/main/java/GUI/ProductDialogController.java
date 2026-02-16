@@ -22,7 +22,7 @@ public class ProductDialogController {
     @FXML private Label errorLabel;
 
     private ProductController productController;
-    private Product product;  // null for new product, set for editing
+    private Product product;
     private Long companyId;
     private Runnable onSaveCallback;
 
@@ -30,12 +30,10 @@ public class ProductDialogController {
     public void initialize() {
         productController = new ProductController();
 
-        // Setup category dropdown
         for (ProductCategory category : ProductCategory.values()) {
             categoryField.getItems().add(formatCategoryName(category.name()));
         }
 
-        // Setup currency dropdown
         currencyField.getItems().addAll("TND", "EUR", "USD");
         currencyField.setValue("TND");
     }
@@ -97,7 +95,6 @@ public class ProductDialogController {
                 );
                 success = newProduct != null;
             } else {
-                // Update existing product
                 product.setName(name);
                 product.setCategory(category);
                 product.setHsCode(hsCode);
