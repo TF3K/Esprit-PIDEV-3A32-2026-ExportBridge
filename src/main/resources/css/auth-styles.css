@@ -1,9 +1,7 @@
-/* Container */
 .auth-container {
     -fx-background-color: linear-gradient(from 0% 100% to 0% 0%, #001BCA 0%, #A0ABF3 40%, #FFFFFF 75%);
 }
 
-/* Header */
 .app-title {
     -fx-font-size: 32px;
     -fx-font-weight: bold;
@@ -17,7 +15,6 @@
     -fx-translate-y: -70px;
 }
 
-/* Card */
 .auth-card {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -32,14 +29,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
 }
 
-/* Tab Container */
 .tab-container {
     -fx-background-color: #f3f4f6;
     -fx-background-radius: 8px;
     -fx-padding: 4px;
 }
 
-/* Tab Buttons */
 .tab-button {
     -fx-background-color: transparent;
     -fx-text-fill: #6b7280;
@@ -59,7 +54,6 @@
     -fx-text-fill: white;
 }
 
-/* Form Fields */
 .field-label {
     -fx-font-size: 13px;
     -fx-font-weight: 500;
@@ -89,12 +83,10 @@
     -fx-fill: #1a1a1a;
 }
 
-/* Prompt text (placeholder) */
 .input-field > .text-field {
     -fx-prompt-text-fill: #9ca3af;
 }
 
-/* Checkbox */
 .checkbox-label {
     -fx-font-size: 13px;
     -fx-text-fill: #6b7280;
@@ -115,7 +107,6 @@
     -fx-border-color: #6D81FF;
 }
 
-/* Links */
 .link {
     -fx-text-fill: #5269FF;
     -fx-font-size: 13px;
@@ -127,7 +118,6 @@
     -fx-underline: true;
 }
 
-/* Error Label */
 .error-label {
     -fx-font-size: 13px;
     -fx-padding: 8px 12px;
@@ -136,7 +126,6 @@
     -fx-text-fill: #ef4444;
 }
 
-/* Submit Button */
 .submit-button {
     -fx-background-color: #5269FF;
     -fx-text-fill: white;
@@ -155,7 +144,6 @@
     -fx-background-color: #1A38FF;
 }
 
-/* Footer */
 .footer-text {
     -fx-font-size: 13px;
     -fx-fill: #6b7280;

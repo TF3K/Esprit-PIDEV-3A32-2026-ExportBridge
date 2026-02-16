@@ -4,9 +4,9 @@ import Controllers.ProductController;
 import Entities.Product;
 import Entities.ProductCategory;
 import Utils.AppState;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -161,11 +161,11 @@ public class ProductsViewController {
         HBox buttonRow = new HBox(8);
         buttonRow.setAlignment(Pos.CENTER_LEFT);
 
-        Button editBtn = new Button("✎ Edit");
+        Button editBtn = new Button("Edit");
         editBtn.getStyleClass().add("edit-button");
         editBtn.setOnAction(e -> handleEditProduct(product));
 
-        Button deleteBtn = new Button("🗑");
+        Button deleteBtn = new Button("Delete");
         deleteBtn.getStyleClass().add("delete-button");
         deleteBtn.setOnAction(e -> handleDeleteProduct(product));
 

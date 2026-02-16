@@ -8,8 +8,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="GUI.ProductsViewController"
-      styleClass="page-container"
-      spacing="0">
+      styleClass="page-container">
 
     <VBox styleClass="page-header">
         <HBox alignment="CENTER_LEFT">
