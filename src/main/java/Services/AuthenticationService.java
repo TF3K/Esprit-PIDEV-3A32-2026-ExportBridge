@@ -138,4 +138,40 @@ public class AuthenticationService {
         }
         AppState.clearSession();
     }
+
+    public boolean requestPasswordReset(String email) throws SQLException {
+        Manager manager = managerDAO.findByEmail(email);
+
+        if (manager == null) {
+            return true;
+        }
+
+        String token = EmailService.generateResetToken(email, manager.getId());
+
+        return EmailService.sendPasswordResetEmail(email, token);
+    }
+
+    public boolean resetPasswordWithToken(String token, String newPassword) throws SQLException {
+        EmailService.PasswordResetToken resetToken = EmailService.validateResetToken(token);
+
+        if (resetToken == null) {
+            return false;
+        }
+
+        Manager manager = managerDAO.findById(resetToken.getManagerId());
+        if (manager == null) {
+            return false;
+        }
+
+        String hashedPassword = PasswordUtil.hashPassword(newPassword);
+        manager.setPassword(hashedPassword);
+
+        boolean success = managerDAO.update(manager);
+
+        if (success) {
+            EmailService.invalidateResetToken(token);
+        }
+
+        return success;
+    }
 }
