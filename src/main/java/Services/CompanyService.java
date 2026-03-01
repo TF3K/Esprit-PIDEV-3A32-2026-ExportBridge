@@ -139,6 +139,16 @@ public class CompanyService {
         return companyDAO.update(company);
     }
 
+    public Company findByNameAndCountry(String name, String country) throws SQLException {
+        List<Company> allCompanies = companyDAO.findAll();
+
+        return allCompanies.stream()
+                .filter(c -> c.getCompanyName().equalsIgnoreCase(name) &&
+                        c.getCountry().equalsIgnoreCase(country))
+                .findFirst()
+                .orElse(null);
+    }
+
     public boolean updateRating(Long companyId, int rating) throws SQLException {
         if (rating < 0 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 0 and 5");

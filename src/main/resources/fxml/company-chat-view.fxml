@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.CompanyChatViewController"
+      styleClass="page-container"
+      spacing="0">
+
+    <!-- Header with Back Button -->
+    <HBox styleClass="page-header" alignment="CENTER_LEFT" spacing="20">
+        <Button fx:id="backButton" text="← Back" styleClass="back-button" onAction="#handleBack"/>
+
+        <HBox spacing="12" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+            <Text fx:id="companyFlag" style="-fx-font-size: 48px;"/>
+            <VBox>
+                <Text fx:id="companyName" styleClass="page-title"/>
+                <Text fx:id="companyInfo" styleClass="page-subtitle"/>
+            </VBox>
+        </HBox>
+
+        <Label text="🤖 AI Assistant" styleClass="ai-badge"/>
+    </HBox>
+
+    <!-- Chat Container -->
+    <VBox styleClass="chat-main-container" VBox.vgrow="ALWAYS">
+
+        <!-- Chat Messages Area -->
+        <ScrollPane fx:id="chatScrollPane"
+                    fitToWidth="true"
+                    styleClass="chat-scroll"
+                    VBox.vgrow="ALWAYS">
+            <VBox fx:id="messagesContainer" spacing="12" styleClass="messages-container">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
+
+        <!-- Loading Indicator -->
+        <HBox fx:id="loadingIndicator"
+              styleClass="loading-indicator"
+              spacing="8"
+              alignment="CENTER"
+              managed="false"
+              visible="false">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+            <ProgressIndicator prefWidth="20" prefHeight="20"/>
+            <Text text="AI is typing..." styleClass="loading-text"/>
+        </HBox>
+
+        <!-- Input Area -->
+        <HBox styleClass="chat-input-area" spacing="12" alignment="CENTER">
+            <padding>
+                <Insets top="16" right="20" bottom="16" left="20"/>
+            </padding>
+
+            <TextField fx:id="messageInput"
+                       styleClass="chat-input-field"
+                       promptText="Type your message..."
+                       onAction="#handleSendMessage"
+                       HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="sendButton"
+                    text="Send"
+                    styleClass="send-button"
+                    onAction="#handleSendMessage"
+                    defaultButton="true"/>
+        </HBox>
+
+    </VBox>
+</VBox>

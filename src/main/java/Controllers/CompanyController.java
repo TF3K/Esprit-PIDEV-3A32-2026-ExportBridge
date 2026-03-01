@@ -48,6 +48,15 @@ public class CompanyController {
         }
     }
 
+    public Company findByNameAndCountry(String name, String country) {
+        try {
+            return companyService.findByNameAndCountry(name, country);
+        } catch (SQLException e) {
+            System.err.println("Error finding company: " + e.getMessage());
+            return null;
+        }
+    }
+
     public List<Company> getAllCompanies() {
         try {
             return companyService.getAllCompanies();

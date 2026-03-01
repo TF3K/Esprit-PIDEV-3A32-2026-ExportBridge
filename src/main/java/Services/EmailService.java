@@ -36,12 +36,6 @@ public class EmailService {
     }
 
     public static boolean sendPasswordResetEmail(String toEmail, String resetToken) {
-        System.out.println("=== DEBUG EMAIL CONFIGURATION ===");
-        System.out.println("MAILTRAP_TOKEN loaded: " + (MAILTRAP_TOKEN != null ? "Yes" : "No"));
-        System.out.println("Token length: " + (MAILTRAP_TOKEN != null ? MAILTRAP_TOKEN.length() : 0));
-        System.out.println("Token starts with: " + (MAILTRAP_TOKEN != null ? MAILTRAP_TOKEN.substring(0, Math.min(10, MAILTRAP_TOKEN.length())) : "null"));
-        System.out.println("================================");
-
         if (MAILTRAP_TOKEN == null || MAILTRAP_TOKEN.isEmpty()) {
             System.err.println("✗ Mailtrap not configured! Set MAILTRAP_API_KEY in .env");
             return false;
