@@ -25,11 +25,13 @@ public class MainWindowController {
     @FXML private HBox navProducts;
     @FXML private HBox navMarkets;
     @FXML private HBox navPartners;
+    @FXML private HBox navCertifications;
     @FXML private HBox navSettings;
 
     @FXML private Text navProductsText;
     @FXML private Text navMarketsText;
     @FXML private Text navPartnersText;
+    @FXML private Text navCertificationsText;
     @FXML private Text navSettingsText;
     @FXML private Text navLogoutText;
 
@@ -67,6 +69,8 @@ public class MainWindowController {
         navMarketsText.setManaged(!hide);
         navPartnersText.setVisible(!hide);
         navPartnersText.setManaged(!hide);
+        navCertificationsText.setVisible(!hide);
+        navCertificationsText.setManaged(!hide);
         navSettingsText.setVisible(!hide);
         navSettingsText.setManaged(!hide);
         navLogoutText.setVisible(!hide);
@@ -89,6 +93,12 @@ public class MainWindowController {
     private void showPartners() {
         setActiveNav(navPartners);
         loadView("/fxml/partners-view.fxml");
+    }
+
+    @FXML
+    private void showCertifications() {
+        setActiveNav(navCertifications);
+        loadView("/fxml/certifications-view.fxml");
     }
 
     @FXML

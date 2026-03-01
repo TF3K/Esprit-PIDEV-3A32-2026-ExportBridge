@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.CertificationsViewController"
+      styleClass="page-container"
+      spacing="0">
+
+    <HBox styleClass="page-header" alignment="CENTER_LEFT" spacing="20">
+        <VBox HBox.hgrow="ALWAYS">
+            <Text text="Certifications And Licenses" styleClass="page-title"/>
+            <Text text="Manage export certificates and product certifications" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ Add Certificate" styleClass="primary-button" onAction="#handleAddCertificate"/>
+    </HBox>
+
+    <HBox spacing="16" styleClass="stats-container">
+        <VBox fx:id="totalCard" styleClass="stat-card" onMouseClicked="#filterAll" HBox.hgrow="ALWAYS">
+            <Text text="Total Certificates" styleClass="stat-label"/>
+            <Text fx:id="totalCount" text="0" styleClass="stat-value"/>
+        </VBox>
+
+        <VBox fx:id="activeCard" styleClass="stat-card" onMouseClicked="#filterActive" HBox.hgrow="ALWAYS">
+            <Text text="Active" styleClass="stat-label"/>
+            <Text fx:id="activeCount" text="0" styleClass="stat-value" style="-fx-fill: #10b981;"/>
+        </VBox>
+
+        <VBox fx:id="expiringCard" styleClass="stat-card" onMouseClicked="#filterExpiringSoon" HBox.hgrow="ALWAYS">
+            <Text text="Expiring Soon" styleClass="stat-label"/>
+            <Text fx:id="expiringCount" text="0" styleClass="stat-value" style="-fx-fill: #f59e0b;"/>
+        </VBox>
+
+        <VBox fx:id="expiredCard" styleClass="stat-card" onMouseClicked="#filterExpired" HBox.hgrow="ALWAYS">
+            <Text text="Expired" styleClass="stat-label"/>
+            <Text fx:id="expiredCount" text="0" styleClass="stat-value" style="-fx-fill: #ef4444;"/>
+        </VBox>
+    </HBox>
+
+    <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   styleClass="search-field"
+                   promptText="Search certificates..."
+                   onKeyReleased="#handleSearch"
+                   prefWidth="400"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Text fx:id="resultCount" styleClass="result-count" text="0 certificates"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+        <VBox>
+            <VBox fx:id="certificatesList" spacing="12" styleClass="items-list">
+            </VBox>
+
+            <VBox fx:id="emptyState"
+                  styleClass="empty-state"
+                  alignment="CENTER"
+                  spacing="16"
+                  managed="false"
+                  visible="false">
+                <Text text="📜" style="-fx-font-size: 64px;"/>
+                <Text text="No Certificates Yet" styleClass="empty-state-title"/>
+                <Text text="Add your first certificate to get started" styleClass="empty-state-subtitle"/>
+                <Button text="+ Add Certificate" styleClass="primary-button" onAction="#handleAddCertificate"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

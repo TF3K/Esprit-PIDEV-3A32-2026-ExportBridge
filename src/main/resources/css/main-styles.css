@@ -1,13 +1,7 @@
-/* ============================================
-   MAIN CONTAINER
-   ============================================ */
 .main-container {
     -fx-background-color: #f5f5f7;
 }
 
-/* ============================================
-   SIDEBAR
-   ============================================ */
 .sidebar {
     -fx-background-color: #1a1d29;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 2, 0);
@@ -47,9 +41,6 @@
     -fx-padding: 0;
 }
 
-/* ============================================
-   NAVIGATION ITEMS
-   ============================================ */
 .nav-item {
     -fx-padding: 12px 16px;
     -fx-spacing: 12px;
@@ -101,17 +92,11 @@
     -fx-background-color: rgba(239,68,68,0.1);
 }
 
-/* ============================================
-   CONTENT AREA
-   ============================================ */
 .content-area {
     -fx-background-color: #f5f5f7;
     -fx-padding: 0;
 }
 
-/* ============================================
-   COMMON PAGE STYLES
-   ============================================ */
 .page-container {
     -fx-background-color: transparent;
     -fx-padding: 40px;
@@ -133,9 +118,6 @@
     -fx-fill: #6b7280;
 }
 
-/* ============================================
-   SEARCH BAR
-   ============================================ */
 .search-container {
     -fx-spacing: 12px;
     -fx-alignment: CENTER_LEFT;
@@ -158,9 +140,6 @@
     -fx-background-color: white;
 }
 
-/* ============================================
-   BUTTONS
-   ============================================ */
 .primary-button {
     -fx-background-color: #4f46e5;
     -fx-text-fill: white;
@@ -192,9 +171,6 @@
     -fx-background-color: #f9fafb;
 }
 
-/* ============================================
-   CARDS
-   ============================================ */
 .card {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -206,9 +182,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 4);
 }
 
-/* ============================================
-   PRODUCTS VIEW
-   ============================================ */
 .products-scroll {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -319,7 +292,6 @@
     -fx-background-color: #fef2f2;
 }
 
-/* Filter Dropdown */
 .filter-dropdown {
     -fx-background-color: white;
     -fx-border-color: #e5e7eb;
@@ -334,7 +306,6 @@
     -fx-fill: #6b7280;
 }
 
-/* Empty State */
 .empty-state {
     -fx-padding: 60px 20px;
 }
@@ -350,9 +321,6 @@
     -fx-fill: #6b7280;
 }
 
-/* ============================================
-   DIALOG STYLES
-   ============================================ */
 .dialog-container {
     -fx-background-color: white;
     -fx-background-radius: 12px;
@@ -1075,4 +1043,81 @@
     -fx-fill: #92400e;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
+}
+
+.certificate-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+.certificate-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.15), 15, 0, 0, 4);
+}
+
+.certificate-icon {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 30px;
+}
+
+.certificate-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-fill: #1a1d29;
+}
+
+.certificate-type {
+    -fx-font-size: 13px;
+    -fx-fill: #6b7280;
+    -fx-font-weight: 500;
+}
+
+.certificate-detail {
+    -fx-font-size: 12px;
+    -fx-fill: #9ca3af;
+}
+
+.status-active {
+    -fx-background-color: #d1fae5;
+    -fx-text-fill: #065f46;
+}
+
+.status-expired {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #991b1b;
+}
+
+.status-pending {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.date-picker .text-field {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8px;
+}
+
+.date-picker:focused {
+    -fx-border-color: #4f46e5;
+    -fx-border-width: 2px;
+}
+
+
+.info-message {
+    -fx-background-color: #eff6ff;
+    -fx-padding: 12px;
+    -fx-background-radius: 8px;
+}
+
+.info-text {
+    -fx-font-size: 13px;
+    -fx-fill: #1e40af;
 }

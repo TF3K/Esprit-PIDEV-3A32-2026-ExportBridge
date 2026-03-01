@@ -18,7 +18,6 @@ public class SettingsViewController {
     @FXML private Button tabCompany;
     @FXML private Button tabNotifications;
     @FXML private Button tabSecurity;
-    @FXML private Button tabCertifications;
     @FXML private StackPane settingsContent;
 
     private AuthenticationController authController;
@@ -62,12 +61,6 @@ public class SettingsViewController {
         settingsContent.getChildren().add(createSecurityView());
     }
 
-    @FXML
-    private void showCertifications() {
-        setActiveTab(tabCertifications);
-        settingsContent.getChildren().clear();
-        settingsContent.getChildren().add(createCertificationsView());
-    }
 
     private void setActiveTab(Button tab) {
         if (activeTab != null) {
@@ -456,44 +449,6 @@ public class SettingsViewController {
 
         return scroll;
     }
-
-    private ScrollPane createCertificationsView() {
-        VBox content = new VBox(24);
-        content.setPadding(new Insets(0));
-        content.setMaxWidth(600);
-
-        content.getChildren().add(createSectionTitle("Certifications Overview"));
-
-        Text info = new Text("Manage your company certifications from the Certificates section in the main menu.");
-        info.getStyleClass().add("info-text");
-        content.getChildren().add(info);
-
-        HBox statsBox = new HBox(40);
-        statsBox.getStyleClass().add("stats-row");
-
-        statsBox.getChildren().addAll(
-                createStatBox("Total Certificates", "0"),
-                createStatBox("Valid", "0"),
-                createStatBox("Expiring Soon", "0")
-        );
-
-        content.getChildren().add(statsBox);
-
-        Button viewBtn = new Button("View All Certificates");
-        viewBtn.getStyleClass().add("primary-button");
-        viewBtn.setOnAction(e -> {
-            showInfo("Navigate to Certificates section from main menu");
-        });
-
-        content.getChildren().add(viewBtn);
-
-        ScrollPane scroll = new ScrollPane(content);
-        scroll.setFitToWidth(true);
-        scroll.getStyleClass().add("settings-scroll");
-
-        return scroll;
-    }
-
 
     private VBox createSectionTitle(String title) {
         VBox box = new VBox();

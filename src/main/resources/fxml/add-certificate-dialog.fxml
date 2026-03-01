@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.AddCertificateDialogController"
+      styleClass="dialog-container"
+      spacing="20"
+      prefWidth="600">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="8">
+        <Text text="📜 Add New Certificate" styleClass="dialog-title"/>
+        <Text text="Register a new export or compliance certificate" styleClass="dialog-subtitle"/>
+    </VBox>
+
+    <!-- Form -->
+    <GridPane hgap="16" vgap="16">
+
+        <!-- Certificate Type -->
+        <Label text="Certificate Type *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
+        <ComboBox fx:id="typeField"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0"
+                  styleClass="form-field"
+                  promptText="Select certificate type"
+                  maxWidth="Infinity"/>
+
+        <!-- Certificate Number -->
+        <Label text="Certificate Number *" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
+        <TextField fx:id="certificateNumberField"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"
+                   styleClass="form-field"
+                   promptText="e.g., EUR-2024-001234"/>
+
+        <!-- Issuing Authority -->
+        <Label text="Issuing Authority *" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
+        <TextField fx:id="issuingAuthorityField"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"
+                   styleClass="form-field"
+                   promptText="e.g., Ministry of Commerce"/>
+
+        <!-- Country of Origin -->
+        <Label text="Country of Origin *" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
+        <TextField fx:id="countryOfOriginField"
+                   GridPane.columnIndex="1" GridPane.rowIndex="3"
+                   styleClass="form-field"
+                   promptText="e.g., Tunisia"/>
+
+        <!-- Issue Date -->
+        <Label text="Issue Date *" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
+        <DatePicker fx:id="issueDatePicker"
+                    GridPane.columnIndex="1" GridPane.rowIndex="4"
+                    styleClass="form-field"
+                    promptText="Select issue date"
+                    maxWidth="Infinity"/>
+
+        <!-- Expiry Date -->
+        <Label text="Expiry Date *" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="form-label"/>
+        <DatePicker fx:id="expiryDatePicker"
+                    GridPane.columnIndex="1" GridPane.rowIndex="5"
+                    styleClass="form-field"
+                    promptText="Select expiry date"
+                    maxWidth="Infinity"/>
+
+        <!-- Document File (Optional) -->
+        <Label text="Document File" GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="form-label"/>
+        <HBox GridPane.columnIndex="1" GridPane.rowIndex="6" spacing="12" alignment="CENTER_LEFT">
+            <TextField fx:id="documentFileField"
+                       styleClass="form-field"
+                       promptText="Upload certificate document (optional)"
+                       editable="false"
+                       HBox.hgrow="ALWAYS"/>
+            <Button text="Browse..." styleClass="secondary-button" onAction="#handleBrowseFile"/>
+        </HBox>
+
+        <columnConstraints>
+            <ColumnConstraints minWidth="150" prefWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+    </GridPane>
+
+    <!-- Info Message -->
+    <HBox styleClass="info-message" spacing="12" alignment="CENTER_LEFT">
+        <Text text="ℹ️" style="-fx-font-size: 18px;"/>
+        <Text text="All certificates will be marked as PENDING until verified by an administrator."
+              styleClass="info-text" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" styleClass="error-label" managed="false" visible="false" wrapText="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button text="Cancel" styleClass="secondary-button" onAction="#handleCancel"/>
+        <Button text="Add Certificate" styleClass="primary-button" onAction="#handleAdd"/>
+    </HBox>
+</VBox>

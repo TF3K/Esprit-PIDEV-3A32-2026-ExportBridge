@@ -21,7 +21,6 @@
             <Button fx:id="tabCompany" text="🏢  Company" styleClass="settings-tab" onAction="#showCompany"/>
             <Button fx:id="tabNotifications" text="🔔  Notifications" styleClass="settings-tab" onAction="#showNotifications"/>
             <Button fx:id="tabSecurity" text="🔒  Security" styleClass="settings-tab" onAction="#showSecurity"/>
-            <Button fx:id="tabCertifications" text="🏆  Certifications" styleClass="settings-tab" onAction="#showCertifications"/>
         </VBox>
 
         <StackPane fx:id="settingsContent" styleClass="settings-content" HBox.hgrow="ALWAYS">
