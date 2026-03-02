@@ -16,9 +16,42 @@
                 <Text styleClass="page-title" text="Products"/>
                 <Text styleClass="page-subtitle" text="Manage your product catalog"/>
             </VBox>
-            <Button text="+ Add Product" styleClass="primary-button" onAction="#handleAddProduct"/>
+            <HBox spacing="10">
+                <Button text="📄 Export PDF" styleClass="secondary-button" onAction="#handleExportPdf"/>
+                <Button text="📥 Import PDF" styleClass="secondary-button" onAction="#handleImportPdf"/>
+                <Button text="+ Add Product" styleClass="primary-button" onAction="#handleAddProduct"/>
+            </HBox>
         </HBox>
     </VBox>
+
+    <!-- Statistics Section -->
+    <HBox spacing="16" styleClass="product-stats-row">
+        <VBox styleClass="product-stat-card stat-total" HBox.hgrow="ALWAYS">
+            <Text styleClass="stat-icon" text="📦"/>
+            <Text fx:id="statTotalProducts" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-title" text="Total Products"/>
+        </VBox>
+        <VBox styleClass="product-stat-card stat-categories" HBox.hgrow="ALWAYS">
+            <Text styleClass="stat-icon" text="🏷️"/>
+            <Text fx:id="statCategories" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-title" text="Categories"/>
+        </VBox>
+        <VBox styleClass="product-stat-card stat-value" HBox.hgrow="ALWAYS">
+            <Text styleClass="stat-icon" text="💰"/>
+            <Text fx:id="statTotalValue" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-title" text="Total Value"/>
+        </VBox>
+        <VBox styleClass="product-stat-card stat-avg" HBox.hgrow="ALWAYS">
+            <Text styleClass="stat-icon" text="📊"/>
+            <Text fx:id="statAvgPrice" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-title" text="Avg Price"/>
+        </VBox>
+        <VBox styleClass="product-stat-card stat-stock" HBox.hgrow="ALWAYS">
+            <Text styleClass="stat-icon" text="🏭"/>
+            <Text fx:id="statTotalStock" styleClass="stat-number" text="0"/>
+            <Text styleClass="stat-title" text="Total Stock"/>
+        </VBox>
+    </HBox>
 
     <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
         <TextField fx:id="searchField"

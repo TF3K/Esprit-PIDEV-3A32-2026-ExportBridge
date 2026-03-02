@@ -23,8 +23,9 @@ public class EmailService {
             .load();
 
     private static final String MAILTRAP_TOKEN = dotenv.get("MAILTRAP_API_KEY");
+    private static final Long MAILTRAP_INBOX_ID = 4403511L; // Your inbox ID
     private static final String FROM_EMAIL = "noreply@exportbridge.com";
-    private static final String FROM_NAME = "ExportBridge Support";
+    private static final String FROM_NAME = "ExportBridge";
 
     private static final ConcurrentHashMap<String, PasswordResetToken> resetTokens = new ConcurrentHashMap<>();
 
@@ -35,6 +36,10 @@ public class EmailService {
         loadAllTokens();
     }
 
+    // ==============================
+    // PASSWORD RESET EMAIL
+    // ==============================
+
     public static boolean sendPasswordResetEmail(String toEmail, String resetToken) {
         if (MAILTRAP_TOKEN == null || MAILTRAP_TOKEN.isEmpty()) {
             System.err.println("✗ Mailtrap not configured! Set MAILTRAP_API_KEY in .env");
@@ -44,13 +49,13 @@ public class EmailService {
         try {
             final MailtrapConfig config = new MailtrapConfig.Builder()
                     .sandbox(true)
-                    .inboxId(4403511L)
+                    .inboxId(MAILTRAP_INBOX_ID)
                     .token(MAILTRAP_TOKEN)
                     .build();
 
             final MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
 
-            Address from = new Address(FROM_EMAIL, FROM_NAME);
+            Address from = new Address(FROM_EMAIL, FROM_NAME + " Support");
             Address to = new Address(toEmail);
 
             String emailBody = createResetEmailBody(resetToken);
@@ -60,7 +65,7 @@ public class EmailService {
                     .to(List.of(to))
                     .subject("ExportBridge - Password Reset Request")
                     .html(emailBody)
-                    .text("Please enable HTML to view this email. Token: " + resetToken) // Fallback text
+                    .text("Please enable HTML to view this email. Token: " + resetToken)
                     .build();
 
             client.send(mail);
@@ -75,6 +80,61 @@ public class EmailService {
         }
     }
 
+    // ==============================
+    // PARTNER EMAIL (Products, General)
+    // ==============================
+
+    public static boolean sendEmailToPartner(String toEmail, String toName, String subject, String body) {
+        if (MAILTRAP_TOKEN == null || MAILTRAP_TOKEN.isEmpty()) {
+            System.err.println("✗ Mailtrap not configured! Set MAILTRAP_API_KEY in .env");
+            return false;
+        }
+
+        try {
+            final MailtrapConfig config = new MailtrapConfig.Builder()
+                    .sandbox(true)
+                    .inboxId(MAILTRAP_INBOX_ID)
+                    .token(MAILTRAP_TOKEN)
+                    .build();
+
+            final MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
+
+            Address from = new Address(FROM_EMAIL, FROM_NAME);
+            Address to = new Address(toEmail);
+
+            String htmlBody = createPartnerEmailBody(toName, subject, body);
+
+            MailtrapMail mail = MailtrapMail.builder()
+                    .from(from)
+                    .to(List.of(to))
+                    .subject(subject)
+                    .html(htmlBody)
+                    .text(body) // Plain text fallback
+                    .build();
+
+            client.send(mail);
+
+            System.out.println("✓ Partner email sent to: " + toEmail);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("✗ Failed to send partner email: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Check if email service is properly configured
+     */
+    public static boolean isEmailConfigured() {
+        return MAILTRAP_TOKEN != null && !MAILTRAP_TOKEN.isEmpty();
+    }
+
+    // ==============================
+    // TOKEN MANAGEMENT
+    // ==============================
+
     public static String generateResetToken(String email, Long managerId) {
         String token = generateShortToken();
 
@@ -85,9 +145,7 @@ public class EmailService {
         resetToken.setExpiryTime(LocalDateTime.now().plusHours(TOKEN_EXPIRY_HOURS));
 
         resetTokens.put(token, resetToken);
-
         saveTokenToDisk(resetToken);
-
         cleanupExpiredTokens();
 
         System.out.println("✓ Reset token generated: " + token);
@@ -157,6 +215,10 @@ public class EmailService {
             return expired;
         });
     }
+
+    // ==============================
+    // DISK PERSISTENCE
+    // ==============================
 
     private static void saveTokenToDisk(PasswordResetToken token) {
         try {
@@ -263,6 +325,10 @@ public class EmailService {
         }
     }
 
+    // ==============================
+    // EMAIL TEMPLATES
+    // ==============================
+
     private static String createResetEmailBody(String token) {
         return "<!DOCTYPE html>" +
                 "<html>" +
@@ -315,6 +381,52 @@ public class EmailService {
                 "</body>" +
                 "</html>";
     }
+
+    private static String createPartnerEmailBody(String partnerName, String subject, String messageBody) {
+        String escapedBody = messageBody.replace("\n", "<br/>");
+
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<meta charset='UTF-8'>" +
+                "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                "<style>" +
+                "body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f7; }" +
+                ".container { max-width: 600px; margin: 40px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }" +
+                ".header { background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 30px; text-align: center; }" +
+                ".header h1 { margin: 0; font-size: 24px; font-weight: 600; }" +
+                ".content { padding: 30px; }" +
+                ".content h2 { color: #1a1d29; font-size: 18px; margin: 0 0 20px 0; }" +
+                ".content p { color: #4b5563; font-size: 15px; margin: 0 0 16px 0; }" +
+                ".message-box { background: #f9fafb; border-left: 4px solid #4f46e5; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }" +
+                ".message-box p { color: #374151; margin: 0; }" +
+                ".footer { background: #f9fafb; padding: 20px 30px; text-align: center; border-top: 1px solid #e5e7eb; }" +
+                ".footer p { color: #9ca3af; font-size: 12px; margin: 4px 0; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<div class='container'>" +
+                "<div class='header'>" +
+                "<h1>ExportBridge</h1>" +
+                "</div>" +
+                "<div class='content'>" +
+                "<h2>Hello " + (partnerName != null && !partnerName.isEmpty() ? partnerName : "Partner") + ",</h2>" +
+                "<div class='message-box'>" +
+                "<p>" + escapedBody + "</p>" +
+                "</div>" +
+                "</div>" +
+                "<div class='footer'>" +
+                "<p><strong>ExportBridge</strong> - International Export Management</p>" +
+                "<p>This email was sent via ExportBridge platform.</p>" +
+                "</div>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+    }
+
+    // ==============================
+    // DATA CLASSES
+    // ==============================
 
     @Data
     public static class PasswordResetToken implements Serializable {
