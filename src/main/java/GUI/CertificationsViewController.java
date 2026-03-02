@@ -23,6 +23,24 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.borders.SolidBorder;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 
 public class CertificationsViewController {
@@ -168,6 +186,10 @@ public class CertificationsViewController {
         actionBox.setAlignment(Pos.CENTER_RIGHT);
         actionBox.setPrefWidth(120);
 
+        Button pdfBtn = new Button("📄 PDF");
+        pdfBtn.getStyleClass().add("secondary-button");
+        pdfBtn.setOnAction(e -> handleExportSinglePdf(cert));
+
         Button viewBtn = new Button("View Details");
         viewBtn.getStyleClass().add("view-button");
         viewBtn.setOnAction(e -> viewCertificate(cert));
@@ -178,7 +200,7 @@ public class CertificationsViewController {
         renewBtn.setVisible(cert.getStatus() == CertificateStatus.EXPIRED || cert.isExpiringSoon());
         renewBtn.setManaged(renewBtn.isVisible());
 
-        actionBox.getChildren().addAll(viewBtn, renewBtn);
+        actionBox.getChildren().addAll(pdfBtn, viewBtn, renewBtn);
 
         card.getChildren().addAll(iconBox, infoBox, statusBadge, actionBox);
 
@@ -407,5 +429,389 @@ public class CertificationsViewController {
             case REVOKED -> "status-revoked";
             default -> "";
         };
+    }
+
+    @FXML
+    private void handleExportPdf() {
+        if (allCertificates == null || allCertificates.isEmpty()) {
+            showError("No certificates to export");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Certificates to PDF");
+        fileChooser.setInitialFileName("ExportBridge_Certificates_" +
+                java.time.LocalDate.now() + ".pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Documents", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(certificatesList.getScene().getWindow());
+        if (file == null) return;
+
+        try {
+            exportCertificatesToPdf(allCertificates, file);
+            showSuccess("Certificates exported to " + file.getName());
+        } catch (Exception e) {
+            showError("Failed to export PDF: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void handleExportSinglePdf(Certificate cert) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Certificate to PDF");
+        fileChooser.setInitialFileName(
+                formatCertificateType(cert.getType()).replaceAll("[^a-zA-Z0-9]", "_") +
+                        "_" + cert.getCertificateNumber() + ".pdf"
+        );
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Documents", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(certificatesList.getScene().getWindow());
+        if (file == null) return;
+
+        try {
+            exportCertificatesToPdf(List.of(cert), file);
+            showSuccess("Certificate exported to " + file.getName());
+        } catch (Exception e) {
+            showError("Failed to export PDF: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void exportCertificatesToPdf(List<Certificate> certificates, File file) throws Exception {
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        Document document = new Document(pdfDoc);
+
+        // Fonts
+        PdfFont bold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        PdfFont regular = PdfFontFactory.createFont(StandardFonts.HELVETICA);
+        DeviceRgb primary = new DeviceRgb(79, 70, 229);
+        DeviceRgb green = new DeviceRgb(16, 185, 129);
+        DeviceRgb red = new DeviceRgb(239, 68, 68);
+        DeviceRgb orange = new DeviceRgb(245, 158, 11);
+
+        // Title
+        document.add(new Paragraph("ExportBridge - Certificates Report")
+                .setFont(bold)
+                .setFontSize(24)
+                .setFontColor(primary)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(5));
+
+        document.add(new Paragraph("Export Compliance & Quality Certifications")
+                .setFont(regular)
+                .setFontSize(12)
+                .setFontColor(ColorConstants.GRAY)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(5));
+
+        document.add(new Paragraph("Generated on " + java.time.LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")))
+                .setFont(regular)
+                .setFontSize(10)
+                .setFontColor(ColorConstants.GRAY)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginBottom(20));
+
+        // Statistics summary (if multiple certificates)
+        if (certificates.size() > 1) {
+            int total = certificates.size();
+            long active = certificates.stream()
+                    .filter(c -> c.getStatus() == CertificateStatus.VALID)
+                    .count();
+            long expired = certificates.stream()
+                    .filter(c -> c.getStatus() == CertificateStatus.EXPIRED)
+                    .count();
+            long pending = certificates.stream()
+                    .filter(c -> c.getStatus() == CertificateStatus.PENDING)
+                    .count();
+
+            Table statsTable = new Table(UnitValue.createPercentArray(new float[]{1, 1, 1, 1}))
+                    .useAllAvailableWidth()
+                    .setMarginBottom(20);
+
+            statsTable.addCell(createStatCell("Total", String.valueOf(total), bold, regular));
+            statsTable.addCell(createStatCell("Valid", String.valueOf(active), bold, regular, green));
+            statsTable.addCell(createStatCell("Expired", String.valueOf(expired), bold, regular, red));
+            statsTable.addCell(createStatCell("Pending", String.valueOf(pending), bold, regular, orange));
+
+            document.add(statsTable);
+        }
+
+        // Certificates table
+        if (certificates.size() > 1) {
+            // Compact table for multiple certificates
+            addCompactCertificatesTable(document, certificates, bold, regular, primary);
+        } else {
+            // Detailed view for single certificate
+            addDetailedCertificateView(document, certificates.get(0), bold, regular, primary);
+        }
+
+        // Footer
+        document.add(new Paragraph("\n© " + java.time.Year.now().getValue() +
+                " ExportBridge - International Export Management")
+                .setFont(regular)
+                .setFontSize(8)
+                .setFontColor(ColorConstants.GRAY)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginTop(20));
+
+        document.close();
+    }
+
+    private void addCompactCertificatesTable(Document document, List<Certificate> certificates,
+                                             PdfFont bold, PdfFont regular, DeviceRgb primary) {
+
+        Table table = new Table(UnitValue.createPercentArray(
+                new float[]{3, 2, 2, 2, 2, 1.5f}))
+                .useAllAvailableWidth();
+
+        // Header
+        String[] headers = {"Type", "Number", "Authority", "Country", "Expiry Date", "Status"};
+        for (String h : headers) {
+            table.addHeaderCell(new Cell()
+                    .add(new Paragraph(h).setFont(bold).setFontSize(10).setFontColor(ColorConstants.WHITE))
+                    .setBackgroundColor(primary)
+                    .setPadding(8));
+        }
+
+        // Rows
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+        boolean alt = false;
+
+        for (Certificate cert : certificates) {
+            DeviceRgb bg = alt ? new DeviceRgb(249, 250, 251) : new DeviceRgb(255, 255, 255);
+
+            // Type
+            table.addCell(new Cell()
+                    .add(new Paragraph(formatCertificateType(cert.getType()))
+                            .setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            // Number
+            table.addCell(new Cell()
+                    .add(new Paragraph(cert.getCertificateNumber())
+                            .setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            // Authority
+            table.addCell(new Cell()
+                    .add(new Paragraph(cert.getIssuingAuthority() != null ?
+                            cert.getIssuingAuthority() : "-")
+                            .setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            // Country
+            table.addCell(new Cell()
+                    .add(new Paragraph(cert.getCountryOfOrigin() != null ?
+                            cert.getCountryOfOrigin() : "-")
+                            .setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            // Expiry Date
+            String expiryStr = cert.getExpiryDate() != null ?
+                    cert.getExpiryDate().format(dateFormat) : "No expiry";
+            table.addCell(new Cell()
+                    .add(new Paragraph(expiryStr)
+                            .setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            // Status
+            DeviceRgb statusColor = getStatusColor(cert.getStatus());
+            table.addCell(new Cell()
+                    .add(new Paragraph(cert.getStatus().toString())
+                            .setFont(bold)
+                            .setFontSize(9)
+                            .setFontColor(statusColor))
+                    .setBackgroundColor(bg)
+                    .setPadding(6));
+
+            alt = !alt;
+        }
+
+        document.add(table);
+    }
+
+    private void addDetailedCertificateView(Document document, Certificate cert,
+                                            PdfFont bold, PdfFont regular, DeviceRgb primary) {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm");
+
+        // Certificate header
+        document.add(new Paragraph(formatCertificateType(cert.getType()))
+                .setFont(bold)
+                .setFontSize(18)
+                .setFontColor(primary)
+                .setMarginBottom(5));
+
+        document.add(new Paragraph("Certificate #" + cert.getCertificateNumber())
+                .setFont(regular)
+                .setFontSize(12)
+                .setFontColor(ColorConstants.GRAY)
+                .setMarginBottom(20));
+
+        // Status badge
+        DeviceRgb statusBg = getStatusBackgroundColor(cert.getStatus());
+        DeviceRgb statusColor = getStatusColor(cert.getStatus());
+
+        Table statusTable = new Table(1)
+                .setWidth(150)
+                .setMarginBottom(20);
+
+        statusTable.addCell(new Cell()
+                .add(new Paragraph(cert.getStatus().toString())
+                        .setFont(bold)
+                        .setFontSize(12)
+                        .setFontColor(statusColor)
+                        .setTextAlignment(TextAlignment.CENTER))
+                .setBackgroundColor(statusBg)
+                .setPadding(10)
+                .setBorder(new SolidBorder(statusColor, 2)));
+
+        document.add(statusTable);
+
+        // Details table
+        Table detailsTable = new Table(UnitValue.createPercentArray(new float[]{1, 2}))
+                .useAllAvailableWidth()
+                .setMarginBottom(20);
+
+        addDetailRow(detailsTable, "Issuing Authority", cert.getIssuingAuthority(), bold, regular);
+        addDetailRow(detailsTable, "Country of Origin", cert.getCountryOfOrigin(), bold, regular);
+
+        if (cert.getIssueDate() != null) {
+            addDetailRow(detailsTable, "Issue Date",
+                    cert.getIssueDate().format(dateFormat), bold, regular);
+        }
+
+        if (cert.getExpiryDate() != null) {
+            addDetailRow(detailsTable, "Expiry Date",
+                    cert.getExpiryDate().format(dateFormat), bold, regular);
+
+            // Days until expiry
+            if (cert.getStatus() == CertificateStatus.VALID) {
+                long daysLeft = ChronoUnit.DAYS.between(
+                        java.time.LocalDateTime.now(),
+                        cert.getExpiryDate()
+                );
+
+                String daysText = daysLeft + " days remaining";
+                if (cert.isExpiringSoon()) {
+                    daysText += " ⚠️ EXPIRING SOON";
+                }
+                addDetailRow(detailsTable, "Validity", daysText, bold, regular);
+            }
+        }
+
+        if (cert.getDocumentFile() != null && !cert.getDocumentFile().isEmpty()) {
+            addDetailRow(detailsTable, "Document File", cert.getDocumentFile(), bold, regular);
+        }
+
+        document.add(detailsTable);
+
+        // Certificate icon/seal
+        document.add(new Paragraph("🏆")
+                .setFontSize(64)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setMarginTop(20)
+                .setMarginBottom(10));
+
+        document.add(new Paragraph("Certified by " + cert.getIssuingAuthority())
+                .setFont(regular)
+                .setFontSize(10)
+                .setFontColor(ColorConstants.GRAY)
+                .setTextAlignment(TextAlignment.CENTER));
+    }
+
+    private void addDetailRow(Table table, String label, String value,
+                              PdfFont bold, PdfFont regular) {
+        if (value == null || value.isEmpty()) {
+            value = "-";
+        }
+
+        table.addCell(new Cell()
+                .add(new Paragraph(label)
+                        .setFont(bold)
+                        .setFontSize(11))
+                .setPadding(8)
+                .setBackgroundColor(new DeviceRgb(249, 250, 251)));
+
+        table.addCell(new Cell()
+                .add(new Paragraph(value)
+                        .setFont(regular)
+                        .setFontSize(11))
+                .setPadding(8));
+    }
+
+    private Cell createStatCell(String label, String value, PdfFont bold, PdfFont regular) {
+        return createStatCell(label, value, bold, regular, new DeviceRgb(79, 70, 229));
+    }
+
+    private Cell createStatCell(String label, String value, PdfFont bold,
+                                PdfFont regular, DeviceRgb color) {
+        return new Cell()
+                .add(new Paragraph(value)
+                        .setFont(bold)
+                        .setFontSize(18)
+                        .setFontColor(color)
+                        .setTextAlignment(TextAlignment.CENTER))
+                .add(new Paragraph(label)
+                        .setFont(regular)
+                        .setFontSize(9)
+                        .setFontColor(ColorConstants.GRAY)
+                        .setTextAlignment(TextAlignment.CENTER))
+                .setPadding(12)
+                .setBorder(new SolidBorder(new DeviceRgb(229, 231, 235), 1));
+    }
+
+    private DeviceRgb getStatusColor(CertificateStatus status) {
+        switch (status) {
+            case VALID: return new DeviceRgb(5, 150, 105);
+            case EXPIRED: return new DeviceRgb(220, 38, 38);
+            case PENDING: return new DeviceRgb(217, 119, 6);
+            case REJECTED: return new DeviceRgb(153, 27, 27);
+            case REVOKED: return new DeviceRgb(107, 114, 128);
+            default: return new DeviceRgb(107, 114, 128);
+        }
+    }
+
+    private DeviceRgb getStatusBackgroundColor(CertificateStatus status) {
+        switch (status) {
+            case VALID: return new DeviceRgb(209, 250, 229);
+            case EXPIRED: return new DeviceRgb(254, 226, 226);
+            case PENDING: return new DeviceRgb(254, 243, 199);
+            case REJECTED: return new DeviceRgb(254, 202, 202);
+            case REVOKED: return new DeviceRgb(243, 244, 246);
+            default: return new DeviceRgb(243, 244, 246);
+        }
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

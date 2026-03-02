@@ -16,6 +16,7 @@
             <Text text="Certifications And Licenses" styleClass="page-title"/>
             <Text text="Manage export certificates and product certifications" styleClass="page-subtitle"/>
         </VBox>
+        <Button text="📄 Export PDF" styleClass="secondary-button" onAction="#handleExportPdf"/>
         <Button text="+ Add Certificate" styleClass="primary-button" onAction="#handleAddCertificate"/>
     </HBox>
 

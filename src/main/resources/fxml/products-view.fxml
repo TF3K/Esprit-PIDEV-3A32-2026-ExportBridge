@@ -25,28 +25,28 @@
     </VBox>
 
     <!-- Statistics Section -->
-    <HBox spacing="16" styleClass="product-stats-row">
-        <VBox styleClass="product-stat-card stat-total" HBox.hgrow="ALWAYS">
+    <HBox spacing="12" styleClass="product-stats-row">
+        <VBox styleClass="product-stat-card, stat-total" HBox.hgrow="ALWAYS">
             <Text styleClass="stat-icon" text="📦"/>
             <Text fx:id="statTotalProducts" styleClass="stat-number" text="0"/>
             <Text styleClass="stat-title" text="Total Products"/>
         </VBox>
-        <VBox styleClass="product-stat-card stat-categories" HBox.hgrow="ALWAYS">
+        <VBox styleClass="product-stat-card, stat-categories" HBox.hgrow="ALWAYS">
             <Text styleClass="stat-icon" text="🏷️"/>
             <Text fx:id="statCategories" styleClass="stat-number" text="0"/>
             <Text styleClass="stat-title" text="Categories"/>
         </VBox>
-        <VBox styleClass="product-stat-card stat-value" HBox.hgrow="ALWAYS">
+        <VBox styleClass="product-stat-card, stat-value" HBox.hgrow="ALWAYS">
             <Text styleClass="stat-icon" text="💰"/>
             <Text fx:id="statTotalValue" styleClass="stat-number" text="0"/>
             <Text styleClass="stat-title" text="Total Value"/>
         </VBox>
-        <VBox styleClass="product-stat-card stat-avg" HBox.hgrow="ALWAYS">
+        <VBox styleClass="product-stat-card, stat-avg" HBox.hgrow="ALWAYS">
             <Text styleClass="stat-icon" text="📊"/>
             <Text fx:id="statAvgPrice" styleClass="stat-number" text="0"/>
             <Text styleClass="stat-title" text="Avg Price"/>
         </VBox>
-        <VBox styleClass="product-stat-card stat-stock" HBox.hgrow="ALWAYS">
+        <VBox styleClass="product-stat-card, stat-stock" HBox.hgrow="ALWAYS">
             <Text styleClass="stat-icon" text="🏭"/>
             <Text fx:id="statTotalStock" styleClass="stat-number" text="0"/>
             <Text styleClass="stat-title" text="Total Stock"/>
