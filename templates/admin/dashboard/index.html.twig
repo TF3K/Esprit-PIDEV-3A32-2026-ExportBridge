@@ -1,0 +1,121 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Admin Dashboard - ExportBridge{% endblock %}
+
+{% block admin_content %}
+
+    {# Title #}
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h1 class="h3 mb-0">Dashboard</h1>
+        </div>
+    </div>
+
+    {# Counter boxes #}
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xxl-3">
+            <div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ stats.companies }}</h2>
+                        <span class="mb-0 h6 fw-light">Companies</span>
+                    </div>
+                    <div class="icon-lg rounded-circle bg-warning text-white mb-0">
+                        <i class="bi bi-building fa-fw"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card card-body bg-purple bg-opacity-15 p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ stats.products }}</h2>
+                        <span class="mb-0 h6 fw-light">Products</span>
+                    </div>
+                    <div class="icon-lg rounded-circle bg-purple text-white mb-0">
+                        <i class="bi bi-box-seam fa-fw"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card card-body bg-success bg-opacity-15 p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ stats.certificates }}</h2>
+                        <span class="mb-0 h6 fw-light">Certificates</span>
+                    </div>
+                    <div class="icon-lg rounded-circle bg-success text-white mb-0">
+                        <i class="bi bi-patch-check fa-fw"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xxl-3">
+            <div class="card card-body bg-info bg-opacity-15 p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0 fw-bold">{{ stats.managers }}</h2>
+                        <span class="mb-0 h6 fw-light">Managers</span>
+                    </div>
+                    <div class="icon-lg rounded-circle bg-info text-white mb-0">
+                        <i class="bi bi-people fa-fw"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Recent companies table #}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header border-bottom p-4 d-flex justify-content-between align-items-center">
+                    <h5 class="card-header-title mb-0">Recent Companies</h5>
+                    <a href="{{ path('app_admin_companies') }}" class="btn btn-sm btn-primary mb-0">View all</a>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Country</th>
+                                    <th>Domain</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for company in recentCompanies %}
+                                <tr>
+                                    <td>{{ company.companyName }}</td>
+                                    <td>{{ company.country ?? '—' }}</td>
+                                    <td>{{ company.domain ?? '—' }}</td>
+                                    <td>{{ company.rating ?? '—' }}</td>
+                                    <td>
+                                        {% if company.isBanned %}
+                                            <span class="badge text-bg-danger">Banned</span>
+                                        {% else %}
+                                            <span class="badge text-bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No companies yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
