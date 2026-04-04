@@ -1,0 +1,58 @@
+<header class="navbar-light navbar-sticky">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('app_dashboard') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('assets/images/logo.svg') }}" alt="ExportBridge">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="ExportBridge">
+            </a>
+
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-animation">
+                    <span></span><span></span><span></span>
+                </span>
+            </button>
+
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_dashboard') }}">Dashboard</a>
+                    </li>
+                    {<li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_products') }}">My Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_certificates') }}">My Certificates</a>
+                    </li>}
+                </ul>
+
+                {# Profile dropdown #}
+                <ul class="navbar-nav navbar-nav-scroll align-items-center ms-3">
+                    <li class="nav-item ms-3 dropdown">
+                        <a class="avatar avatar-sm p-0" href="#" role="button" data-bs-toggle="dropdown">
+                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                        </a>
+                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3">
+                            <li class="px-3 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar me-3">
+                                        <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                    </div>
+                                    <div>
+                                        <a class="h6" href="#">{{ app.user.firstName }} {{ app.user.lastName }}</a>
+                                        <p class="small m-0">{{ app.user.email }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}">
+                                    <i class="bi bi-power fa-fw me-2"></i>Sign Out
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

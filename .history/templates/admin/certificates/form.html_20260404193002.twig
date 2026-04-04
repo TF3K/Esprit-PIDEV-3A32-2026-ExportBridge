@@ -1,0 +1,112 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Certificate - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Certificate' : 'Add New Certificate' }}
+            </h1>
+            <a href="{{ path('app_admin_certificates') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Certificate Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+
+                <div class="col-lg-6">
+                    <label class="form-label">Certificate Number *</label>
+                    <input type="text" name="certificate_number" class="form-control"
+                           value="{{ certificate.certificateNumber ?? '' }}" required>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Type *</label>
+                    <select name="type" class="form-select" required>
+                        <option value="">— Select Type —</option>
+                        {% for type in ['EUR.1', 'EUR-MED', 'Form A', 'Certificate of Origin', 'Phytosanitary', 'Health Certificate', 'ISO', 'CE Marking'] %}
+                            <option value="{{ type }}"
+                                {{ certificate.type == type ? 'selected' : '' }}>
+                                {{ type }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Company *</label>
+                    <select name="company_id" class="form-select" required>
+                        <option value="">— Select Company —</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}"
+                                {{ certificate.company and certificate.company.id == company.id ? 'selected' : '' }}>
+                                {{ company.companyName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Status *</label>
+                    <select name="status" class="form-select" required>
+                        {% for status in ['active', 'pending', 'expired', 'revoked'] %}
+                            <option value="{{ status }}"
+                                {{ certificate.status == status ? 'selected' : '' }}>
+                                {{ status|capitalize }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Issue Date</label>
+                    <input type="date" name="issue_date" class="form-control"
+                           value="{{ certificate.issueDate ? certificate.issueDate|date('Y-m-d') : '' }}">
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="date" name="expiry_date" class="form-control"
+                           value="{{ certificate.expiryDate ? certificate.expiryDate|date('Y-m-d') : '' }}">
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Country of Origin</label>
+                    <input type="text" name="country_of_origin" class="form-control"
+                           value="{{ certificate.countryOfOrigin ?? '' }}">
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Issuing Authority</label>
+                    <input type="text" name="issuing_authority" class="form-control"
+                           placeholder="e.g. Tunisia Chamber of Commerce"
+                           value="{{ certificate.issuingAuthority ?? '' }}">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Document File Path</label>
+                    <input type="text" name="document_file" class="form-control"
+                           placeholder="e.g. uploads/cert_12345.pdf"
+                           value="{{ certificate.documentFile ?? '' }}">
+                    <div class="form-text">File upload coming in a later version.</div>
+                </div>
+
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Certificate' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

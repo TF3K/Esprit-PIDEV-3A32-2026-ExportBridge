@@ -1,0 +1,83 @@
+<nav class="navbar sidebar navbar-expand-xl navbar-dark bg-dark">
+    <div class="d-flex align-items-center">
+        <a class="navbar-brand" href="{{ path('app_admin_dashboard') }}">
+            <img class="navbar-brand-item" src="{{ asset('assets/images/logo-light.svg') }}" alt="ExportBridge">
+        </a>
+    </div>
+
+    <div class="offcanvas offcanvas-start flex-row custom-scrollbar h-100" data-bs-backdrop="true" tabindex="-1" id="offcanvasSidebar">
+        <div class="offcanvas-body sidebar-content d-flex flex-column bg-dark">
+
+            <ul class="navbar-nav flex-column" id="navbar-sidebar">
+
+                <li class="nav-item">
+                    <a href="{{ path('app_admin_dashboard') }}" class="nav-link {% if app.request.get('_route') == 'app_admin_dashboard' %}active{% endif %}">
+                        <i class="bi bi-house fa-fw me-2"></i>Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item ms-2 my-2">Entities</li>
+
+                {# Companies #}
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#collapseCompanies" role="button" aria-expanded="false">
+                        <i class="bi bi-building fa-fw me-2"></i>Companies
+                    </a>
+                    <ul class="nav collapse flex-column" id="collapseCompanies" data-bs-parent="#navbar-sidebar">
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_companies') }}">All Companies</a></li>
+                        {% comment %} <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_companies_add') }}">Add Company</a></li> {% endcomment %}
+                    </ul>
+                </li>
+
+                {# Products #}
+                {# <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#collapseProducts" role="button" aria-expanded="false">
+                        <i class="bi bi-box-seam fa-fw me-2"></i>Products
+                    </a>
+                    <ul class="nav collapse flex-column" id="collapseProducts" data-bs-parent="#navbar-sidebar">
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_products') }}">All Products</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_product_categories') }}">Categories</a></li>
+                    </ul>
+                </li>#}
+
+                {# Managers #}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_admin_managers') }}">
+                        <i class="bi bi-people fa-fw me-2"></i>Managers
+                    </a>
+                </li>
+
+                {# Certificates #}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_admin_certificates') }}">
+                        <i class="bi bi-patch-check fa-fw me-2"></i>Certificates
+                    </a>
+                </li>
+
+                <li class="nav-item ms-2 my-2">Account</li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_login') }}">
+                        <i class="bi bi-lock fa-fw me-2"></i>Sign In
+                    </a>
+                </li>
+            </ul>
+
+            {# Sidebar footer #}
+            <div class="px-3 mt-auto pt-3">
+                <div class="d-flex align-items-center justify-content-between text-primary-hover">
+                    <a class="h5 mb-0 text-body" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
+                        <i class="bi bi-gear-fill"></i>
+                    </a>
+                    <a class="h5 mb-0 text-body" href="{{ path('app_dashboard') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Home">
+                        <i class="bi bi-globe"></i>
+                    </a>
+                    <a class="h5 mb-0 text-body" href="{{ path('app_logout') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sign out">
+                        <i class="bi bi-power"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</nav>

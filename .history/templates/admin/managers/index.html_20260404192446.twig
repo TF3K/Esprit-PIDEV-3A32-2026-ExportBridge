@@ -1,0 +1,103 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Managers - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Managers</h1>
+            <a href="{{ path('app_admin_managers_add') }}" class="btn btn-sm btn-primary mb-0">
+                <i class="bi bi-plus-lg me-1"></i>Add Manager
+            </a>
+        </div>
+    </div>
+
+    <div class="card bg-transparent border">
+        <div class="card-header bg-light border-bottom">
+            <input class="form-control bg-body" type="search"
+                   id="managerSearch" placeholder="Search managers...">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+                <table class="table table-dark-gray align-middle p-4 mb-0 table-hover" id="managersTable">
+                    <thead>
+                        <tr>
+                            <th class="border-0 rounded-start">Name</th>
+                            <th class="border-0">Email</th>
+                            <th class="border-0">Company</th>
+                            <th class="border-0">Role</th>
+                            <th class="border-0">Created At</th>
+                            <th class="border-0 rounded-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for manager in managers %}
+                        <tr>
+                            <td>
+                                <h6 class="mb-0">
+                                    {{ manager.firstName }} {{ manager.lastName }}
+                                </h6>
+                            </td>
+                            <td>{{ manager.email }}</td>
+                            <td>{{ manager.company ? manager.company.companyName : '—' }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in manager.roles %}
+                                    <span class="badge text-bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">User</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ manager.createdAt ? manager.createdAt|date('d/m/Y') : '—' }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_managers_edit', {id: manager.id}) }}"
+                                   class="btn btn-sm btn-primary me-1">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                {# Prevent deleting yourself #}
+                                {% if manager.id != app.user.id %}
+                                <form action="{{ path('app_admin_managers_delete', {id: manager.id}) }}"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete this manager?')">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('delete-manager-' ~ manager.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                                {% else %}
+                                    <span class="text-muted small">Current user</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No managers found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('managerSearch').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('#managersTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+{% endblock %}
