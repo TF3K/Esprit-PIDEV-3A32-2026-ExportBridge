@@ -1,0 +1,74 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Products - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    <div class="row mb-4">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h3 class="mb-0">My Products</h3>
+        </div>
+    </div>
+
+    <div class="card border bg-transparent rounded-3">
+        <div class="card-header bg-transparent border-bottom">
+            <input class="form-control bg-body" type="search"
+                   id="productSearch" placeholder="Search products...">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>HS Code</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Currency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td><h6 class="mb-0">{{ product.name }}</h6></td>
+                            <td>
+                                {% if product.productCategorie %}
+                                    <span class="badge text-bg-info">
+                                        {{ product.productCategorie.name }}
+                                    </span>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td><code>{{ product.hsCode ?? '—' }}</code></td>
+                            <td>{{ product.quantity ?? '—' }} {{ product.unit ?? '' }}</td>
+                            <td>{{ product.unitPrice ?? '—' }}</td>
+                            <td>{{ product.currency ?? '—' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No products found for your company.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('productSearch').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('#productsTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+{% endblock %}

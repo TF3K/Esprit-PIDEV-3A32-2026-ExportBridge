@@ -30,14 +30,14 @@ class AuthController extends AbstractController
     }
 
     #[Route('/redirect', name: 'app_redirect')]
-    public function redirectAfterLogin(): Response
-    {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('app_admin_dashboard');
-        }
-
-        return $this->redirectToRoute('app_dashboard');
+public function redirectAfterLogin(): Response
+{
+    if ($this->isGranted('ROLE_ADMIN')) {
+        return $this->redirectToRoute('app_admin_dashboard');
     }
+
+    return $this->redirectToRoute('app_dashboard');
+}
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
