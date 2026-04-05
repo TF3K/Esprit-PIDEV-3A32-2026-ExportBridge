@@ -83,6 +83,52 @@ class CertificateController extends AbstractController
         return $this->redirectToRoute('app_admin_certificates');
     }
 
+    #[Route('/{id}', name: 'app_admin_certificates_show')]
+    public function show(Certificate $certificate): Response
+    {
+        return $this->render('admin/certificates/show.html.twig', [
+            'certificate' => $certificate,
+        ]);
+    }
+
+    #[Route('/{id}/signature/add', name: 'app_admin_certificates_signature_add', methods: ['POST'])]
+    public function addSignature(
+        Certificate $certificate,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $signature = new \App\Entity\Signature();
+        $signature->setCertificate($certificate);
+        $signature->setSignatoryName($request->request->get('signatory_name'));
+        $signature->setSignatoryTitle($request->request->get('signatory_title'));
+        $signature->setType($request->request->get('type'));
+        $signature->setDigitalSignature($request->request->get('digital_signature'));
+        $signature->setSignedDate(new \DateTime($request->request->get('signed_date')));
+
+        $em->persist($signature);
+        $em->flush();
+
+        $this->addFlash('success', 'Signature added.');
+        return $this->redirectToRoute('app_admin_certificates_show', ['id' => $certificate->getId()]);
+    }
+
+    #[Route('/{id}/signature/{signatureId}/delete', name: 'app_admin_certificates_signature_delete', methods: ['POST'])]
+    public function deleteSignature(
+        Certificate $certificate,
+        int $signatureId,
+        EntityManagerInterface $em
+    ): Response {
+        $signature = $em->getRepository(\App\Entity\Signature::class)->find($signatureId);
+
+        if ($signature && $signature->getCertificate()->getId() === $certificate->getId()) {
+            $em->remove($signature);
+            $em->flush();
+            $this->addFlash('success', 'Signature removed.');
+        }
+
+        return $this->redirectToRoute('app_admin_certificates_show', ['id' => $certificate->getId()]);
+    }
+
     private function handleForm(
         Certificate $certificate,
         Request $request,

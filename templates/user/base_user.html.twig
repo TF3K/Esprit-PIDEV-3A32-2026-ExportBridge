@@ -65,14 +65,22 @@
                                        href="{{ path('app_dashboard') }}">
                                         <i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard
                                     </a>
-                                    {# <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_products' %}active{% endif %}"
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_products' %}active{% endif %}"
                                        href="{{ path('app_user_products') }}">
                                         <i class="bi bi-box-seam fa-fw me-2"></i>My Products
                                     </a>
                                     <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_certificates' %}active{% endif %}"
                                        href="{{ path('app_user_certificates') }}">
                                         <i class="bi bi-patch-check fa-fw me-2"></i>My Certificates
-                                    </a> #}
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_markets' %}active{% endif %}"
+                                        href="{{ path('app_user_markets') }}">
+                                        <i class="bi bi-globe fa-fw me-2"></i>Export Markets
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_partnership' %}active{% endif %}"
+                                        href="{{ path('app_user_partnership') }}">
+                                        <i class="bi bi-handshake fa-fw me-2"></i>My Partnership
+                                    </a>
                                     <a class="list-group-item text-danger bg-danger-soft-hover"
                                        href="{{ path('app_logout') }}">
                                         <i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out

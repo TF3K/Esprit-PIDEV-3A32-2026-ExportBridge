@@ -72,7 +72,7 @@ class ProductController extends AbstractController
 
         return $this->render('admin/products/form.html.twig', [
             'product'    => $product,
-            'companies'  => $CompanyRepo->findAll(),
+            'companies'  => $companyRepo->findAll(),
             'categories' => $categoryRepo->findAll(),
             'mode'       => 'edit',
         ]);
