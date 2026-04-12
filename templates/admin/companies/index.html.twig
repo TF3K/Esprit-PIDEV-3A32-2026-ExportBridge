@@ -51,12 +51,42 @@
     {# Table #}
     <div class="card bg-transparent border">
         <div class="card-header bg-light border-bottom">
-            <div class="row g-3 align-items-center justify-content-between">
-                <div class="col-md-8">
-                    <div class="rounded position-relative">
-                        <input class="form-control bg-body" type="search" id="companySearch" placeholder="Search companies...">
-                    </div>
+            {# Search + Filter + Sort toolbar #}
+            <div class="row g-3 mb-4">
+
+                {# Search #}
+                <div class="col-12 col-md-5">
+                    <input type="text" id="searchInput"
+                        class="form-control"
+                        placeholder="Search...">
                 </div>
+
+                {# Filter #}
+                <div class="col-6 col-md-3">
+                    <select id="filterSelect" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="banned">Banned</option>
+                        <option value="active" selected>Active</option>
+                    </select>
+                </div>
+
+                {# Sort #}
+                <div class="col-6 col-md-2">
+                    <select id="sortSelect" class="form-select">
+                        <option value="name-asc">Name A→Z</option>
+                        <option value="name-desc">Name Z→A</option>
+                        <option value="rating-desc">Rating high→low</option>
+                        <option value="rating-asc">Rating low→high</option>
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                    </select>
+                </div>
+
+                {# Result count #}
+                <div class="col-12 col-md-2 d-flex align-items-center">
+                    <small class="text-muted" id="resultCount"></small>
+                </div>
+
             </div>
         </div>
 
@@ -76,7 +106,7 @@
                     </thead>
                     <tbody>
                         {% for company in companies %}
-                        <tr>
+                        <tr data-date="{{ company.createdAt ? company.createdAt|date('U') : 0 }}">
                             <td><h6 class="mb-0">{{ company.companyName }}</h6></td>
                             <td>{{ company.country ?? '—' }}</td>
                             <td>{{ company.domain ?? '—' }}</td>
@@ -111,7 +141,7 @@
                             </td>
                         </tr>
                         {% else %}
-                        <tr>
+                        <tr class="empty-row">
                             <td colspan="7" class="text-center text-muted py-4">No companies found.</td>
                         </tr>
                         {% endfor %}
@@ -126,12 +156,92 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        // Simple client-side search
-        document.getElementById('companySearch').addEventListener('keyup', function() {
-            const filter = this.value.toLowerCase();
-            document.querySelectorAll('#companiesTable tbody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+    (function () {
+        // ── CONFIG ─────────────────────────────────────────────
+        // Table columns: # | Name | Country | Domain | Rating | Banned | Created
+        const config = {
+            rowSelector:  '#companiesTable tbody tr:not(.empty-row)',
+            searchFields: ['td:nth-child(1)', 'td:nth-child(2)', 'td:nth-child(3)', 'td:nth-child(4)'],
+            filterField:  'td:nth-child(6)',
+            sortFields: {
+                'name-asc':    { col: 1, dir: 'asc',  type: 'text' },
+                'name-desc':   { col: 1, dir: 'desc', type: 'text' },
+                'rating-desc': { col: 5, dir: 'desc', type: 'num'  },
+                'rating-asc':  { col: 5, dir: 'asc',  type: 'num'  },
+                'newest':      { col: 'date', dir: 'desc', type: 'num' },
+                'oldest':      { col: 'date', dir: 'asc',  type: 'num' },
+            }
+        };
+        // ───────────────────────────────────────────────────────
+
+        const rows = () => [...document.querySelectorAll('#companiesTable tbody tr:not(.empty-row)')];
+        const searchInput = document.getElementById('searchInput');
+        const filterSel   = document.getElementById('filterSelect');
+        const sortSel     = document.getElementById('sortSelect');
+        const countEl     = document.getElementById('resultCount');
+
+        function normalize(str) {
+            return (str || '').toLowerCase().trim();
+        }
+
+        function cellText(row, selector) {
+            const el = row.querySelector(selector);
+            return el ? normalize(el.textContent) : '';
+        }
+
+        function apply() {
+            const query  = normalize(searchInput.value);
+            const filter = normalize(filterSel.value);
+            const sort   = sortSel.value;
+
+            // Reset all rows first
+            rows().forEach(row => row.style.display = '');
+
+            let visible = rows().filter(row => {
+                const matchSearch = !query || config.searchFields.some(sel =>
+                    cellText(row, sel).includes(query)
+                );
+                const matchFilter = !filter ||
+                    cellText(row, config.filterField).includes(filter);
+
+                row.style.display = (matchSearch && matchFilter) ? '' : 'none';
+                return matchSearch && matchFilter;
             });
-        });
+
+            // sort visible rows
+            const { col, dir, type } = config.sortFields[sort] || {};
+            if (col !== undefined) {
+                const tbody = document.querySelector('#companiesTable tbody');
+                visible.sort((a, b) => {
+                let va, vb;
+                if (col === 'date') {
+                    va = parseInt(a.dataset.date) || 0;
+                    vb = parseInt(b.dataset.date) || 0;
+                } else {
+                    va = cellText(a, `td:nth-child(${col})`);
+                    vb = cellText(b, `td:nth-child(${col})`);
+                    if (type === 'num') {
+                        va = parseFloat(va.replace('/5', '')) || 0;
+                        vb = parseFloat(vb.replace('/5', '')) || 0;
+                    }
+                }
+                if (va < vb) return dir === 'asc' ? -1 : 1;
+                if (va > vb) return dir === 'asc' ?  1 : -1;
+                return 0;
+            }).forEach(row => tbody.appendChild(row));
+            }
+
+            countEl.textContent = `${visible.length} result${visible.length !== 1 ? 's' : ''}`;
+
+            console.log('rows:', rows());
+            console.log('visible:', visible.length);
+        }
+
+        searchInput.addEventListener('input',  apply);
+        filterSel.addEventListener('change',   apply);
+        sortSel.addEventListener('change',     apply);
+
+        apply(); // run on load to set count
+    })();
     </script>
 {% endblock %}
