@@ -9,10 +9,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Traits\FormValidationTrait;
 
 #[Route('/admin/product-categories')]
 class ProductCategoryController extends AbstractController
 {
+    use FormValidationTrait;
+
     #[Route('', name: 'app_admin_product_categories')]
     public function index(ProductCategoryRepository $repo): Response
     {
@@ -25,42 +28,108 @@ class ProductCategoryController extends AbstractController
     public function add(Request $request, EntityManagerInterface $em): Response
     {
         $category = new ProductCategory();
+        $errors   = [];
+        $old      = [];
 
         if ($request->isMethod('POST')) {
-            $category->setName($request->request->get('name'));
-            $category->setDescription($request->request->get('description'));
-            $category->setSlug($request->request->get('slug'));
+            $name        = trim($request->request->get('name') ?? '');
+            $slug        = trim($request->request->get('slug') ?? '');
+            $description = trim($request->request->get('description') ?? '');
 
-            $em->persist($category);
-            $em->flush();
+            $old = compact('name', 'slug', 'description');
 
-            $this->addFlash('success', 'Category added successfully.');
-            return $this->redirectToRoute('app_admin_product_categories');
+            $this->clearValidationErrors();
+
+            $this->validateName($name, 'Name', true);
+            if ($this->hasValidationErrors()) {
+                $errors['name'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            $this->validateAlphanumeric($slug, 'Slug', true);
+            if ($this->hasValidationErrors()) {
+                $errors['slug'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            $this->validateRequired($description, 'Description', 10);
+            if ($this->hasValidationErrors()) {
+                $errors['description'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            if (empty($errors)) {
+                $category->setName($name);
+                $category->setSlug($slug);
+                $category->setDescription($description);
+
+                $em->persist($category);
+                $em->flush();
+
+                $this->addFlash('success', 'Category added successfully.');
+                return $this->redirectToRoute('app_admin_product_categories');
+            }
         }
 
         return $this->render('admin/product_categories/form.html.twig', [
             'category' => $category,
-            'mode' => 'add',
+            'mode'     => 'add',
+            'errors'   => $errors,
+            'old'      => $old,
         ]);
     }
 
     #[Route('/edit/{id}', name: 'app_admin_product_categories_edit')]
     public function edit(ProductCategory $category, Request $request, EntityManagerInterface $em): Response
     {
+        $errors = [];
+        $old    = [];
+        
+
         if ($request->isMethod('POST')) {
-            $category->setName($request->request->get('name'));
-            $category->setDescription($request->request->get('description'));
-            $category->setSlug($request->request->get('slug'));
+            $name        = trim($request->request->get('name') ?? '');
+            $slug        = trim($request->request->get('slug') ?? '');
+            $description = trim($request->request->get('description') ?? '');
 
-            $em->flush();
+            $old = compact('name', 'slug', 'description');
 
-            $this->addFlash('success', 'Category updated successfully.');
-            return $this->redirectToRoute('app_admin_product_categories');
+            $this->clearValidationErrors();
+
+            $this->validateName($name, 'Name', true);
+            if ($this->hasValidationErrors()) {
+                $errors['name'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            $this->validateAlphanumeric($slug, 'Slug', true);
+            if ($this->hasValidationErrors()) {
+                $errors['slug'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            $this->validateRequired($description, 'Description', 10);
+            if ($this->hasValidationErrors()) {
+                $errors['description'] = $this->getFirstValidationError();
+                $this->clearValidationErrors();
+            }
+
+            if (empty($errors)) {
+                $category->setName($name);
+                $category->setSlug($slug);
+                $category->setDescription($description);
+
+                $em->flush();
+
+                $this->addFlash('success', 'Category updated successfully.');
+                return $this->redirectToRoute('app_admin_product_categories');
+            }
         }
 
         return $this->render('admin/product_categories/form.html.twig', [
             'category' => $category,
-            'mode' => 'edit',
+            'mode'     => 'edit',
+            'errors'   => $errors,
+            'old'      => $old,
         ]);
     }
 
