@@ -1,0 +1,93 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}My Profile - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <h1 class="h3 mb-0">My Profile</h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        {# Left — avatar and info summary #}
+        <div class="col-lg-4">
+            <div class="card shadow-sm text-center p-4">
+                <div class="avatar avatar-xxl mx-auto mb-3">
+                    <img class="avatar-img rounded-circle border border-white border-3 shadow"
+                         src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </div>
+                <h5 class="mb-1">{{ manager.firstName }} {{ manager.lastName }}</h5>
+                <p class="text-muted small mb-2">{{ manager.email }}</p>
+                <span class="badge text-bg-danger">Administrator</span>
+                <hr>
+                <ul class="list-group list-group-borderless text-start">
+                    <li class="list-group-item px-0">
+                        <span class="text-muted small">Member since</span>
+                        <div>{{ manager.createdAt ? manager.createdAt|date('d/m/Y') : '—' }}</div>
+                    </li>
+                    <li class="list-group-item px-0">
+                        <span class="text-muted small">Last login</span>
+                        <div>{{ manager.lastLogin ? manager.lastLogin|date('d/m/Y H:i') : '—' }}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {# Right — edit form #}
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">Edit Profile Information</h5>
+                </div>
+                <div class="card-body">
+
+                    {% if success %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ success }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form action="{{ path('app_admin_profile') }}" method="post" class="row g-4" data-validate >
+
+                        <div class="col-lg-6">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control"
+                                   value="{{ manager.firstName }}" required
+                                   data-validation="required name">
+                                   {% if errors.first_name is defined %}
+                        <div class="invalid-feedback d-block">{{ errors.first_name }}</div>
+                    {% endif %}
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control"
+                                   value="{{ manager.lastName }}" required
+                                   data-validation="required name">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" name="email" class="form-control"
+                                   value="{{ manager.email }}" required
+                                   data-validation="required email">
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary mb-0">
+                                <i class="bi bi-check-lg me-1"></i>Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Manager - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Manager' : 'Add New Manager' }}
+            </h1>
+            <a href="{{ path('app_admin_managers') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        {# Role button — sits in the card header row alongside a title, full width row #}
+        <div class="col-12 d-flex justify-content-between align-items-center p-4">
+            <h6 class="mb-0 text-muted">Manager Details</h6>
+            <div class="d-flex align-items-center gap-2">
+                <input type="hidden" name="role" id="roleInput"
+                    value="{{ old.role ?? ('ROLE_ADMIN' in manager.roles ? 'ROLE_ADMIN' : 'ROLE_USER') }}">
+                <small id="roleStatus" class="text-muted"></small>
+                <button type="button" id="elevateBtn" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    <span id="elevateBtnLabel">Elevate to Admin</span>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+
+                {# First Name #}
+                <div class="col-lg-6">
+                    <label class="form-label">First Name *</label>
+                    <input type="text" name="first_name"
+                           class="form-control {{ errors.first_name is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.first_name ?? manager.firstName ?? '' }}" required>
+                    {% if errors.first_name is defined %}
+                        <div class="invalid-feedback">{{ errors.first_name }}</div>
+                    {% endif %}
+                </div>
+
+                {# Last Name #}
+                <div class="col-lg-6">
+                    <label class="form-label">Last Name *</label>
+                    <input type="text" name="last_name"
+                           class="form-control {{ errors.last_name is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.last_name ?? manager.lastName ?? '' }}" required>
+                    {% if errors.last_name is defined %}
+                        <div class="invalid-feedback">{{ errors.last_name }}</div>
+                    {% endif %}
+                </div>
+
+                {# Email #}
+                <div class="col-lg-6">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email"
+                           class="form-control {{ errors.email is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.email ?? manager.email ?? '' }}" required>
+                    {% if errors.email is defined %}
+                        <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% endif %}
+                </div>
+
+                {# Company #}
+                <div class="col-lg-6">
+                    <label class="form-label">Company</label>
+                    <select name="company_id" class="form-select">
+                        <option value="">— No Company —</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}"
+                                {{ (old.company_id ?? manager.company.id ?? '') == company.id ? 'selected' : '' }}>
+                                {{ company.companyName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {# Password #}
+                <div class="col-12">
+                    <label class="form-label">
+                        Password {{ mode == 'edit' ? '(leave blank to keep current)' : '*' }}
+                    </label>
+                    <div class="input-group">
+                        <input type="text" id="passwordField" name="password"
+                            class="form-control font-monospace {{ errors.password is defined ? 'is-invalid' : '' }}"
+                            {{ mode == 'add' ? 'required' : '' }}
+                            autocomplete="new-password">
+                        <button type="button" class="btn btn-outline-secondary" id="togglePasswordVisibility" title="Show/hide password">
+                            <i class="bi bi-eye" id="eyeIcon"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="regenPassword" title="Generate new password">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                        {% if errors.password is defined %}
+                            <div class="invalid-feedback">{{ errors.password }}</div>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted">Auto-generated. Click <i class="bi bi-arrow-clockwise"></i> to regenerate.</small>
+                </div>
+
+                {# Submit #}
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Manager' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        // --- Password generation ---
+        function generatePassword(length = 14) {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
+            return Array.from(crypto.getRandomValues(new Uint8Array(length)))
+                .map(b => chars[b % chars.length])
+                .join('');
+        }
+
+        const passwordField = document.getElementById('passwordField');
+        const eyeIcon       = document.getElementById('eyeIcon');
+        const toggleBtn     = document.getElementById('togglePasswordVisibility');
+        const regenBtn      = document.getElementById('regenPassword');
+
+        // Auto-fill on add mode
+        {% if mode == 'add' %}
+            passwordField.value = generatePassword();
+        {% endif %}
+
+        // Toggle visibility
+        passwordField.type = 'text'; // start visible
+        toggleBtn.addEventListener('click', function () {
+            const isText = passwordField.type === 'text';
+            passwordField.type = isText ? 'password' : 'text';
+            eyeIcon.className  = isText ? 'bi bi-eye-slash' : 'bi bi-eye';
+        });
+
+        // Regenerate
+        regenBtn.addEventListener('click', function () {
+            passwordField.value = generatePassword();
+            passwordField.type  = 'text';
+            eyeIcon.className   = 'bi bi-eye';
+        });
+
+        // --- Role toggle ---
+        const roleInput  = document.getElementById('roleInput');
+        const elevateBtn = document.getElementById('elevateBtn');
+        const roleStatus = document.getElementById('roleStatus');
+
+        function updateRoleUI(role) {
+            if (role === 'ROLE_ADMIN') {
+                elevateBtn.classList.replace('btn-outline-warning', 'btn-outline-danger');
+                elevateBtn.querySelector('#elevateBtnLabel').textContent = 'Revoke Admin';
+                elevateBtn.querySelector('i').className = 'bi bi-shield-x me-1';
+                roleStatus.textContent = 'Currently: Admin';
+            } else {
+                elevateBtn.classList.replace('btn-outline-danger', 'btn-outline-warning');
+                elevateBtn.querySelector('#elevateBtnLabel').textContent = 'Elevate to Admin';
+                elevateBtn.querySelector('i').className = 'bi bi-shield-lock me-1';
+                roleStatus.textContent = 'Currently: User';
+            }
+        }
+
+        updateRoleUI(roleInput.value); // init on page load
+
+        elevateBtn.addEventListener('click', function () {
+            const next = roleInput.value === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
+            roleInput.value = next;
+            updateRoleUI(next);
+        });
+    })();
+    </script>
+{% endblock %}

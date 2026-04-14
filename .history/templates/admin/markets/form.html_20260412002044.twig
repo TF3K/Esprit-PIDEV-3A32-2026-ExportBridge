@@ -1,0 +1,92 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Market - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Market' : 'Add New Market' }}
+            </h1>
+            <a href="{{ path('app_admin_markets') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Market Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4" data-validate>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Country Name *</label>
+                    <input type="text" name="name" class="form-control"
+                           value="{{ market.name ?? '' }}" required
+                           data-validation="required name">
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Country Code *</label>
+                    <input type="text" name="country_code" class="form-control"
+                           placeholder="e.g. FR, DE, IT"
+                           maxlength="5"
+                           value="{{ market.countryCode ?? '' }}" required
+                           data-validation="required countryCode">
+                    <div class="form-text">ISO 3166-1 alpha-2 code</div>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Region</label>
+                    <select name="region" class="form-select"
+                            data-validation="required">
+                        <option value="">— Select Region —</option>
+                        {% for region in ['Western Europe', 'Eastern Europe', 'Northern Europe',
+                                          'Southern Europe', 'Middle East', 'North Africa',
+                                          'Sub-Saharan Africa', 'North America', 'Asia Pacific'] %}
+                            <option value="{{ region }}"
+                                {{ market.region == region ? 'selected' : '' }}>
+                                {{ region }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Trade Agreement</label>
+                    <input type="text" name="trade_agreement" class="form-control"
+                           placeholder="e.g. EU-Tunisia Association Agreement"
+                           value="{{ market.tradeAgreement ?? '' }}"
+                           data-validation="name">
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control"
+                              rows="3"
+                              data-validation="required">{{ market.description ?? '' }}</textarea>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check form-switch form-check-lg">
+                        <input class="form-check-input" type="checkbox"
+                               name="is_eu" id="isEu"
+                               {{ market.isEu ? 'checked' : '' }}>
+                        <label class="form-check-label" for="isEu">EU Market</label>
+                    </div>
+                </div>
+
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Market' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

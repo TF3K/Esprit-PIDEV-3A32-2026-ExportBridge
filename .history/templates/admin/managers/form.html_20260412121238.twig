@@ -1,0 +1,107 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Manager - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Manager' : 'Add New Manager' }}
+            </h1>
+            <a href="{{ path('app_admin_managers') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Manager Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+
+                {# First Name #}
+                <div class="col-lg-6">
+                    <label class="form-label">First Name *</label>
+                    <input type="text" name="first_name"
+                           class="form-control {{ errors.first_name is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.first_name ?? manager.firstName ?? '' }}" required>
+                    {% if errors.first_name is defined %}
+                        <div class="invalid-feedback">{{ errors.first_name }}</div>
+                    {% endif %}
+                </div>
+
+                {# Last Name #}
+                <div class="col-lg-6">
+                    <label class="form-label">Last Name *</label>
+                    <input type="text" name="last_name"
+                           class="form-control {{ errors.last_name is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.last_name ?? manager.lastName ?? '' }}" required>
+                    {% if errors.last_name is defined %}
+                        <div class="invalid-feedback">{{ errors.last_name }}</div>
+                    {% endif %}
+                </div>
+
+                {# Email #}
+                <div class="col-lg-6">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email"
+                           class="form-control {{ errors.email is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.email ?? manager.email ?? '' }}" required>
+                    {% if errors.email is defined %}
+                        <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% endif %}
+                </div>
+
+                {# Company #}
+                <div class="col-lg-6">
+                    <label class="form-label">Company</label>
+                    <select name="company_id" class="form-select">
+                        <option value="">— No Company —</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}"
+                                {{ (old.company_id ?? manager.company.id ?? '') == company.id ? 'selected' : '' }}>
+                                {{ company.companyName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {# Role #}
+                <div class="col-lg-6">
+                    <label class="form-label">Role</label>
+                    <input type="hidden" name="role" id="roleInput"
+                        value="{{ old.role ?? ('ROLE_ADMIN' in manager.roles ? 'ROLE_ADMIN' : 'ROLE_USER') }}">
+                    <div>
+                        <button type="button" id="elevateBtn" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-shield-lock me-1"></i>
+                            <span id="elevateBtnLabel">Elevate to Admin</span>
+                        </button>
+                        <small id="roleStatus" class="ms-2 text-muted"></small>
+                    </div>
+                </div>
+
+                {# Password #}
+                <div class="col-lg-6">
+                    <label class="form-label">
+                        Password {{ mode == 'edit' ? '(leave blank to keep current)' : '*' }}
+                    </label>
+                    <input type="password" name="password"
+                           class="form-control {{ errors.password is defined ? 'is-invalid' : '' }}"
+                           {{ mode == 'add' ? 'required' : '' }}>
+                    {% if errors.password is defined %}
+                        <div class="invalid-feedback">{{ errors.password }}</div>
+                    {% endif %}
+                </div>
+
+                {# Submit #}
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Manager' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

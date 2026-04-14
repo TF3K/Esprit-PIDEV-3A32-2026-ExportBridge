@@ -1,0 +1,208 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Managers - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Managers</h1>
+            <a href="{{ path('app_admin_managers_add') }}" class="btn btn-sm btn-primary mb-0">
+                <i class="bi bi-plus-lg me-1"></i>Add Manager
+            </a>
+        </div>
+    </div>
+
+    <div class="card bg-transparent border">
+        <div class="row g-3 mb-4">
+
+            {# Search #}
+            <div class="col-12 col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="searchInput"
+                        class="form-control bg-light border-0"
+                        placeholder="Search...">
+                </div>
+            </div>
+
+            {# Filter #}
+            <div class="col-6 col-md-3">
+                <select id="filterSelect" class="form-select">
+                    {# filter options #}
+                    <option value="">All Roles</option>
+                    <option value="role_user">User</option>
+                    <option value="role_admin">Admin</option>
+                </select>
+            </div>
+
+            {# Sort #}
+            <div class="col-6 col-md-2">
+                <select id="sortSelect" class="form-select">
+                    {# sort options #}
+<option value="name-asc">Name A→Z</option>
+<option value="name-desc">Name Z→A</option>
+<option value="email-asc">Email A→Z</option>
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+                </select>
+            </div>
+
+            {# Result count #}
+            <div class="col-12 col-md-2 d-flex align-items-center">
+                <small class="text-muted" id="resultCount"></small>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+                <table class="table table-dark-gray align-middle p-4 mb-0 table-hover" id="managersTable">
+                    <thead>
+                        <tr>
+                            <th class="border-0 rounded-start">Name</th>
+                            <th class="border-0">Email</th>
+                            <th class="border-0">Company</th>
+                            <th class="border-0">Role</th>
+                            <th class="border-0">Created At</th>
+                            <th class="border-0 rounded-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for manager in managers %}
+                        <tr>
+                            <td>
+                                <h6 class="mb-0">
+                                    {{ manager.firstName }} {{ manager.lastName }}
+                                </h6>
+                            </td>
+                            <td>{{ manager.email }}</td>
+                            <td>{{ manager.company ? manager.company.companyName : '—' }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in manager.roles %}
+                                    <span class="badge text-bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">User</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ manager.createdAt ? manager.createdAt|date('d/m/Y') : '—' }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_managers_edit', {id: manager.id}) }}"
+                                   class="btn btn-sm btn-primary me-1">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                {# Prevent deleting yourself #}
+                                {% if manager.id != app.user.id %}
+                                <form action="{{ path('app_admin_managers_delete', {id: manager.id}) }}"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete this manager?')">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('delete-manager-' ~ manager.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                                {% else %}
+                                    <span class="text-muted small">Current user</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No managers found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function () {
+            // ── CONFIG ─────────────────────────────────────────────
+            // Table columns: # | Name | Email | Company | Role | Created
+            const config = {
+                rowSelector:  'tbody tr',
+                searchFields: ['td:nth-child(2)', 'td:nth-child(3)'],
+                filterField:  'td:nth-child(5)',
+                sortFields: {
+                    'name-asc':     { col: 1, dir: 'asc',  type: 'text' },
+                    'name-desc':    { col: 1, dir: 'desc', type: 'text' },
+                    'email-asc':    { col: 2, dir: 'asc',  type: 'text' },
+                    'newest':       { col: 4, dir: 'desc', type: 'text' },
+                    'oldest':       { col: 4, dir: 'asc',  type: 'text' },
+                }
+            };
+            // ───────────────────────────────────────────────────────
+
+            const rows        = () => [...document.querySelectorAll(config.rowSelector)];
+            const searchInput = document.getElementById('searchInput');
+            const filterSel   = document.getElementById('filterSelect');
+            const sortSel     = document.getElementById('sortSelect');
+            const countEl     = document.getElementById('resultCount');
+
+            function normalize(str) {
+                return (str || '').toLowerCase().trim();
+            }
+
+            function cellText(row, selector) {
+                const el = row.querySelector(selector);
+                return el ? normalize(el.textContent) : '';
+            }
+
+            function apply() {
+                const query  = normalize(searchInput.value);
+                const filter = normalize(filterSel.value);
+                const sort   = sortSel.value;
+
+                let visible = rows().filter(row => {
+                    // search across configured fields
+                    const matchSearch = !query || config.searchFields.some(sel =>
+                        cellText(row, sel).includes(query)
+                    );
+                    // filter on one column
+                    const matchFilter = !filter ||
+                        cellText(row, config.filterField).includes(filter);
+
+                    row.style.display = (matchSearch && matchFilter) ? '' : 'none';
+                    return matchSearch && matchFilter;
+                });
+
+                // sort visible rows
+                const { col, dir, type } = config.sortFields[sort] || {};
+                if (col !== undefined) {
+                    const tbody = document.querySelector('tbody');
+                    visible.sort((a, b) => {
+                        let va = cellText(a, `td:nth-child(${col + 1})`);
+                        let vb = cellText(b, `td:nth-child(${col + 1})`);
+                        if (type === 'num') { va = parseFloat(va) || 0; vb = parseFloat(vb) || 0; }
+                        if (va < vb) return dir === 'asc' ? -1 : 1;
+                        if (va > vb) return dir === 'asc' ?  1 : -1;
+                        return 0;
+                    }).forEach(row => tbody.appendChild(row));
+                }
+
+                countEl.textContent = `${visible.length} result${visible.length !== 1 ? 's' : ''}`;
+            }
+
+            searchInput.addEventListener('input',  apply);
+            filterSel.addEventListener('change',   apply);
+            sortSel.addEventListener('change',     apply);
+
+            apply(); // run on load to set count
+        })();
+    </script>
+{% endblock %}
