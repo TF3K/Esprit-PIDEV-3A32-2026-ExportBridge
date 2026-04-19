@@ -15,6 +15,14 @@ security:
         main:
             lazy: true
             provider: app_manager_provider
+            entry_point: form_login
+            oauth:
+                resource_owners:
+                    google: /login/google/check
+                login_path: /login
+                failure_path: /login
+                oauth_user_provider:
+                    service: App\Security\GoogleOAuthUserProvider
             form_login:
                 login_path: app_login
                 check_path: app_login

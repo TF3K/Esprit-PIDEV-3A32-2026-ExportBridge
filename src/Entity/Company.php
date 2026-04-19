@@ -198,6 +198,31 @@ class Company
         return $this;
     }
 
+    #[ORM\OneToMany(targetEntity: Manager::class, mappedBy: 'company')]
+    private Collection $managers;
+
+    public function getManagers(): Collection
+    {
+        if (!$this->managers instanceof Collection) {
+            $this->managers = new ArrayCollection();
+        }
+        return $this->managers;
+    }
+
+    public function addManager(Manager $manager): self
+    {
+        if (!$this->getManagers()->contains($manager)) {
+            $this->getManagers()->add($manager);
+        }
+        return $this;
+    }
+
+    public function removeManager(Manager $manager): self
+    {
+        $this->getManagers()->removeElement($manager);
+        return $this;
+    }
+
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $created_at = null;
 
@@ -281,31 +306,6 @@ class Company
         $this->getContactHistory()->removeElement($contactHistory);
         return $this;
     }
-    
-    /**
-     * @return Collection<int, Manager>
-     */
-    public function getManagers(): Collection
-    {
-        if (!$this->managers instanceof Collection) {
-            $this->managers = new ArrayCollection();
-        }
-        return $this->managers;
-    }
-
-    public function addManager(Manager $manager): self
-    {
-        if (!$this->getManagers()->contains($manager)) {
-            $this->getManagers()->add($manager);
-        }
-        return $this;
-    }
-
-    public function removeManager(Manager $manager): self
-    {
-        $this->getManagers()->removeElement($manager);
-        return $this;
-    }
 
     #[ORM\OneToOne(targetEntity: Partnership::class, mappedBy: 'company')]
     private ?Partnership $partnership = null;
@@ -329,6 +329,24 @@ class Company
         $this->certificates = new ArrayCollection();
         $this->contactHistory = new ArrayCollection();
         $this->products = new ArrayCollection();
+        $this->managers = new ArrayCollection();
+    }
+
+    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Market $market = null;
+
+    // Getter
+    public function getMarket(): ?Market
+    {
+        return $this->market;
+    }
+
+    // Setter
+    public function setMarket(?Market $market): static
+    {
+        $this->market = $market;
+        return $this;
     }
 
     /**

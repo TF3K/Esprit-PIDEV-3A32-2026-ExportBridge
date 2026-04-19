@@ -168,4 +168,5 @@ class Setting
         $this->timezone = $timezone;
         return $this;
     }
+
 }

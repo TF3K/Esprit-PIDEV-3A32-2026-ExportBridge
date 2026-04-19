@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Entity;
-
-use Doctrine\DBAL\Types\Types;
+namespace App\Entity;use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -91,7 +89,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $password = null;
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -102,7 +100,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: false)]
     private array $roles = [];
 
     public function getRoles(): array

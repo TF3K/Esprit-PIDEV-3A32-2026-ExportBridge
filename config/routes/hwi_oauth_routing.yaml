@@ -1,0 +1,13 @@
+# config/routes/hwi_oauth_routing.yaml
+hwi_oauth_redirect_to_service:
+    path: /login/{service}
+    controller: HWI\Bundle\OAuthBundle\Controller\RedirectToServiceController::redirectToServiceAction
+
+hwi_oauth_check:
+    path: /login/google/check
+
+google_login:
+    path: /login/google
+    controller: HWI\Bundle\OAuthBundle\Controller\RedirectToServiceController::redirectToServiceAction
+    defaults:
+        service: google

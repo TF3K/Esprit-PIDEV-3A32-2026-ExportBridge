@@ -75,12 +75,12 @@ class Partnership
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $established_date = null;
 
-    public function getEstablished_date(): ?\DateTimeInterface
+    public function getEstablishedDate(): ?\DateTimeInterface
     {
         return $this->established_date;
     }
 
-    public function setEstablished_date(?\DateTimeInterface $established_date): self
+    public function setEstablishedDate(?\DateTimeInterface $established_date): self
     {
         $this->established_date = $established_date;
         return $this;
@@ -117,12 +117,12 @@ class Partnership
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $created_at = null;
 
-    public function getCreated_at(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreated_at(\DateTimeInterface $created_at): self
+    public function setCreatedAt(\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
         return $this;
@@ -131,12 +131,12 @@ class Partnership
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $last_updated = null;
 
-    public function getLast_updated(): ?\DateTimeInterface
+    public function getLastUpdated(): ?\DateTimeInterface
     {
         return $this->last_updated;
     }
 
-    public function setLast_updated(\DateTimeInterface $last_updated): self
+    public function setLastUpdated(\DateTimeInterface $last_updated): self
     {
         $this->last_updated = $last_updated;
         return $this;
@@ -172,42 +172,6 @@ class Partnership
     public function removeCollaboration(Collaboration $collaboration): self
     {
         $this->getCollaborations()->removeElement($collaboration);
-        return $this;
-    }
-
-    public function getEstablishedDate(): ?\DateTime
-    {
-        return $this->established_date;
-    }
-
-    public function setEstablishedDate(?\DateTime $established_date): static
-    {
-        $this->established_date = $established_date;
-
-        return $this;
-    }
-    
-    public function getCreatedAt(): ?\DateTime
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTime $created_at): static
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getLastUpdated(): ?\DateTime
-    {
-        return $this->last_updated;
-    }
-
-    public function setLastUpdated(\DateTime $last_updated): static
-    {
-        $this->last_updated = $last_updated;
-
         return $this;
     }
 

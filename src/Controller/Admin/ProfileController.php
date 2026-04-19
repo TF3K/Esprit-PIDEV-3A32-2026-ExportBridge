@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Traits\FormValidationTrait;
+use App\Service\OAuthStorageService;
 
 #[Route('/admin/profile')]
 class ProfileController extends AbstractController
@@ -15,9 +16,10 @@ class ProfileController extends AbstractController
     use FormValidationTrait;
 
     #[Route('', name: 'app_admin_profile')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    public function index(Request $request, EntityManagerInterface $em, OAuthStorageService $oauthStorage): Response
     {
         $manager = $this->getUser();
+        $oauthData = $oauthStorage->get($manager->getEmail());
         $errors  = [];
         $success = null;
 
@@ -66,6 +68,7 @@ class ProfileController extends AbstractController
             'manager' => $manager,
             'errors'  => $errors,
             'success' => $success,
+            'avatar'  => $oauthData['image_url'] ?? null,
         ]);
     }
 }
