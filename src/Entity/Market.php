@@ -102,12 +102,12 @@ class Market
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $trade_agreement = null;
 
-    public function getTradeAgreement(): ?string
+    public function getTrade_agreement(): ?string
     {
         return $this->trade_agreement;
     }
 
-    public function setTradeAgreement(?string $trade_agreement): self
+    public function setTrade_agreement(?string $trade_agreement): self
     {
         $this->trade_agreement = $trade_agreement;
         return $this;
@@ -127,36 +127,48 @@ class Market
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: CertificateRequirement::class, mappedBy: 'market')]
-    private Collection $certificateRequirements;
+    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'market')]
+    private Collection $companies;
 
     public function __construct()
     {
-        $this->certificateRequirements = new ArrayCollection();
+        $this->companies = new ArrayCollection();
     }
 
     /**
-     * @return Collection<int, CertificateRequirement>
+     * @return Collection<int, Company>
      */
-    public function getCertificateRequirements(): Collection
+    public function getCompanies(): Collection
     {
-        if (!$this->certificateRequirements instanceof Collection) {
-            $this->certificateRequirements = new ArrayCollection();
+        if (!$this->companies instanceof Collection) {
+            $this->companies = new ArrayCollection();
         }
-        return $this->certificateRequirements;
+        return $this->companies;
     }
 
-    public function addCertificateRequirement(CertificateRequirement $certificateRequirement): self
+    public function addCompany(Company $company): self
     {
-        if (!$this->getCertificateRequirements()->contains($certificateRequirement)) {
-            $this->getCertificateRequirements()->add($certificateRequirement);
+        if (!$this->getCompanies()->contains($company)) {
+            $this->getCompanies()->add($company);
         }
         return $this;
     }
 
-    public function removeCertificateRequirement(CertificateRequirement $certificateRequirement): self
+    public function removeCompany(Company $company): self
     {
-        $this->getCertificateRequirements()->removeElement($certificateRequirement);
+        $this->getCompanies()->removeElement($company);
+        return $this;
+    }
+
+    public function getTradeAgreement(): ?string
+    {
+        return $this->trade_agreement;
+    }
+
+    public function setTradeAgreement(?string $trade_agreement): static
+    {
+        $this->trade_agreement = $trade_agreement;
+
         return $this;
     }
 

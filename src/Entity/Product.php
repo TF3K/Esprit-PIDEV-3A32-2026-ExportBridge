@@ -171,6 +171,20 @@ class Product
         return $this;
     }
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image_path = null;
+
+    public function getImagePath(): ?string
+    {
+        return $this->image_path;
+    }
+
+    public function setImagePath(?string $image_path): self
+    {
+        $this->image_path = $image_path;
+        return $this;
+    }
+
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $created_at = null;
 

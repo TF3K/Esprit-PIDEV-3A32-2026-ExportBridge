@@ -1,0 +1,105 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Send Products Info Email - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Send Products Info Email</h1>
+            <a href="{{ path('app_admin_products') }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Products
+            </a>
+        </div>
+    </div>
+
+    <div class="card bg-transparent border">
+        <div class="card-body">
+            <form action="{{ path('app_admin_products_mail') }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('send-mail') }}">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="recipientEmail" class="form-label">Recipient Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="recipientEmail" name="recipient_email" required placeholder="company@example.com">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" value="Available Products Information">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Select Products <span class="text-danger">*</span></label>
+                    <div class="table-responsive border rounded-3">
+                        <table class="table table-dark-gray align-middle mb-0 table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="border-0 rounded-start" style="width: 50px;">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" id="selectAll">
+                                        </div>
+                                    </th>
+                                    <th class="border-0">Product Name</th>
+                                    <th class="border-0">Category</th>
+                                    <th class="border-0">Company</th>
+                                    <th class="border-0 rounded-end">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                    <td>
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input product-checkbox" type="checkbox" name="product_ids[]" value="{{ product.id }}">
+                                        </div>
+                                    </td>
+                                    <td><strong>{{ product.name }}</strong></td>
+                                    <td>
+                                        {% if product.productCategory %}
+                                            <span class="badge text-bg-info">{{ product.productCategory.name }}</span>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ product.company ? product.company.companyName : '—' }}</td>
+                                    <td>{{ product.unitPrice ? product.unitPrice ~ ' ' ~ product.currency : '—' }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No products available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send me-1"></i> Send Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('selectAll')?.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.product-checkbox');
+            for (const checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+    </script>
+{% endblock %}

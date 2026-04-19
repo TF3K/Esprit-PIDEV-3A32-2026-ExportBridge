@@ -29,18 +29,17 @@ class CertificateRequirement
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'certificateRequirements')]
-    #[ORM\JoinColumn(name: 'market_id', referencedColumnName: 'id')]
-    private ?Market $market = null;
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $market_id = null;
 
-    public function getMarket(): ?Market
+    public function getMarketId(): ?int
     {
-        return $this->market;
+        return $this->market_id;
     }
 
-    public function setMarket(?Market $market): self
+    public function setMarketId(int $market_id): self
     {
-        $this->market = $market;
+        $this->market_id = $market_id;
         return $this;
     }
 
@@ -99,5 +98,5 @@ class CertificateRequirement
         $this->description = $description;
         return $this;
     }
-    
+
 }
