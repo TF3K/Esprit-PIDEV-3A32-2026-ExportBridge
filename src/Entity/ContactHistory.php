@@ -29,7 +29,7 @@ class ContactHistory
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contactHistorys')]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contactHistory')]
     #[ORM\JoinColumn(name: 'source_company_id', referencedColumnName: 'id')]
     private ?Company $company = null;
 
@@ -86,7 +86,7 @@ class ContactHistory
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'contactHistorys')]
+    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'contactHistory')]
     #[ORM\JoinColumn(name: 'contacted_by_manager_id', referencedColumnName: 'id')]
     private ?Manager $manager = null;
 

@@ -18,6 +18,8 @@
 
             {# Right side - profile dropdown #}
             <div class="ms-xl-auto">
+                {% set unreadCount = current_unread_notification_count() %}
+                {% set notifications = current_notifications(6) %}
                 <ul class="navbar-nav flex-row align-items-center">
 
                     {# Notifications #}
@@ -25,14 +27,48 @@
                         <a class="btn btn-light btn-round mb-0" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-bell fa-fw"></i>
                         </a>
-                        <span class="notif-badge animation-blink"></span>
+                        {% if unreadCount > 0 %}
+                            <span class="notif-badge animation-blink"></span>
+                        {% endif %}
                         <div class="dropdown-menu dropdown-animation dropdown-menu-end dropdown-menu-size-md p-0 shadow-lg border-0">
                             <div class="card bg-transparent">
                                 <div class="card-header bg-transparent border-bottom py-4">
-                                    <h6 class="m-0">Notifications</h6>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h6 class="m-0">Notifications{% if unreadCount > 0 %} ({{ unreadCount }}){% endif %}</h6>
+                                        {% if unreadCount > 0 %}
+                                            <form action="{{ path('app_notifications_read_all') }}" method="post" class="m-0">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('read-all-notifications') }}">
+                                                <button class="btn btn-sm btn-link p-0" type="submit">Mark all read</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
                                 </div>
                                 <div class="card-body p-0">
-                                    <p class="text-center text-muted py-3 small">No new notifications</p>
+                                    {% if notifications is empty %}
+                                        <p class="text-center text-muted py-3 small">No notifications yet</p>
+                                    {% else %}
+                                        <div class="list-group list-group-flush">
+                                            {% for notification in notifications %}
+                                                <div class="list-group-item py-3 px-3">
+                                                    <div class="d-flex align-items-start justify-content-between gap-2">
+                                                        <div>
+                                                            <div class="small fw-semibold">{{ notification.type|title }}</div>
+                                                            <div class="small text-muted">{{ notification.message }}</div>
+                                                            <div class="x-small text-muted">{{ notification.createdAt|date('d/m/Y H:i') }}</div>
+                                                        </div>
+                                                        {% if not notification.isRead %}
+                                                            <form action="{{ path('app_notifications_read', {id: notification.id}) }}" method="post" class="m-0">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('read-notification-' ~ notification.id) }}">
+                                                                <button class="btn btn-sm btn-outline-primary" type="submit">Read</button>
+                                                            </form>
+                                                        {% else %}
+                                                            <span class="badge bg-light text-muted border">Read</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -41,13 +77,13 @@
                     {# Profile dropdown #}
                     <li class="nav-item ms-2 ms-md-3 dropdown">
                         <a class="avatar avatar-sm p-0" href="#" role="button" data-bs-toggle="dropdown">
-                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            <img class="avatar-img rounded-circle" src="{{ current_avatar_url() }}" alt="avatar">
                         </a>
                         <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3">
                             <li class="px-3 mb-2">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar me-3">
-                                        <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                        <img class="avatar-img rounded-circle shadow" src="{{ current_avatar_url() }}" alt="avatar">
                                     </div>
                                     <div>
                                         <a class="h6 mt-2 mt-sm-0" href="#">

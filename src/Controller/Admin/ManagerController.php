@@ -5,6 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\Manager;
 use App\Repository\ManagerRepository;
 use App\Repository\CompanyRepository;
+use App\Service\BreachedPasswordService;
+use App\Service\EmailValidationService;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +34,10 @@ class ManagerController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         CompanyRepository $companyRepo,
-        UserPasswordHasherInterface $hasher
+        UserPasswordHasherInterface $hasher,
+        EmailValidationService $emailValidationService,
+        BreachedPasswordService $breachedPasswordService,
+        NotificationService $notificationService,
     ): Response {
         $manager = new Manager();
         $errors = [];
@@ -87,10 +93,24 @@ class ManagerController extends AbstractController
                 }
             }
 
+            if (!isset($errors['email'])) {
+                $emailValidationError = $emailValidationService->getRejectionReason($email);
+                if ($emailValidationError !== null) {
+                    $errors['email'] = $emailValidationError;
+                }
+            }
+
             $this->validatePassword($password, true);
             if ($this->hasValidationErrors()) {
                 $errors['password'] = $this->getFirstValidationError();
                 $this->clearValidationErrors();
+            }
+
+            if (!isset($errors['password'])) {
+                $breachCount = $breachedPasswordService->getBreachCount($password);
+                if ($breachCount > 0) {
+                    $errors['password'] = 'This password has appeared in known data breaches. Please choose a different password.';
+                }
             }
 
             if (empty($errors)) {
@@ -104,6 +124,12 @@ class ManagerController extends AbstractController
 
                 $em->persist($manager);
                 $em->flush();
+
+                $notificationService->createForManager(
+                    $manager,
+                    'account',
+                    'Your account was created by an administrator.'
+                );
 
                 $this->addFlash('success', 'Manager added successfully.');
                 return $this->redirectToRoute('app_admin_managers');
@@ -125,7 +151,10 @@ class ManagerController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         CompanyRepository $companyRepo,
-        UserPasswordHasherInterface $hasher
+        UserPasswordHasherInterface $hasher,
+        EmailValidationService $emailValidationService,
+        BreachedPasswordService $breachedPasswordService,
+        NotificationService $notificationService,
     ): Response {
         $errors = [];
         $old    = [];
@@ -176,12 +205,26 @@ class ManagerController extends AbstractController
                 }
             }
 
+            if (!isset($errors['email'])) {
+                $emailValidationError = $emailValidationService->getRejectionReason($email);
+                if ($emailValidationError !== null) {
+                    $errors['email'] = $emailValidationError;
+                }
+            }
+
             // Password is optional on edit — only validate if provided
             if ($password !== '') {
                 $this->validatePassword($password, false);
                 if ($this->hasValidationErrors()) {
                     $errors['password'] = $this->getFirstValidationError();
                     $this->clearValidationErrors();
+                }
+
+                if (!isset($errors['password'])) {
+                    $breachCount = $breachedPasswordService->getBreachCount($password);
+                    if ($breachCount > 0) {
+                        $errors['password'] = 'This password has appeared in known data breaches. Please choose a different password.';
+                    }
                 }
             }
 
@@ -197,6 +240,12 @@ class ManagerController extends AbstractController
                 }
 
                 $em->flush();
+
+                $notificationService->createForManager(
+                    $manager,
+                    'profile',
+                    'Your manager profile was updated by an administrator.'
+                );
 
                 $this->addFlash('success', 'Manager updated successfully.');
                 return $this->redirectToRoute('app_admin_managers');

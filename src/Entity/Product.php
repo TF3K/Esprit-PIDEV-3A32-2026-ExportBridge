@@ -101,15 +101,15 @@ class Product
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
-    private ?float $quantity = null;
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    private ?string $quantity = null;
 
-    public function getQuantity(): ?float
+    public function getQuantity(): ?string
     {
         return $this->quantity;
     }
 
-    public function setQuantity(?float $quantity): self
+    public function setQuantity(?string $quantity): self
     {
         $this->quantity = $quantity;
         return $this;
@@ -129,15 +129,15 @@ class Product
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', nullable: true)]
-    private ?float $unit_price = null;
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    private ?string $unit_price = null;
 
-    public function getUnitPrice(): ?float
+    public function getUnitPrice(): ?string
     {
         return $this->unit_price;
     }
 
-    public function setUnitPrice(?float $unit_price): self
+    public function setUnitPrice(?string $unit_price): self
     {
         $this->unit_price = $unit_price;
         return $this;
