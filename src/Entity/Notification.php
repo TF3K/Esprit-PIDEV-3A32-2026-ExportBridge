@@ -99,4 +99,5 @@ class Notification
         $this->created_at = $created_at;
         return $this;
     }
+
 }

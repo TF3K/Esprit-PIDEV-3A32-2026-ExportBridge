@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ subject }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <!-- Header -->
+        <div style="background-color: #0056b3; padding: 30px; text-align: center; color: #ffffff;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">ExportBridge</h1>
+            <p style="margin: 10px 0 0; font-size: 16px; opacity: 0.9;">Product Information Catalog</p>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 30px;">
+            <p style="font-size: 16px; color: #333333; line-height: 1.5;">Hello,</p>
+            <p style="font-size: 16px; color: #333333; line-height: 1.5; margin-bottom: 25px;">Here is the information regarding the requested products from our catalog:</p>
+
+            {% for product in products %}
+            <div style="border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; margin-bottom: 20px; background-color: #fcfcfc;">
+                <h2 style="margin: 0 0 10px; font-size: 20px; color: #0056b3;">{{ product.name }}</h2>
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #555555;">
+                    {% if product.company %}
+                    <tr>
+                        <td style="padding: 6px 0; font-weight: bold; width: 40%; border-bottom: 1px solid #eeeeee;">Company:</td>
+                        <td style="padding: 6px 0; border-bottom: 1px solid #eeeeee;">{{ product.company.companyName }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if product.productCategory %}
+                    <tr>
+                        <td style="padding: 6px 0; font-weight: bold; border-bottom: 1px solid #eeeeee;">Category:</td>
+                        <td style="padding: 6px 0; border-bottom: 1px solid #eeeeee;">{{ product.productCategory.name }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if product.hsCode %}
+                    <tr>
+                        <td style="padding: 6px 0; font-weight: bold; border-bottom: 1px solid #eeeeee;">HS Code:</td>
+                        <td style="padding: 6px 0; border-bottom: 1px solid #eeeeee;">{{ product.hsCode }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if product.unitPrice %}
+                    <tr>
+                        <td style="padding: 6px 0; font-weight: bold; border-bottom: 1px solid #eeeeee;">Price:</td>
+                        <td style="padding: 6px 0; color: #28a745; font-weight: bold; border-bottom: 1px solid #eeeeee;">{{ product.unitPrice }} {{ product.currency }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if product.quantity %}
+                    <tr>
+                        <td style="padding: 6px 0; font-weight: bold; border-bottom: 1px solid #eeeeee;">Available Qty:</td>
+                        <td style="padding: 6px 0; border-bottom: 1px solid #eeeeee;">{{ product.quantity }} {{ product.unit }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+                {% if product.description %}
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #dddddd; font-size: 14px; color: #666666; line-height: 1.5;">
+                    <strong style="color: #444444;">Description:</strong><br>
+                    <div style="margin-top: 5px;">{{ product.description|nl2br }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <p style="font-size: 16px; color: #333333; line-height: 1.5; margin-top: 30px;">
+                If you have any questions or require further details, please feel free to contact us.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;">
+            <p style="margin: 0; font-size: 14px; color: #999999;">&copy; {{ "now"|date("Y") }} ExportBridge. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -141,4 +141,5 @@ class Collaboration
         $this->last_updated = $last_updated;
         return $this;
     }
+
 }

@@ -1,0 +1,235 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Product Details - {{ product.name }}{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <p class="text-uppercase text-muted small mb-1">Backoffice Product Profile</p>
+            <h1 class="h3 mb-0">{{ product.name }}</h1>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_admin_products_edit', {id: product.id}) }}" class="btn btn-primary">
+                <i class="bi bi-pencil-square me-1"></i>Edit
+            </a>
+            <a href="{{ path('app_admin_products') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden mb-4">
+        <div class="row g-0">
+            <div class="col-12 col-lg-7 p-4 p-xl-5 position-relative product-hero">
+                {% if product.imagePath %}
+                    <img
+                        src="{{ asset(product.imagePath) }}"
+                        alt="{{ product.name }}"
+                        class="img-fluid rounded-4 shadow-sm border product-main-image"
+                    >
+                {% else %}
+                    <div class="product-main-image placeholder-box rounded-4 border d-flex align-items-center justify-content-center">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-image fs-1 d-block mb-2"></i>
+                            No product image uploaded
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-12 col-lg-5 p-4 p-xl-5 bg-light border-start">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h2 class="h5 mb-0">Barcode Scan Card</h2>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_product_public_show', {id: product.id}) }}" target="_blank">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>Public page
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-4 p-3 border text-center mb-3">
+                    <img src="{{ barcodeDataUri }}" alt="Barcode for {{ product.name }}" class="img-fluid" style="width: 100%; max-width: 350px;">
+                    <p class="small text-muted mt-2 mb-0">Scan barcode to open public product info</p>
+                </div>
+
+                <a href="{{ path('app_admin_products_barcode', {id: product.id}) }}" target="_blank" class="btn btn-outline-dark w-100">
+                    <i class="bi bi-download me-1"></i>Open Barcode image
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Company</p>
+                    <p class="mb-0 fw-semibold">{{ product.company ? product.company.companyName : '—' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Category</p>
+                    <p class="mb-0 fw-semibold">{{ product.productCategory ? product.productCategory.name : '—' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">HS Code</p>
+                    <p class="mb-0 fw-semibold">{{ product.hsCode ?? '—' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Origin Criteria</p>
+                    <p class="mb-0 fw-semibold">{{ product.originCriteria ?? '—' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Quantity</p>
+                    <p class="mb-0 fw-semibold">{{ product.quantity ?? '—' }} {{ product.unit ?? '' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Unit Price</p>
+                    <p class="mb-0 fw-semibold">{{ product.unitPrice ?? '—' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-muted small mb-1">Currency</p>
+                    <p class="mb-0 fw-semibold">{{ product.currency ?? '—' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-3">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h5 mb-0">Description</h3>
+                <div class="d-flex align-items-center gap-2">
+                    <select class="form-select form-select-sm" id="translationTargetLang" style="width: auto;">
+                        <option value="English">English</option>
+                        <option value="French">French</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="German">German</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Italian">Italian</option>
+                    </select>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="translateBtn">
+                        <i class="bi bi-translate me-1"></i>Translate
+                    </button>
+                </div>
+            </div>
+            <p class="mb-0 text-secondary" id="originalDescription">{{ product.description ?: 'No description available for this product.' }}</p>
+            
+            <div id="translateStatus" class="form-text mt-2 text-primary"></div>
+            
+            <div id="translationResultContainer" class="d-none mt-3">
+                <div class="p-3 bg-light border rounded">
+                    <h6 class="text-muted mb-2 fs-6"><i class="bi bi-stars text-warning me-1"></i> Translated Description:</h6>
+                    <div id="translationResultContent" style="white-space: pre-wrap; font-size: 0.95rem;" class="text-dark"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-hero {
+            background: radial-gradient(1200px 400px at -10% 10%, rgba(25, 135, 84, 0.16), transparent 40%),
+                        radial-gradient(900px 300px at 110% 90%, rgba(13, 110, 253, 0.12), transparent 45%);
+        }
+
+        .product-main-image {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+        }
+
+        .placeholder-box {
+            min-height: 320px;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(13, 110, 253, 0.05),
+                rgba(13, 110, 253, 0.05) 16px,
+                rgba(25, 135, 84, 0.05) 16px,
+                rgba(25, 135, 84, 0.05) 32px
+            );
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const translateBtn = document.getElementById('translateBtn');
+        const translateStatus = document.getElementById('translateStatus');
+        const targetLang = document.getElementById('translationTargetLang');
+        const resultContainer = document.getElementById('translationResultContainer');
+        const resultContent = document.getElementById('translationResultContent');
+        const originalDesc = document.getElementById('originalDescription').innerText;
+
+        if (translateBtn) {
+            translateBtn.addEventListener('click', async function () {
+                if (!originalDesc || originalDesc.trim() === 'No description available for this product.') {
+                    translateStatus.textContent = 'No description to translate.';
+                    translateStatus.className = 'form-text mt-2 text-danger';
+                    return;
+                }
+
+                translateBtn.disabled = true;
+                translateStatus.textContent = 'Translating...';
+                translateStatus.className = 'form-text mt-2 text-primary';
+                resultContainer.classList.add('d-none');
+
+                try {
+                    const response = await fetch('{{ path('app_admin_products_ai_translate') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            text: originalDesc,
+                            target_language: targetLang.value
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Unable to translate.');
+                    }
+
+                    resultContent.textContent = data.translation || '';
+                    resultContainer.classList.remove('d-none');
+                    translateStatus.textContent = '';
+                } catch (error) {
+                    translateStatus.textContent = error.message || 'Unable to translate.';
+                    translateStatus.className = 'form-text mt-2 text-danger';
+                } finally {
+                    translateBtn.disabled = false;
+                }
+            });
+        }
+    });
+    </script>
+{% endblock %}

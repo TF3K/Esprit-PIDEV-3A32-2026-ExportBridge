@@ -61,12 +61,12 @@ class ContactHistory
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $contact_type = null;
 
-    public function getContact_type(): ?string
+    public function getContactType(): ?string
     {
         return $this->contact_type;
     }
 
-    public function setContact_type(string $contact_type): self
+    public function setContactType(string $contact_type): self
     {
         $this->contact_type = $contact_type;
         return $this;
@@ -100,5 +100,5 @@ class ContactHistory
         $this->manager = $manager;
         return $this;
     }
-    
+
 }
