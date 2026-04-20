@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products Export</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111827; }
+        h1 { font-size: 18px; margin: 0 0 6px 0; }
+        p { margin: 0 0 14px 0; color: #4b5563; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #d1d5db; padding: 6px; vertical-align: top; }
+        th { background: #f3f4f6; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Products Export</h1>
+    <p>Generated at {{ generatedAt|date('Y-m-d H:i:s') }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Category</th>
+                <th>HS Code</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Unit Price</th>
+                <th>Currency</th>
+                <th>Origin Criteria</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.company ? product.company.companyName : '' }}</td>
+                    <td>{{ product.productCategory ? product.productCategory.name : '' }}</td>
+                    <td>{{ product.hsCode ?? '' }}</td>
+                    <td>{{ product.quantity ?? '' }}</td>
+                    <td>{{ product.unit ?? '' }}</td>
+                    <td>{{ product.unitPrice ?? '' }}</td>
+                    <td>{{ product.currency ?? '' }}</td>
+                    <td>{{ product.originCriteria ?? '' }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10">No products found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

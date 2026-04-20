@@ -349,6 +349,23 @@ class Company
         return $this;
     }
 
+    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Market $market = null;
+
+    // Getter
+    public function getMarket(): ?Market
+    {
+        return $this->market;
+    }
+
+    // Setter
+    public function setMarket(?Market $market): static
+    {
+        $this->market = $market;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Product>
      */

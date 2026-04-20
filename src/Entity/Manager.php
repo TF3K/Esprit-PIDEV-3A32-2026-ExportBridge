@@ -100,19 +100,31 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'json', nullable: false)]
-    private array $roles = [];
+    #[ORM\Column(type: 'text', nullable: false)]
+    private ?string $roles = null;
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = json_decode($this->roles ?? '[]', true);
+
+        if (!is_array($roles)) {
+            $roles = [];
+        }
+
+        // Guarantee a baseline role for Symfony security checks.
         $roles[] = 'ROLE_USER';
-        return array_unique($roles);
+
+        return array_values(array_unique($roles));
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array|string $roles): self
     {
-        $this->roles = $roles;
+        if (is_string($roles)) {
+            $decoded = json_decode($roles, true);
+            $roles = is_array($decoded) ? $decoded : [$roles];
+        }
+
+        $this->roles = json_encode(array_values(array_unique($roles)), JSON_UNESCAPED_SLASHES);
         return $this;
     }
 

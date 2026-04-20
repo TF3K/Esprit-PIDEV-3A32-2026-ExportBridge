@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product Info - {{ product.name }}{% endblock %}
+
+{% block body %}
+<div class="product-page-bg py-5 py-md-6">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="row g-0">
+                        <div class="col-12 col-lg-7 p-4 p-xl-5 hero-panel">
+                            <p class="small text-uppercase text-muted mb-2">Verified Product Information</p>
+                            <h1 class="display-6 fw-bold mb-3">{{ product.name }}</h1>
+
+                            {% if product.imagePath %}
+                                <img
+                                    src="{{ asset(product.imagePath) }}"
+                                    alt="{{ product.name }}"
+                                    class="img-fluid rounded-4 shadow-sm border mb-4 product-image"
+                                >
+                            {% else %}
+                                <div class="placeholder-media rounded-4 border mb-4 d-flex align-items-center justify-content-center">
+                                    <div class="text-center text-muted">
+                                        <i class="bi bi-image fs-1 d-block mb-2"></i>
+                                        Product image not provided
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row g-2 g-md-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>Company</span><strong>{{ product.company ? product.company.companyName : '—' }}</strong></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>Category</span><strong>{{ product.productCategory ? product.productCategory.name : '—' }}</strong></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>HS Code</span><strong>{{ product.hsCode ?? '—' }}</strong></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>Quantity</span><strong>{{ product.quantity ?? '—' }} {{ product.unit ?? '' }}</strong></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>Unit Price</span><strong>{{ product.unitPrice ?? '—' }}</strong></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="info-chip"><span>Currency</span><strong>{{ product.currency ?? '—' }}</strong></div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="info-chip"><span>Origin Criteria</span><strong>{{ product.originCriteria ?? '—' }}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-5 p-4 p-xl-5 qr-panel border-start">
+                            <h2 class="h4 mb-3">Scan & Share</h2>
+                            <p class="text-secondary mb-3">Use this barcode to reopen this product page instantly.</p>
+
+                            <div class="bg-white rounded-4 border p-3 text-center shadow-sm mb-3">
+                                <img src="{{ barcodeDataUri }}" alt="Barcode for {{ product.name }}" class="img-fluid" style="width: 100%; max-width: 350px;">
+                            </div>
+
+                            <div class="small text-break text-muted bg-light rounded-3 p-2 mb-4">{{ publicUrl }}</div>
+
+                            <h3 class="h6 text-uppercase text-muted mb-2">Description</h3>
+                            <p class="mb-0 text-secondary">{{ product.description ?: 'No description available.' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-page-bg {
+            background:
+                radial-gradient(900px 350px at 0% 0%, rgba(13, 110, 253, 0.10), transparent 50%),
+                radial-gradient(800px 300px at 100% 100%, rgba(25, 135, 84, 0.10), transparent 45%),
+                linear-gradient(180deg, #f8fbff 0%, #f3f9f5 100%);
+            min-height: 100vh;
+        }
+
+        .hero-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(250,253,255,0.92));
+        }
+
+        .qr-panel {
+            background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+        }
+
+        .product-image {
+            width: 100%;
+            max-height: 360px;
+            object-fit: cover;
+        }
+
+        .placeholder-media {
+            min-height: 300px;
+            background: repeating-linear-gradient(
+                -45deg,
+                rgba(13, 110, 253, 0.05),
+                rgba(13, 110, 253, 0.05) 18px,
+                rgba(25, 135, 84, 0.05) 18px,
+                rgba(25, 135, 84, 0.05) 36px
+            );
+        }
+
+        .info-chip {
+            background: #ffffff;
+            border: 1px solid rgba(13, 110, 253, 0.12);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            height: 100%;
+        }
+
+        .info-chip span {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: #7a8794;
+        }
+
+        .info-chip strong {
+            font-size: 0.98rem;
+            color: #1f2f3c;
+            word-break: break-word;
+        }
+    </style>
+{% endblock %}

@@ -28,18 +28,17 @@ class Certificate
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'certificates')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    private ?Company $company = null;
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $company_id = null;
 
-    public function getCompany(): ?Company
+    public function getCompanyId(): ?int
     {
-        return $this->company;
+        return $this->company_id;
     }
 
-    public function setCompany(?Company $company): self
+    public function setCompanyId(int $company_id): self
     {
-        $this->company = $company;
+        $this->company_id = $company_id;
         return $this;
     }
 
