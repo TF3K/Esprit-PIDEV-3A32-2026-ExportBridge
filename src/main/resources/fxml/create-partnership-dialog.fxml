@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.CreatePartnershipDialogController"
+      styleClass="dialog-container"
+      spacing="20"
+      prefWidth="500">
+
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="8">
+        <Text text="🤝 Create Partnership" styleClass="dialog-title"/>
+        <Text fx:id="partnerCompanyName" styleClass="dialog-subtitle"/>
+    </VBox>
+
+    <!-- Company Info -->
+    <VBox styleClass="info-box" spacing="8">
+        <Text text="Partner Company Details" styleClass="info-label"/>
+        <Text fx:id="companyDetails" styleClass="info-value"/>
+    </VBox>
+
+    <!-- Form -->
+    <GridPane hgap="16" vgap="16">
+        <!-- Partnership Type -->
+        <Label text="Partnership Type *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
+        <ComboBox fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="form-field" promptText="Select type" maxWidth="Infinity"/>
+
+        <!-- Notes -->
+        <Label text="Notes / Message" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
+        <TextArea fx:id="notesField" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-field"
+                  promptText="Introduce your company and explain your interest..."
+                  prefRowCount="4" wrapText="true"/>
+
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+    </GridPane>
+
+    <!-- Info Message -->
+    <HBox styleClass="info-message" spacing="12" alignment="CENTER_LEFT">
+        <Text text="ℹ️" style="-fx-font-size: 18px;"/>
+        <Text text="The partner company will receive your request and can accept or decline it."
+              styleClass="info-text" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" styleClass="error-label" managed="false" visible="false" wrapText="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button text="Cancel" styleClass="secondary-button" onAction="#handleCancel"/>
+        <Button text="Send Partnership Request" styleClass="primary-button" onAction="#handleSend"/>
+    </HBox>
+</VBox>

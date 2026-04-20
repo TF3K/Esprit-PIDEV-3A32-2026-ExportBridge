@@ -130,4 +130,33 @@ public class AuthenticationController {
     public boolean isLoggedIn() {
         return AppState.isLoggedIn();
     }
+
+    public boolean requestPasswordReset(String email) {
+        try {
+            return authService.requestPasswordReset(email);
+        } catch (SQLException e) {
+            System.err.println("Password reset request error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean resetPassword(String token, String newPassword, String confirmPassword) {
+        try {
+            if (!newPassword.equals(confirmPassword)) {
+                System.err.println("Passwords do not match");
+                return false;
+            }
+
+            if (newPassword.length() < 8) {
+                System.err.println("Password must be at least 8 characters");
+                return false;
+            }
+
+            return authService.resetPasswordWithToken(token, newPassword);
+
+        } catch (SQLException e) {
+            System.err.println("Password reset error: " + e.getMessage());
+            return false;
+        }
+    }
 }

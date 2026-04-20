@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GUI.CompaniesBrowserViewController"
+      styleClass="page-container"
+      spacing="0">
+
+    <HBox styleClass="page-header" alignment="CENTER_LEFT" spacing="20">
+        <Button fx:id="backButton" text="← Back to Markets" styleClass="back-button" onAction="#handleBack"/>
+        <VBox HBox.hgrow="ALWAYS">
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Text fx:id="flagText" style="-fx-font-size: 48px;"/>
+                <VBox>
+                    <Text fx:id="countryName" styleClass="page-title"/>
+                    <Text fx:id="companyCount" styleClass="page-subtitle"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </HBox>
+
+    <HBox styleClass="search-container" spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   styleClass="search-field"
+                   promptText="Search companies by name..."
+                   onKeyReleased="#handleSearch"
+                   prefWidth="400"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Text fx:id="resultCount" styleClass="result-count" text="0 companies"/>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="companies-scroll" VBox.vgrow="ALWAYS">
+        <VBox>
+            <VBox fx:id="companiesList" spacing="12" styleClass="companies-list">
+            </VBox>
+
+            <VBox fx:id="emptyState"
+                  styleClass="empty-state"
+                  alignment="CENTER"
+                  spacing="16"
+                  managed="false"
+                  visible="false">
+                <Text styleClass="empty-state-title" text="No companies found"/>
+                <Text styleClass="empty-state-subtitle" text="Try adjusting your search"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

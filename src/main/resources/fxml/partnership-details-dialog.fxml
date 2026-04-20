@@ -53,10 +53,14 @@
     </VBox>
 
     <VBox spacing="12">
-        <Text text="Orders and Collaborations" styleClass="section-title"/>
+        <Text text="Orders And Collaborations" styleClass="section-title"/>
 
         <ScrollPane fitToWidth="true" prefHeight="200" styleClass="collab-scroll">
-            <VBox fx:id="collabList" spacing="8" padding="8"/>
+            <VBox fx:id="collabList" spacing="8">
+                <padding>
+                    <Insets top="8" right="8" bottom="8" left="8"/>
+                </padding>
+            </VBox>
         </ScrollPane>
 
         <Button text="+ New Collaboration" styleClass="secondary-button" onAction="#handleAddCollaboration"/>
