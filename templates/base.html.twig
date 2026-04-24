@@ -1,104 +1,1134 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}ExportBridge{% endblock %}</title>
-
-    {# Dark mode script - must be before CSS to avoid flash #}
-    <script>
-        const storedTheme = localStorage.getItem('theme')
-        const getPreferredTheme = () => {
-            if (storedTheme) return storedTheme
-            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
-        }
-        const setTheme = function (theme) {
-            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-bs-theme', 'dark')
-            } else {
-                document.documentElement.setAttribute('data-bs-theme', theme)
-            }
-        }
-        setTheme(getPreferredTheme())
-    </script>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>
+      {% block title %}ExportBridge{% endblock %}
+    </title>
 
     {% block stylesheets %}
-        {# Favicon #}
-        <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+      <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+      <link rel="preconnect" href="https://fonts.googleapis.com/" />
+          <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
 
-        {# Google Fonts #}
-        <link rel="preconnect" href="https://fonts.googleapis.com/">
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+      <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/aos/aos.css') }}" />
+      <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
+      {{ encore_entry_link_tags('app') }}
 
-        {# Plugins CSS #}
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/font-awesome/css/all.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/tiny-slider/tiny-slider.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/aos/aos.css') }}">
-
-        {# Theme CSS #}
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
-        
-        {# Custom validation styles #}
-        <style>
-            .is-invalid {
-                border-color: #dc3545 !important;
-            }
-            .is-invalid:focus {
-                border-color: #dc3545 !important;
-                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-            }
-            .is-valid {
-                border-color: #198754 !important;
-            }
-            .is-valid:focus {
-                border-color: #198754 !important;
-                box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
-            }
-            .invalid-feedback {
-                color: #dc3545;
-                font-size: 0.875em;
-                margin-top: 0.25rem;
-            }
-            .password-toggle {
-                border-left: none !important;
-            }
-            .password-toggle:focus {
-                box-shadow: none !important;
-            }
-            .input-group .password-toggle {
-                border-top-right-radius: 0.375rem !important;
-                border-bottom-right-radius: 0.375rem !important;
-            }
-        </style>
+      
     {% endblock %}
+  </head>
 
-    {# FrankenPHP hot reload - keep for dev #}
-    {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-    {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-    {% endif %}
-</head>
-<body>
+  <body>
 
-    {% block body %}{% endblock %}
+   
 
+    {# ===== NAVBAR ===== #}
+    {% include 'header/navbarvesitor.html.twig' %}
+
+    {# ===== PAGE CONTENT ===== #}
+    <main>
+      {% block body %}{% endblock %}
+    </main>
+
+
+     {% include 'footer/footer.html.twig' %}
     {% block javascripts %}
-        {# Bootstrap JS #}
-        <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
+      <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+      <script src="{{ asset('assets/js/functions.js') }}"></script>
+      <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Dark.js"></script>
+      {{ encore_entry_script_tags('app') }}
 
-        {# Tiny Slider #}
-        <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
+      <script>
+        // =====================================================
+        // 1. LOADER — affiché uniquement au démarrage de session
+        // =====================================================
+        (function () {
+          const loader = document.getElementById('loader-wrapper');
+          if (!loader) return;
 
-        {# AOS #}
-        <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+          if (!sessionStorage.getItem('loader-shown')) {
+            // Première page de la session → afficher le loader
+            loader.classList.add('active');
 
-        {# Template functions #}
-        <script src="{{ asset('assets/js/functions.js') }}"></script>
+            const hideLoader = function () {
+              loader.classList.add('hide'); // déclenche le fondu CSS
+              setTimeout(function () {
+                loader.classList.remove('active', 'hide');
+                sessionStorage.setItem('loader-shown', 'true');
+              }, 500); // durée = transition CSS opacity
+            };
+
+            // Fallback si window.load ne se déclenche pas dans les 3s
+            const fallback = setTimeout(hideLoader, 3000);
+
+            window.addEventListener('load', function () {
+              clearTimeout(fallback);
+              hideLoader();
+            });
+
+          } else {
+            // Déjà vu dans cette session → retirer immédiatement
+            loader.remove();
+          }
+        })();
+
+
+        // =====================================================
+        // 2. INITIALISATION DES COMPOSANTS AU DOM READY
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', function () {
+
+          // ----- AOS -----
+          AOS.init({ duration: 1000, once: false });
+
+          // ----- CAROUSEL + AOS -----
+          const myCarousel = document.getElementById('homepageCarousel');
+          if (myCarousel) {
+            myCarousel.addEventListener('slide.bs.carousel', function () {
+              myCarousel.querySelectorAll('[data-aos]').forEach(function (el) {
+                el.classList.remove('aos-animate');
+              });
+            });
+
+            myCarousel.addEventListener('slid.bs.carousel', function (e) {
+              AOS.refreshHard();
+              e.relatedTarget.querySelectorAll('[data-aos]').forEach(function (el) {
+                el.classList.add('aos-animate');
+              });
+            });
+          }
+
+          // ----- STICKY HEADER -----
+          const header = document.querySelector('.for-sticky');
+          if (header) {
+            window.addEventListener('scroll', function () {
+              const currentScroll = window.pageYOffset;
+              if (currentScroll > 0 && currentScroll <= 100) {
+                header.classList.add('hide');
+              } else {
+                header.classList.remove('hide');
+              }
+            });
+          }
+
+          // ----- CHATBOT SIKIPON -----
+          const chatForm = document.getElementById('chatbot-form');
+          if (chatForm) {
+            chatForm.addEventListener('submit', function (e) {
+              e.preventDefault();
+
+              const btnText          = document.getElementById('btn-text');
+              const btnLoader        = document.getElementById('btn-loader');
+              const btnSubmit        = document.getElementById('btn-submit');
+              const responseContainer = document.getElementById('response-container');
+              const botAnswer        = document.getElementById('bot-answer');
+              const alertStatus      = document.getElementById('alert-status');
+
+              // État : chargement
+              btnText.innerText = 'Sikipon réfléchit...';
+              btnLoader.classList.remove('d-none');
+              btnSubmit.disabled = true;
+
+              fetch('http://localhost:3000/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email:    document.getElementById('email').value,
+                  question: document.getElementById('question').value
+                })
+              })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                  btnText.innerText = 'Interroger Sikipon';
+                  btnLoader.classList.add('d-none');
+                  btnSubmit.disabled = false;
+
+                  if (data.status === 'success') {
+                    responseContainer.classList.remove('d-none');
+                    botAnswer.innerText = data.answer;
+
+                    alertStatus.className = 'alert alert-success';
+                    alertStatus.innerText = 'Email envoyé avec succès !';
+                    alertStatus.classList.remove('d-none');
+
+                    localStorage.setItem('last_sikipon_question', document.getElementById('question').value);
+                  }
+                })
+                .catch(function (error) {
+                  btnText.innerText = 'Réessayer';
+                  btnLoader.classList.add('d-none');
+                  btnSubmit.disabled = false;
+
+                  alertStatus.className = 'alert alert-danger';
+                  alertStatus.innerText = 'Erreur : Impossible de joindre Sikipon (Vérifiez que le serveur Python tourne).';
+                  alertStatus.classList.remove('d-none');
+
+                  console.error('Sikipon error:', error);
+                });
+            });
+          }
+
+        }); // fin DOMContentLoaded
+        
+    async function updateSikiponNews() {
+        try {
+            const response = await fetch('http://localhost:3000/api/latest-updates');
+            const data = await response.json();
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            // --- FONCTION POUR EXTRAIRE LA DATE DEPUIS L'ATTRIBUT CREATED_AT ---
+            function setElementDate(block, dateString) {
+                if (!dateString || dateString === "None") return;
+                
+                // On transforme la string SQL (YYYY-MM-DD HH:MM:SS) en objet Date JS
+                const d = new Date(dateString);
+                
+                // On vérifie si la date est valide avant de l'afficher
+                if (!isNaN(d.getTime())) {
+                    const dayEl = block.querySelector('.news-day');
+                    const monthEl = block.querySelector('.news-month');
+                    
+                    if (dayEl) dayEl.innerText = d.getDate(); // Récupère le jour (ex: 17)
+                    if (monthEl) monthEl.innerText = months[d.getMonth()]; // Récupère le mois (ex: Apr)
+                }
+            }
+
+            // --- BLOC 1 : COMPANY ---
+            const blockCompany = document.getElementById('news-company');
+            if (blockCompany && data.last_company) {
+                // On utilise explicitement l'attribut created_at de l'entité Company
+                setElementDate(blockCompany, data.last_company.created_at);
+                
+                if (blockCompany.querySelector('.news-title')) {
+                    blockCompany.querySelector('.news-title').innerText = data.last_company.company_name;
+                }
+                if (blockCompany.querySelector('.news-desc')) {
+                    blockCompany.querySelector('.news-desc').innerText = "Entreprise ajoutée en " + data.last_company.country;
+                }
+            }
+
+            // --- BLOC 2 : MARKET ---
+            const blockMarket = document.getElementById('news-market');
+            if (blockMarket && data.last_market) {
+                // On utilise explicitement l'attribut created_at de l'entité Market
+                setElementDate(blockMarket, data.last_market.created_at);
+                
+                if (blockMarket.querySelector('.news-title')) {
+                    blockMarket.querySelector('.news-title').innerText = "Marché : " + data.last_market.name;
+                }
+                if (blockMarket.querySelector('.news-desc')) {
+                    blockMarket.querySelector('.news-desc').innerText = "Nouveau marché : " + data.last_market.region;
+                }
+            }
+
+        } catch (error) {
+            console.error('Erreur Sikipon (Fetch ou SQL) :', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateSikiponNews);
+
+ // Assurez-vous que les variables sont bien entourées de guillemets 
+// pour être traitées comme des chaînes de caractères par JS
+emailjs.init("{{ emailjs_public_key }}");
+
+document.getElementById("newsletter-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // On récupère le bouton pour donner un feedback visuel
+    const btn = this.querySelector('.news-btn');
+    const originalContent = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+
+    emailjs.sendForm(
+        "{{ emailjs_service_id }}",
+        "{{ emailjs_template_id }}",
+        this // 'this' fait bien référence au formulaire ici
+    ).then(() => {
+        alert("Email sent successfully!");
+        this.reset();
+    }).catch((error) => {
+        console.error("EmailJS error:", error);
+        // Utiliser error.status ou error.text pour plus de clarté
+        alert("Error: " + (error.text || "Check console for details"));
+    }).finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    });
+});
+am5.ready(function() {
+
+// ============================================================
+// ExportBRIDGE — Tunisie Hub Commercial Mondial
+// Tunisie → Monde (Export élargi)
+// Monde → Tunisie (Import)
+// Golfe Persique → Asie & Europe
+// ============================================================
+
+var root = am5.Root.new("chartdiv");
+
+var oilTheme = am5.Theme.new(root);
+oilTheme.rule("InterfaceColors").setAll({
+  primaryButton: am5.color(0x1e2824),
+  primaryButtonHover: am5.color(0x3a5040),
+  primaryButtonDown: am5.color(0x0a0e12),
+  primaryButtonActive: am5.color(0xc8890a),
+  primaryButtonText: am5.color(0xf5d090),
+  secondaryButton: am5.color(0x1e2824),
+  secondaryButtonHover: am5.color(0x3a5040),
+  secondaryButtonDown: am5.color(0x141a1a),
+  secondaryButtonText: am5.color(0xf5d090),
+  background: am5.color(0x0a0e12),
+  text: am5.color(0xf5d090)
+});
+root.setThemes([am5themes_Animated.new(root), oilTheme]);
+
+// Crude & Tar palette
+var deepCrude = am5.color(0x141a1a);      // ocean — very dark teal-black
+var slick = am5.color(0x1e2824);          // land dark — oil slick green-black
+var pipeline = am5.color(0x3a5040);       // accents — industrial dark green
+var amber = am5.color(0xc8890a);          // primary — dark amber / crude oil
+var sulfur = am5.color(0xa89050);         // secondary — sulfurous yellow-brown
+var flare = am5.color(0xf5d090);          // text/highlights — gas flare warm
+var tunisBlue   = am5.color(0x4fa8d8);     // Tunisia export Med — Mediterranean blue
+var tunisGreen  = am5.color(0x2ec27e);     // Tunisia import — emerald green
+var tunisOrange = am5.color(0xe8702a);     // Tunisia export élargi — orange vif
+
+// ---- Chart (start zoomed out at home) ----
+var chart = root.container.children.push(am5map.MapChart.new(root, {
+  panX: "rotateX",
+  panY: "rotateY",
+  projection: am5map.geoOrthographic(),
+  homeGeoPoint: { longitude: 0, latitude: 0 },
+  homeRotationX: 0,
+  homeRotationY: 0,
+  homeZoomLevel: 1,
+  minZoomLevel: 0.8,
+  zoomLevel: 1
+}));
+
+// ---- Ocean background ----
+var bgSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+bgSeries.mapPolygons.template.setAll({
+  fill: deepCrude,
+  fillOpacity: 1,
+  strokeOpacity: 0
+});
+bgSeries.data.push({ geometry: am5map.getGeoRectangle(90, 180, -90, -180) });
+
+// ---- Graticule ----
+var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
+graticuleSeries.mapLines.template.setAll({
+  stroke: pipeline,
+  strokeOpacity: 0.25,
+  strokeWidth: 0.5
+});
+
+// ---- Countries ----
+var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+  geoJSON: am5geodata_worldLow
+}));
+polygonSeries.mapPolygons.template.setAll({
+  fill: slick,
+  stroke: pipeline,
+  strokeWidth: 0.5,
+  strokeOpacity: 0.6
+});
+
+// Highlight producer & importer countries
+var producerIds = ["SA", "IQ", "AE", "KW", "IR", "QA"];
+var importerIds = ["CN", "JP", "KR", "IN", "SG", "IT", "GR", "NL", "FR", "ES", "MT",
+                   "LY", "DZ", "RU", "NG", "SA", "DE", "TR", "SN", "CI", "CM", "US",
+                   "BR", "MA", "EG", "LB", "JO", "MR", "ML", "BF", "GN", "AE"];
+
+polygonSeries.events.on("datavalidated", function() {
+  am5.array.each(polygonSeries.dataItems, function(di) {
+    var id = di.get("id");
+    if (producerIds.includes(id)) {
+      di.get("mapPolygon").setAll({ fill: am5.color(0x6b5a10), tooltipText: "{name}" });
+    } else if (id === "TN") {
+      di.get("mapPolygon").setAll({ fill: am5.color(0x1a3a26), tooltipText: "{name} — Exportateur Méditerranée" });
+    } else if (importerIds.includes(id)) {
+      di.get("mapPolygon").setAll({ fill: am5.color(0x2a4030), tooltipText: "{name}" });
+    }
+  });
+});
+
+// ---- MapSankeySeries — Oil flows through Hormuz ----
+var sankeySeries = chart.series.push(am5map.MapSankeySeries.new(root, {
+  polygonSeries: polygonSeries,
+  maxWidth: 0.8,
+  controlPointDistance: 0.4,
+  resolution: 60,
+  nodePadding: 0.1
+}));
+
+sankeySeries.mapPolygons.template.setAll({
+  fill: amber,
+  fillOpacity: 0.4,
+  strokeOpacity: 0,
+  tooltipText: "{source} > {target}\n{value}k bbl/day"
+});
+
+sankeySeries.nodes.mapPolygons.template.setAll({
+  fill: amber,
+  stroke: flare,
+  strokeWidth: 1.5,
+  fillOpacity: 0.95,
+  strokeOpacity: 1,
+  tooltipText: "{name}"
+});
+
+// ---- Animated oil drop bullets ----
+sankeySeries.bullets.push(function() {
+  return am5.Bullet.new(root, {
+    locationX: 0,
+    autoRotate: true,
+    autoRotateAngle: -90,
+    sprite: am5.Graphics.new(root, {
+      // Oil drop shape
+      svgPath: "M0,-7 C2,-4 5,0 5,3 C5,6 3,8 0,8 C-3,8 -5,6 -5,3 C-5,0 -2,-4 0,-7 Z",
+      fill: amber,
+      stroke: am5.color(0x8b6914),
+      strokeWidth: 0.5,
+      centerX: am5.p50,
+      centerY: am5.p50,
+      scale: 0.45,
+      visible: false
+    })
+  });
+});
+
+sankeySeries.events.on("datavalidated", function() {
+  // Find the longest path to scale durations proportionally
+  var maxLength = 0;
+  am5.array.each(sankeySeries.dataItems, function(dataItem) {
+    var len = sankeySeries.getPathLength(dataItem);
+    if (len > maxLength) maxLength = len;
+  });
+
+  var baseDuration = 8000; // longest path duration
+  var minDuration = 2000;
+
+  am5.array.each(sankeySeries.dataItems, function(dataItem) {
+    var pathLength = sankeySeries.getPathLength(dataItem) || maxLength;
+    var dur = maxLength > 0 ? Math.max(minDuration, (pathLength / maxLength) * baseDuration) : baseDuration;
+
+    var bullets = dataItem.bullets;
+    if (bullets) {
+      am5.array.each(bullets, function(bullet) {
+        var randomDur = dur * (0.8 + Math.random() * 0.4);
+        var delay = Math.random() * randomDur;
+        setTimeout(function() {
+          var sprite = bullet.get("sprite");
+          if (sprite) sprite.set("visible", true);
+          bullet.animate({
+            key: "locationX",
+            from: 0,
+            to: 1,
+            duration: randomDur,
+            easing: am5.ease.linear,
+            loops: Infinity
+          });
+        }, delay);
+      });
+    }
+  });
+});
+
+// ---- Oil Export Data — through Strait of Hormuz ----
+// Coordinates: actual oil port / terminal locations
+// Values in thousands of barrels per day (approximate)
+
+// Gulf export terminals
+var rasTanura   = { lon: 50.17, lat: 26.64 };  // Saudi Arabia — Ras Tanura
+var basra       = { lon: 48.80, lat: 29.69 };  // Iraq — Basra Oil Terminal
+var fujairah    = { lon: 56.33, lat: 25.12 };  // UAE — Port of Fujairah
+var minaAhmadi  = { lon: 48.17, lat: 29.08 };  // Kuwait — Mina Al Ahmadi
+var khargIsland = { lon: 50.32, lat: 29.23 };  // Iran — Kharg Island
+var rasLaffan   = { lon: 51.56, lat: 25.93 };  // Qatar — Ras Laffan
+
+// Asian import terminals
+var ningbo      = { lon: 121.97, lat: 29.87 };  // China — Ningbo-Zhoushan
+var qingdao     = { lon: 120.38, lat: 36.07 };  // China — Qingdao
+var yokohama    = { lon: 139.64, lat: 35.44 };  // Japan — Yokohama
+var chiba       = { lon: 140.10, lat: 35.60 };  // Japan — Chiba
+var ulsan       = { lon: 129.38, lat: 35.50 };  // South Korea — Ulsan
+var jamnagar    = { lon: 69.66, lat: 22.42 };   // India — Jamnagar / Vadinar
+var mumbai      = { lon: 72.88, lat: 19.08 };   // India — Mumbai (JNPT)
+var singapore   = { lon: 103.84, lat: 1.26 };   // Singapore — Jurong Island
+
+// European import terminals
+var trieste     = { lon: 13.78, lat: 45.65 };   // Italy — Trieste (SIOT)
+var piraeus     = { lon: 23.63, lat: 37.94 };   // Greece — Piraeus / Agioi Theodoroi
+var rotterdam   = { lon: 4.12, lat: 51.95 };    // Netherlands — Rotterdam
+
+// ---- Tunisia export terminals ----
+var skhira      = { lon: 10.07, lat: 34.30 };   // Tunisia — La Skhira oil terminal
+var bizerti     = { lon: 9.87,  lat: 37.27 };   // Tunisia — Bizerte (STIR refinery)
+var gabes       = { lon: 10.09, lat: 33.88 };   // Tunisia — Gabes (petrochemical port)
+
+// Tunisia's Mediterranean import destinations
+var lavera      = { lon: 5.00,  lat: 43.40 };   // France — Fos-Lavera terminal
+var marseille   = { lon: 5.37,  lat: 43.30 };   // France — Marseille
+var barcelona   = { lon: 2.17,  lat: 41.36 };   // Spain — Barcelona
+var tarragona   = { lon: 1.25,  lat: 41.12 };   // Spain — Tarragona (Repsol refinery)
+var genova      = { lon: 8.93,  lat: 44.41 };   // Italy — Genova
+var malta       = { lon: 14.51, lat: 35.90 };   // Malta — transhipment hub
+
+// ---- Nouvelles destinations export élargi (ExportBRIDGE) ----
+// Afrique subsaharienne & Atlantique
+var dakar       = { lon: -17.44, lat: 14.69 };  // Sénégal — Port de Dakar
+var abidjan     = { lon: -4.01,  lat: 5.35  };  // Côte d'Ivoire — Port d'Abidjan
+var douala      = { lon: 9.70,   lat: 4.05  };  // Cameroun — Port de Douala
+// Amériques
+var newYork     = { lon: -74.00, lat: 40.65 };  // USA — Port de New York / Newark
+var houston     = { lon: -95.27, lat: 29.73 };  // USA — Port de Houston
+var santos      = { lon: -46.32, lat: -23.97 }; // Brésil — Port de Santos
+// Moyen-Orient & Afrique du Nord
+var casablanca  = { lon: -7.59,  lat: 33.60 };  // Maroc — Port de Casablanca
+var tanger      = { lon: -5.79,  lat: 35.77 };  // Maroc — Port de Tanger Med
+var agadir      = { lon: -9.60,  lat: 30.42 };  // Maroc — Port d'Agadir
+var nouakchott  = { lon: -15.98, lat: 18.08 };  // Mauritanie — Port de Nouakchott
+var nouadhibou  = { lon: -17.03, lat: 20.93 };  // Mauritanie — Port de Nouadhibou (minerai)
+var alexandrie  = { lon: 29.87,  lat: 31.20 };  // Égypte — Port d'Alexandrie
+var beyrouth    = { lon: 35.52,  lat: 33.90 };  // Liban — Port de Beyrouth
+var aqaba       = { lon: 35.00,  lat: 29.52 };  // Jordanie — Port d'Aqaba
+var dubai       = { lon: 55.27,  lat: 25.20 };  // Émirats — Port de Dubaï (Jebel Ali)
+
+// ---- Tunisia import origins — pays fournisseurs ----
+// Pétrole brut importé
+var azzawiya    = { lon: 12.72, lat: 32.75 };   // Libye — Zawiya oil terminal
+var brega       = { lon: 19.58, lat: 30.37 };   // Libye — Brega terminal
+var skikda      = { lon: 6.90,  lat: 36.88 };   // Algérie — Skikda (Sonatrach)
+var arzew       = { lon: -0.32, lat: 35.84 };   // Algérie — Arzew (GNL + brut)
+var novorossiysk= { lon: 37.77, lat: 44.72 };   // Russie — Novorossiysk (mer Noire)
+var bonny       = { lon: 7.16,  lat: 4.44  };   // Nigeria — Bonny Island terminal
+var rasTanuraImp= { lon: 50.17, lat: 26.64 };   // Arabie Saoudite — Ras Tanura
+
+// Produits manufacturés & céréales importés
+var augusta     = { lon: 15.22, lat: 37.23 };   // Italie — Augusta (raffiné + chimie)
+var livorno     = { lon: 10.30, lat: 43.55 };   // Italie — Livorno (céréales, biens)
+var barcelonaImp= { lon: 2.17,  lat: 41.36 };   // Espagne — Barcelona (biens manufacturés)
+var marseilleImp= { lon: 5.37,  lat: 43.30 };   // France — Marseille (produits divers)
+var hamburgo    = { lon: 9.99,  lat: 53.55 };   // Allemagne — Hambourg (machines)
+var istanbul    = { lon: 29.00, lat: 41.01 };   // Turquie — Istanbul (textile, acier)
+
+function flow(src, srcName, tgt, tgtName, value, wp) {
+  var result = {
+    sourceLongitude: src.lon, sourceLatitude: src.lat,
+    targetLongitude: tgt.lon, targetLatitude: tgt.lat,
+    source: srcName, target: tgtName, value: value
+  };
+  if (wp) result.waypoints = wp;
+  return result;
+}
+
+// Maritime waypoints — keep ships on water
+var wpHormuz     = { longitude: 58,  latitude: 24 };   // Strait of Hormuz exit
+var wpArabianSea = { longitude: 64,  latitude: 18 };   // Mid Arabian Sea
+var wpSouthIndia = { longitude: 78,  latitude: 6 };    // South of Sri Lanka
+var wpMalacca    = { longitude: 101, latitude: 3 };    // Malacca Strait
+var wpAden       = { longitude: 47,  latitude: 12 };   // Gulf of Aden
+var wpSuez       = { longitude: 34,  latitude: 29 };   // Suez Canal
+
+// Route templates — fan out East Asia routes so they don't merge
+var viaJapan     = [{ longitude: 58, latitude: 26 }, { longitude: 80, latitude: 9 },  { longitude: 104, latitude: 7 }];
+var viaKorea     = [{ longitude: 58, latitude: 24 }, { longitude: 78, latitude: 6 },  { longitude: 101, latitude: 3 }];
+var viaChina     = [{ longitude: 58, latitude: 22 }, { longitude: 76, latitude: 3 },  { longitude: 99, latitude: 1 }];
+var viaChinaNorth = [{ longitude: 58, latitude: 22 }, { longitude: 76, latitude: 3 },  { longitude: 99, latitude: 1 }, { longitude: 124, latitude: 32 }];
+var viaIndiaNear = [wpHormuz];                               // > Jamnagar (close)
+var viaIndiaFar  = [wpHormuz, wpArabianSea];                 // > Mumbai
+var viaSingapore = [wpHormuz, wpSouthIndia];                  // > Singapore
+var viaSuez      = [wpHormuz, wpAden, wpSuez];               // > Mediterranean / Europe
+var wpSouthGreece = { longitude: 22, latitude: 35 };       // South of Peloponnese
+var wpOtranto     = { longitude: 18.5, latitude: 40 };     // Strait of Otranto (Adriatic entry)
+var viaSuezItaly = [wpHormuz, wpAden, wpSuez, wpSouthGreece, wpOtranto]; // > Italy via south of Greece
+var wpSicily     = { longitude: 13, latitude: 37 };        // Near Sicily
+var wpPortugal   = { longitude: -10, latitude: 39 };       // Off Portugal coast
+var viaAtlantic  = [wpHormuz, wpAden, wpSuez, wpSicily, wpPortugal]; // > Atlantic Europe
+
+// Tunisia maritime waypoints — Mediterranean only
+var wpSicChannel = { longitude: 12.5, latitude: 37.5 };  // Sicily Channel
+var wpLiguria    = { longitude: 7.5,  latitude: 43.5 };  // Ligurian Sea
+var wpBaleares   = { longitude: 2.5,  latitude: 39.5 };  // Balearic Islands
+var wpCorsica    = { longitude: 9.0,  latitude: 41.5 };  // Off Corsica
+
+// Import routes waypoints
+var wpGibralt    = { longitude: -5.5, latitude: 36.0 };  // Détroit de Gibraltar
+var wpAlboran    = { longitude: 0.0,  latitude: 37.5 };  // Mer d'Alboran
+var wpDardanelle = { longitude: 26.5, latitude: 40.0 };  // Dardanelles
+var wpIonian     = { longitude: 19.0, latitude: 37.0 };  // Mer Ionienne
+var wpNorthMed   = { longitude: 10.0, latitude: 40.5 };  // Tyrrhénienne centrale
+var wpBiscay     = { longitude: -5.0, latitude: 45.0 };  // Golfe de Gascogne
+var wpBonnyGulf  = { longitude: 3.0,  latitude: 4.0  };  // Golfe de Guinée
+var wpBonnyAtl   = { longitude: -5.0, latitude: 15.0 };  // Atlantique Ouest-Afrique
+var wpBonnyGib   = { longitude: -8.0, latitude: 36.5 };  // Large Gibraltar (Nigeria)
+var wpBlackSea   = { longitude: 33.0, latitude: 43.0 };  // Mer Noire centre
+var wpBosph      = { longitude: 29.0, latitude: 41.0 };  // Bosphore
+var wpGulfAden2  = { longitude: 47.0, latitude: 12.0 };  // Golfe d'Aden (Arabie)
+var wpRedSea     = { longitude: 38.0, latitude: 20.0 };  // Mer Rouge
+var wpSuezImp    = { longitude: 34.0, latitude: 30.0 };  // Canal de Suez (import)
+
+// Waypoints export élargi — routes longues
+var wpGibExp     = { longitude: -5.5,  latitude: 36.0 };  // Gibraltar (export)
+var wpCanaries   = { longitude: -15.0, latitude: 28.0 };  // Iles Canaries
+var wpAtlMid     = { longitude: -25.0, latitude: 20.0 };  // Atlantique milieu
+var wpAtlNorth   = { longitude: -40.0, latitude: 38.0 };  // Atlantique Nord
+var wpCapVert    = { longitude: -23.0, latitude: 15.0 };  // Cap-Vert / W-Afrique
+var wpGolfGui    = { longitude: 3.0,   latitude: 4.0  };  // Golfe de Guinée
+var wpAtlSud     = { longitude: -20.0, latitude: -5.0 };  // Atlantique Sud
+var wpSuezExp    = { longitude: 34.0,  latitude: 30.0 };  // Suez (export)
+var wpRedSeaExp  = { longitude: 38.0,  latitude: 20.0 };  // Mer Rouge (export)
+var wpAdenExp    = { longitude: 47.0,  latitude: 12.0 };  // Golfe d'Aden (export)
+var wpHormuzExp  = { longitude: 56.5,  latitude: 24.5 };  // Détroit Hormuz (export)
+var wpMedEast    = { longitude: 25.0,  latitude: 33.0 };  // Méditerranée Est
+var wpMedCyprus  = { longitude: 33.0,  latitude: 34.5 };  // Large Chypre
+
+// Waypoints côtiers droits — Tunis → Maroc → Mauritanie (longe la côte)
+var wpTunisAlg   = { longitude:  5.5,  latitude: 37.2 };  // Large Alger
+var wpAlgOran    = { longitude:  0.5,  latitude: 36.5 };  // Large Oran
+var wpMedOcc     = { longitude: -3.5,  latitude: 35.8 };  // Détroit Gibraltar côté Med
+var wpAtlMar     = { longitude: -8.5,  latitude: 32.5 };  // Atlantique Maroc central
+var wpAtlAgadir  = { longitude: -10.0, latitude: 29.0 };  // Large Agadir / Cap Ghir
+var wpAtlMaur    = { longitude: -16.5, latitude: 21.5 };  // Côte Mauritanie Nord
+
+sankeySeries.data.setAll([
+  // === Ras Tanura (Saudi Arabia) ===
+  flow(rasTanura, "Ras Tanura", ningbo,    "Ningbo",    1100, viaChina),
+  flow(rasTanura, "Ras Tanura", qingdao,   "Qingdao",    600, viaChinaNorth),
+  flow(rasTanura, "Ras Tanura", yokohama,  "Yokohama",   700, viaJapan),
+  flow(rasTanura, "Ras Tanura", chiba,      "Chiba",      300, viaJapan),
+  flow(rasTanura, "Ras Tanura", ulsan,     "Ulsan",      800, viaKorea),
+  flow(rasTanura, "Ras Tanura", jamnagar,  "Jamnagar",   500, viaIndiaNear),
+  flow(rasTanura, "Ras Tanura", mumbai,    "Mumbai",     300, viaIndiaFar),
+  flow(rasTanura, "Ras Tanura", rotterdam, "Rotterdam",  350, viaAtlantic),
+
+  // === Basra Oil Terminal (Iraq) ===
+  flow(basra, "Basra", ningbo,   "Ningbo",    700, viaChina),
+  flow(basra, "Basra", qingdao,  "Qingdao",   400, viaChinaNorth),
+  flow(basra, "Basra", jamnagar, "Jamnagar",  600, viaIndiaNear),
+  flow(basra, "Basra", mumbai,   "Mumbai",    400, viaIndiaFar),
+  flow(basra, "Basra", ulsan,    "Ulsan",     400, viaKorea),
+  flow(basra, "Basra", trieste,  "Trieste",   350, viaSuezItaly),
+  flow(basra, "Basra", piraeus,  "Piraeus",   250, viaSuez),
+
+  // === Fujairah (UAE) — already outside Hormuz ===
+  flow(fujairah, "Fujairah", yokohama,  "Yokohama",   400, viaJapan.slice(1)),
+  flow(fujairah, "Fujairah", chiba,     "Chiba",      200, viaJapan.slice(1)),
+  flow(fujairah, "Fujairah", jamnagar,  "Jamnagar",   300),
+  flow(fujairah, "Fujairah", mumbai,    "Mumbai",     200, [wpArabianSea]),
+  flow(fujairah, "Fujairah", ningbo,    "Ningbo",     250, viaChina.slice(1)),
+  flow(fujairah, "Fujairah", ulsan,     "Ulsan",      350, viaKorea.slice(1)),
+  flow(fujairah, "Fujairah", singapore, "Singapore",  250, [wpSouthIndia]),
+
+  // === Mina Al Ahmadi (Kuwait) ===
+  flow(minaAhmadi, "Mina Al Ahmadi", ulsan,    "Ulsan",    400, viaKorea),
+  flow(minaAhmadi, "Mina Al Ahmadi", yokohama, "Yokohama", 300, viaJapan),
+  flow(minaAhmadi, "Mina Al Ahmadi", ningbo,   "Ningbo",   300, viaChina),
+  flow(minaAhmadi, "Mina Al Ahmadi", jamnagar, "Jamnagar", 200, viaIndiaNear),
+
+  // === Kharg Island (Iran) ===
+  flow(khargIsland, "Kharg Island", ningbo,   "Ningbo",   400, viaChina),
+  flow(khargIsland, "Kharg Island", qingdao,  "Qingdao",  200, viaChinaNorth),
+  flow(khargIsland, "Kharg Island", jamnagar, "Jamnagar", 200, viaIndiaNear),
+  flow(khargIsland, "Kharg Island", piraeus,  "Piraeus",  100, viaSuez),
+
+  // === Ras Laffan (Qatar) ===
+  flow(rasLaffan, "Ras Laffan", yokohama, "Yokohama",  300, viaJapan),
+  flow(rasLaffan, "Ras Laffan", ulsan,    "Ulsan",     200, viaKorea),
+  flow(rasLaffan, "Ras Laffan", jamnagar, "Jamnagar",  150, viaIndiaNear),
+  flow(rasLaffan, "Ras Laffan", singapore,"Singapore",  120, viaSingapore)
+]);
+
+// ---- MapSankeySeries — Tunisia Mediterranean exports ----
+var tunisiaSeries = chart.series.push(am5map.MapSankeySeries.new(root, {
+  polygonSeries: polygonSeries,
+  maxWidth: 0.6,
+  controlPointDistance: 0.35,
+  resolution: 50,
+  nodePadding: 0.08
+}));
+
+tunisiaSeries.mapPolygons.template.setAll({
+  fill: tunisBlue,
+  fillOpacity: 0.45,
+  strokeOpacity: 0,
+  tooltipText: "{source} > {target}\n{value}k bbl/day"
+});
+
+tunisiaSeries.nodes.mapPolygons.template.setAll({
+  fill: tunisBlue,
+  stroke: am5.color(0xa0d8f0),
+  strokeWidth: 1.5,
+  fillOpacity: 0.95,
+  strokeOpacity: 1,
+  tooltipText: "{name}"
+});
+
+// ---- Animated blue drop bullets for Tunisia ----
+tunisiaSeries.bullets.push(function() {
+  return am5.Bullet.new(root, {
+    locationX: 0,
+    autoRotate: true,
+    autoRotateAngle: -90,
+    sprite: am5.Graphics.new(root, {
+      svgPath: "M0,-7 C2,-4 5,0 5,3 C5,6 3,8 0,8 C-3,8 -5,6 -5,3 C-5,0 -2,-4 0,-7 Z",
+      fill: tunisBlue,
+      stroke: am5.color(0x2a6888),
+      strokeWidth: 0.5,
+      centerX: am5.p50,
+      centerY: am5.p50,
+      scale: 0.40,
+      visible: false
+    })
+  });
+});
+
+tunisiaSeries.events.on("datavalidated", function() {
+  var maxLength = 0;
+  am5.array.each(tunisiaSeries.dataItems, function(dataItem) {
+    var len = tunisiaSeries.getPathLength(dataItem);
+    if (len > maxLength) maxLength = len;
+  });
+
+  var baseDuration = 5000;
+  var minDuration = 1500;
+
+  am5.array.each(tunisiaSeries.dataItems, function(dataItem) {
+    var pathLength = tunisiaSeries.getPathLength(dataItem) || maxLength;
+    var dur = maxLength > 0 ? Math.max(minDuration, (pathLength / maxLength) * baseDuration) : baseDuration;
+
+    var bullets = dataItem.bullets;
+    if (bullets) {
+      am5.array.each(bullets, function(bullet) {
+        var randomDur = dur * (0.8 + Math.random() * 0.4);
+        var delay = Math.random() * randomDur;
+        setTimeout(function() {
+          var sprite = bullet.get("sprite");
+          if (sprite) sprite.set("visible", true);
+          bullet.animate({
+            key: "locationX",
+            from: 0,
+            to: 1,
+            duration: randomDur,
+            easing: am5.ease.linear,
+            loops: Infinity
+          });
+        }, delay);
+      });
+    }
+  });
+});
+
+tunisiaSeries.data.setAll([
+  // === La Skhira — crude oil exports (El Borma / Ashtart fields) ===
+  flow(skhira, "La Skhira", lavera,    "Fos-Lavera",  22, [wpSicChannel, wpLiguria]),
+  flow(skhira, "La Skhira", genova,    "Genova",      14, [wpSicChannel, wpCorsica]),
+  flow(skhira, "La Skhira", tarragona, "Tarragona",   18, [wpSicChannel, wpBaleares]),
+  flow(skhira, "La Skhira", malta,     "Malta",        8, [{ longitude: 11.8, latitude: 36.2 }]),
+  flow(skhira, "La Skhira", trieste,   "Trieste",     10, [wpSicChannel, wpSicily, wpOtranto]),
+
+  // === Bizerte — refined products (STIR refinery) ===
+  flow(bizerti, "Bizerte", marseille, "Marseille",   16, [wpSicChannel, { longitude: 7.8, latitude: 42.5 }]),
+  flow(bizerti, "Bizerte", barcelona, "Barcelona",   12, [wpSicChannel, wpBaleares]),
+  flow(bizerti, "Bizerte", genova,    "Genova",       9, [wpCorsica]),
+  flow(bizerti, "Bizerte", piraeus,   "Piraeus",      7, [{ longitude: 14, latitude: 36.5 }, { longitude: 20, latitude: 36 }]),
+
+  // === Gabes — petrochemical & phosphate derivatives ===
+  flow(gabes, "Gabes", marseille, "Marseille",  5, [wpSicChannel, wpLiguria]),
+  flow(gabes, "Gabes", tarragona, "Tarragona",  4, [wpSicChannel, wpBaleares]),
+  flow(gabes, "Gabes", malta,     "Malta",      3, [{ longitude: 12.5, latitude: 35.5 }])
+]);
+
+// ---- MapSankeySeries — Importations vers la Tunisie (vert émeraude) ----
+var importSeries = chart.series.push(am5map.MapSankeySeries.new(root, {
+  polygonSeries: polygonSeries,
+  maxWidth: 0.55,
+  controlPointDistance: 0.32,
+  resolution: 50,
+  nodePadding: 0.08
+}));
+
+importSeries.mapPolygons.template.setAll({
+  fill: tunisGreen,
+  fillOpacity: 0.40,
+  strokeOpacity: 0,
+  tooltipText: "{source} → Tunisie\n{value}k t/an"
+});
+
+importSeries.nodes.mapPolygons.template.setAll({
+  fill: tunisGreen,
+  stroke: am5.color(0x8ef5bf),
+  strokeWidth: 1.5,
+  fillOpacity: 0.95,
+  strokeOpacity: 1,
+  tooltipText: "{name}"
+});
+
+// ---- Bullets verts animés pour les imports ----
+importSeries.bullets.push(function() {
+  return am5.Bullet.new(root, {
+    locationX: 0,
+    autoRotate: true,
+    autoRotateAngle: -90,
+    sprite: am5.Graphics.new(root, {
+      svgPath: "M0,-7 C2,-4 5,0 5,3 C5,6 3,8 0,8 C-3,8 -5,6 -5,3 C-5,0 -2,-4 0,-7 Z",
+      fill: tunisGreen,
+      stroke: am5.color(0x188f52),
+      strokeWidth: 0.5,
+      centerX: am5.p50,
+      centerY: am5.p50,
+      scale: 0.38,
+      visible: false
+    })
+  });
+});
+
+importSeries.events.on("datavalidated", function() {
+  var maxLength = 0;
+  am5.array.each(importSeries.dataItems, function(dataItem) {
+    var len = importSeries.getPathLength(dataItem);
+    if (len > maxLength) maxLength = len;
+  });
+
+  var baseDuration = 6000;
+  var minDuration  = 1500;
+
+  am5.array.each(importSeries.dataItems, function(dataItem) {
+    var pathLength = importSeries.getPathLength(dataItem) || maxLength;
+    var dur = maxLength > 0 ? Math.max(minDuration, (pathLength / maxLength) * baseDuration) : baseDuration;
+
+    var bullets = dataItem.bullets;
+    if (bullets) {
+      am5.array.each(bullets, function(bullet) {
+        var randomDur = dur * (0.8 + Math.random() * 0.4);
+        var delay = Math.random() * randomDur;
+        setTimeout(function() {
+          var sprite = bullet.get("sprite");
+          if (sprite) sprite.set("visible", true);
+          bullet.animate({
+            key: "locationX",
+            from: 0,
+            to: 1,
+            duration: randomDur,
+            easing: am5.ease.linear,
+            loops: Infinity
+          });
+        }, delay);
+      });
+    }
+  });
+});
+
+importSeries.data.setAll([
+  // === Pétrole brut — Libye ===
+  // Route courte côtière vers Bizerte / La Skhira
+  flow(azzawiya,  "Zawiya (Libye)",  bizerti, "Bizerte",   45, [{ longitude: 11.5, latitude: 34.5 }]),
+  flow(brega,     "Brega (Libye)",   skhira,  "La Skhira", 30, [{ longitude: 15.0, latitude: 33.5 }, { longitude: 12.0, latitude: 34.0 }]),
+
+  // === Pétrole brut & GNL — Algérie (gazoduc + maritime) ===
+  // Skikda très proche — route directe est
+  flow(skikda, "Skikda (Algérie)", bizerti, "Bizerte",  55, [{ longitude: 8.5, latitude: 37.5 }]),
+  // Arzew — route ouest via cap Bon
+  flow(arzew,  "Arzew (Algérie)",  bizerti, "Bizerte",  28, [wpAlboran, { longitude: 5.0, latitude: 37.8 }, wpSicChannel]),
+
+  // === Pétrole brut — Russie (mer Noire → Bosphore → Méditerranée) ===
+  flow(novorossiysk, "Novorossiysk", bizerti, "Bizerte", 20,
+    [wpBlackSea, wpBosph, wpDardanelle, wpIonian, wpSicChannel]),
+
+  // === Pétrole brut — Nigeria (Atlantique → Gibraltar → Méditerranée) ===
+  flow(bonny, "Bonny (Nigeria)", skhira, "La Skhira", 18,
+    [wpBonnyGulf, wpBonnyAtl, wpBonnyGib, wpAlboran, wpSicChannel, { longitude: 11.5, latitude: 36.5 }]),
+
+  // === Pétrole brut — Arabie Saoudite (Suez → Méditerranée) ===
+  flow(rasTanuraImp, "Ras Tanura (KSA)", skhira, "La Skhira", 25,
+    [wpHormuz, wpAden, wpRedSea, wpSuezImp, wpIonian, wpSicChannel]),
+
+  // === Produits manufacturés & céréales — Italie ===
+  flow(augusta, "Augusta (Italie)",  gabes,   "Gabès",   12, [wpSicChannel]),
+  flow(livorno, "Livorno (Italie)",  bizerti, "Bizerte", 18, [wpNorthMed, wpSicChannel]),
+
+  // === Produits manufacturés — France ===
+  flow(marseilleImp, "Marseille (France)", bizerti, "Bizerte", 22,
+    [{ longitude: 7.8, latitude: 42.5 }, wpSicChannel]),
+
+  // === Produits manufacturés — Espagne ===
+  flow(barcelonaImp, "Barcelona (Espagne)", gabes, "Gabès", 10,
+    [wpBaleares, wpSicChannel, { longitude: 12.0, latitude: 36.5 }]),
+
+  // === Machines & équipements — Allemagne (Hamburg → Gibraltar → Méditerranée) ===
+  flow(hamburgo, "Hambourg (Allemagne)", bizerti, "Bizerte", 14,
+    [wpBiscay, wpGibralt, wpAlboran, wpSicChannel]),
+
+  // === Textile & acier — Turquie (Dardanelles → Méditerranée) ===
+  flow(istanbul, "Istanbul (Turquie)", gabes, "Gabès", 9,
+    [wpDardanelle, wpIonian, wpSicChannel, { longitude: 12.5, latitude: 35.5 }])
+]);
+
+// ---- MapSankeySeries — ExportBRIDGE : Tunisie → Monde élargi (orange) ----
+var exportBridgeSeries = chart.series.push(am5map.MapSankeySeries.new(root, {
+  polygonSeries: polygonSeries,
+  maxWidth: 0.55,
+  controlPointDistance: 0.38,
+  resolution: 55,
+  nodePadding: 0.08
+}));
+
+exportBridgeSeries.mapPolygons.template.setAll({
+  fill: tunisOrange,
+  fillOpacity: 0.42,
+  strokeOpacity: 0,
+  tooltipText: "Tunisie → {target}\n{value}k t/an"
+});
+
+exportBridgeSeries.nodes.mapPolygons.template.setAll({
+  fill: tunisOrange,
+  stroke: am5.color(0xffd0a0),
+  strokeWidth: 1.5,
+  fillOpacity: 0.95,
+  strokeOpacity: 1,
+  tooltipText: "{name}"
+});
+
+// ---- Bullets orange animés — ExportBRIDGE ----
+exportBridgeSeries.bullets.push(function() {
+  return am5.Bullet.new(root, {
+    locationX: 0,
+    autoRotate: true,
+    autoRotateAngle: -90,
+    sprite: am5.Graphics.new(root, {
+      svgPath: "M0,-7 C2,-4 5,0 5,3 C5,6 3,8 0,8 C-3,8 -5,6 -5,3 C-5,0 -2,-4 0,-7 Z",
+      fill: tunisOrange,
+      stroke: am5.color(0xb04010),
+      strokeWidth: 0.5,
+      centerX: am5.p50,
+      centerY: am5.p50,
+      scale: 0.40,
+      visible: false
+    })
+  });
+});
+
+exportBridgeSeries.events.on("datavalidated", function() {
+  var maxLength = 0;
+  am5.array.each(exportBridgeSeries.dataItems, function(dataItem) {
+    var len = exportBridgeSeries.getPathLength(dataItem);
+    if (len > maxLength) maxLength = len;
+  });
+
+  var baseDuration = 9000;
+  var minDuration  = 2500;
+
+  am5.array.each(exportBridgeSeries.dataItems, function(dataItem) {
+    var pathLength = exportBridgeSeries.getPathLength(dataItem) || maxLength;
+    var dur = maxLength > 0 ? Math.max(minDuration, (pathLength / maxLength) * baseDuration) : baseDuration;
+
+    var bullets = dataItem.bullets;
+    if (bullets) {
+      am5.array.each(bullets, function(bullet) {
+        var randomDur = dur * (0.8 + Math.random() * 0.4);
+        var delay = Math.random() * randomDur;
+        setTimeout(function() {
+          var sprite = bullet.get("sprite");
+          if (sprite) sprite.set("visible", true);
+          bullet.animate({
+            key: "locationX",
+            from: 0,
+            to: 1,
+            duration: randomDur,
+            easing: am5.ease.linear,
+            loops: Infinity
+          });
+        }, delay);
+      });
+    }
+  });
+});
+
+exportBridgeSeries.data.setAll([
+
+  // === Afrique du Nord — routes courtes Méditerranée ===
+  flow(bizerti, "Bizerte", casablanca, "Casablanca",  28,
+    [wpSicChannel, wpAlboran, { longitude: -4.0, latitude: 35.5 }]),
+  flow(bizerti, "Bizerte", alexandrie, "Alexandrie",  35,
+    [wpMedEast]),
+  flow(gabes,   "Gabès",   aqaba,      "Aqaba",       12,
+    [wpSicChannel, wpMedEast, wpMedCyprus, wpSuezExp, wpRedSeaExp]),
+
+  // === Maroc — routes droites côtières depuis Tunis ===
+  // Tanger : longe la côte Nord-Afrique Med puis passe Gibraltar
+  flow(bizerti, "Bizerte", tanger, "Tanger",  32,
+    [wpTunisAlg, wpAlgOran, wpMedOcc]),
+  // Agadir : suite vers la côte Atlantique marocaine
+  flow(skhira, "La Skhira", agadir, "Agadir",  20,
+    [wpSicChannel, wpTunisAlg, wpAlgOran, wpMedOcc, wpAtlMar, wpAtlAgadir]),
+  // Casablanca déjà existant — ajout depuis Gabès en route directe côtière
+  flow(gabes, "Gabès", casablanca, "Casablanca",  18,
+    [{ longitude: 9.5, latitude: 36.8 }, wpTunisAlg, wpAlgOran, wpMedOcc, { longitude: -5.5, latitude: 35.0 }]),
+
+  // === Mauritanie — longe la côte Afrique du Nord puis Atlantique ===
+  // Nouakchott : route côtière complète
+  flow(bizerti, "Bizerte", nouakchott, "Nouakchott",  15,
+    [wpTunisAlg, wpAlgOran, wpMedOcc, wpAtlMar, wpAtlAgadir, wpAtlMaur,
+     { longitude: -16.8, latitude: 19.5 }]),
+  // Nouadhibou : port minier, légèrement plus au nord
+  flow(skhira, "La Skhira", nouadhibou, "Nouadhibou",  10,
+    [wpSicChannel, wpTunisAlg, wpAlgOran, wpMedOcc, wpAtlMar, wpAtlAgadir,
+     { longitude: -17.2, latitude: 21.0 }]),
+
+  // === Moyen-Orient — via Suez & Mer Rouge ===
+  flow(skhira,  "La Skhira", beyrouth, "Beyrouth",    18,
+    [wpSicChannel, wpMedEast, wpMedCyprus]),
+  flow(skhira,  "La Skhira", dubai,    "Dubaï",       22,
+    [wpSicChannel, wpMedEast, wpSuezExp, wpRedSeaExp, wpAdenExp, wpHormuzExp]),
+
+  // === Afrique subsaharienne — Gibraltar → Atlantique Est ===
+  flow(skhira,  "La Skhira", dakar,    "Dakar",       30,
+    [wpSicChannel, wpGibExp, wpCanaries, { longitude: -17.0, latitude: 18.0 }]),
+  flow(bizerti, "Bizerte",   abidjan,  "Abidjan",     24,
+    [wpSicChannel, wpGibExp, wpCanaries, wpCapVert, wpGolfGui, { longitude: -4.5, latitude: 5.0 }]),
+  flow(gabes,   "Gabès",     douala,   "Douala",      16,
+    [wpSicChannel, wpGibExp, wpCanaries, wpCapVert, wpGolfGui]),
+
+  // === Amériques — Gibraltar → Atlantique ===
+  flow(bizerti, "Bizerte", newYork,  "New York",    20,
+    [wpSicChannel, wpGibExp, wpAtlNorth, { longitude: -65.0, latitude: 38.0 }]),
+  flow(skhira,  "La Skhira", houston, "Houston",    15,
+    [wpSicChannel, wpGibExp, wpAtlNorth, { longitude: -65.0, latitude: 38.0 }, { longitude: -90.0, latitude: 28.0 }]),
+  flow(gabes,   "Gabès",   santos,   "Santos",     11,
+    [wpSicChannel, wpGibExp, wpAtlMid, wpAtlSud, { longitude: -38.0, latitude: -15.0 }])
+]);
+
+// ---- Title + Subtitle (top center) ----
+var titleCont = chart.children.push(am5.Container.new(root, {
+  layout: root.verticalLayout,
+  x: am5.p50,
+  centerX: am5.p50,
+  y: 0,
+  position: "absolute",
+  paddingTop: 16
+}));
+
+titleCont.children.push(am5.Label.new(root, {
+  text: "ExportBRIDGE — Tunisie Hub Commercial Mondial",
+  fontSize: 18,
+  fontWeight: "600",
+  fill: amber,
+  x: am5.p50,
+  centerX: am5.p50
+}));
+
+titleCont.children.push(am5.Label.new(root, {
+  text: "Export Med (bleu)  •  Export Monde (orange)  •  Import (vert)  •  Golfe Persique (ambre)  — milliers t/an",
+  fontSize: 11,
+  fill: sulfur,
+  x: am5.p50,
+  centerX: am5.p50
+}));
+
+// ---- Globe / Map switch ----
+var switchCont = chart.children.push(am5.Container.new(root, {
+  layout: root.horizontalLayout,
+  x: 20,
+  y: 40
+}));
+
+switchCont.children.push(am5.Label.new(root, {
+  centerY: am5.p50,
+  text: "Globe",
+  fill: flare,
+  fontSize: 13
+}));
+
+var switchButton = switchCont.children.push(am5.Button.new(root, {
+  themeTags: ["switch"],
+  centerY: am5.p50,
+  icon: am5.Circle.new(root, {
+    themeTags: ["icon"]
+  })
+}));
+
+var easing = am5.ease.inOut(am5.ease.cubic);
+var duration = 1500;
+
+function zoomToGlobe() {
+  chart.set("projection", am5map.geoOrthographic());
+  chart.set("panX", "rotateX");
+  chart.set("panY", "rotateY");
+  chart.animate({ key: "rotationX", to: -74, duration, easing });
+  chart.animate({ key: "rotationY", to: -30, duration, easing });
+  chart.animate({ key: "zoomLevel", to: 1.6, duration, easing });
+  bgSeries.mapPolygons.template.set("fillOpacity", 1);
+}
+
+function zoomToMap() {
+  chart.set("projection", am5map.geoMercator());
+  chart.set("panX", "translateX");
+  chart.set("panY", "translateY");
+  chart.animate({ key: "rotationY", to: 0, duration, easing });
+  setTimeout(function() {
+    chart.zoomToGeoPoint({ longitude: 67, latitude: 32 }, 3.5, true, duration);
+  }, 100);
+  bgSeries.mapPolygons.template.set("fillOpacity", 0);
+}
+
+var fadeDuration = 300;
+
+switchButton.on("active", function() {
+  chart.goHome(duration);
+  // Fade out before projection switch
+  setTimeout(function() {
+    chart.seriesContainer.animate({ key: "opacity", to: 0, duration: fadeDuration });
+  }, duration - fadeDuration);
+  setTimeout(function() {
+    if (switchButton.get("active")) {
+      zoomToMap();
+    } else {
+      zoomToGlobe();
+    }
+    // Fade in after projection switch
+    chart.seriesContainer.animate({ key: "opacity", to: 1, duration: fadeDuration });
+  }, duration);
+});
+
+switchCont.children.push(am5.Label.new(root, {
+  centerY: am5.p50,
+  text: "Map",
+  fill: flare,
+  fontSize: 13
+}));
+
+// ---- Zoom controls with home button ----
+var zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+zoomControl.homeButton.set("visible", true);
+
+
+chart.appear(1000, 100);
+
+// Initial animation: rotate to globe position, then zoom in
+setTimeout(function() {
+  zoomToGlobe();
+}, 1000);
+
+
+});
+</script>
     {% endblock %}
 
-</body>
+  </body>
 </html>

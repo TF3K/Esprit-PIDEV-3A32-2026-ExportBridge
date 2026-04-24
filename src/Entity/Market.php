@@ -2,17 +2,19 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\MarketRepository;
 
 #[ORM\Entity(repositoryClass: MarketRepository::class)]
 #[ORM\Table(name: 'markets')]
 class Market
 {
+    // -------------------------------------------------------------------------
+    // ID
+    // -------------------------------------------------------------------------
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -29,19 +31,9 @@ class Market
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $country_code = null;
-
-    public function getCountryCode(): ?string
-    {
-        return $this->country_code;
-    }
-
-    public function setCountryCode(string $country_code): self
-    {
-        $this->country_code = $country_code;
-        return $this;
-    }
+    // -------------------------------------------------------------------------
+    // Basic Info
+    // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $name = null;
@@ -54,6 +46,20 @@ class Market
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+
+    #[ORM\Column(type: 'string', nullable: false)]
+    private ?string $country_code = null;
+
+    public function getCountryCode(): ?string
+    {
+        return $this->country_code;
+    }
+
+    public function setCountryCode(string $country_code): self
+    {
+        $this->country_code = $country_code;
         return $this;
     }
 
@@ -102,16 +108,20 @@ class Market
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $trade_agreement = null;
 
-    public function getTrade_agreement(): ?string
+    public function getTradeAgreement(): ?string
     {
         return $this->trade_agreement;
     }
 
-    public function setTrade_agreement(?string $trade_agreement): self
+    public function setTradeAgreement(?string $trade_agreement): static
     {
         $this->trade_agreement = $trade_agreement;
         return $this;
     }
+
+    // -------------------------------------------------------------------------
+    // Timestamps
+    // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $created_at = null;
@@ -127,49 +137,47 @@ class Market
         return $this;
     }
 
+    // -------------------------------------------------------------------------
+    // Relations
+    // -------------------------------------------------------------------------
+
+    /**
+     * Companies (OneToMany)
+     * ✅ FIXED level 7: @var avec types génériques spécifiés
+     *
+     * @var Collection<int, Company>
+     */
     #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'market')]
     private Collection $companies;
-
-    public function __construct()
-    {
-        $this->companies = new ArrayCollection();
-    }
 
     /**
      * @return Collection<int, Company>
      */
     public function getCompanies(): Collection
     {
-        if (!$this->companies instanceof Collection) {
-            $this->companies = new ArrayCollection();
-        }
         return $this->companies;
     }
 
     public function addCompany(Company $company): self
     {
-        if (!$this->getCompanies()->contains($company)) {
-            $this->getCompanies()->add($company);
+        if (!$this->companies->contains($company)) {
+            $this->companies->add($company);
         }
         return $this;
     }
 
     public function removeCompany(Company $company): self
     {
-        $this->getCompanies()->removeElement($company);
+        $this->companies->removeElement($company);
         return $this;
     }
 
-    public function getTradeAgreement(): ?string
+    // -------------------------------------------------------------------------
+    // Constructor
+    // -------------------------------------------------------------------------
+
+    public function __construct()
     {
-        return $this->trade_agreement;
+        $this->companies = new ArrayCollection();
     }
-
-    public function setTradeAgreement(?string $trade_agreement): static
-    {
-        $this->trade_agreement = $trade_agreement;
-
-        return $this;
-    }
-
 }

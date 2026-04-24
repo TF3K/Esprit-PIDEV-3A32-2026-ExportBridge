@@ -1,0 +1,352 @@
+
+{% block body %}
+
+	<style>
+		/* ── Sticky wrapper ── */
+		.for-sticky {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 999;
+			width: 100%;
+			transform: translateY(0);
+			transition: transform 0.4s ease;
+		}
+
+		.for-sticky.hide {
+			transform: translateY(-100%); /* caché quand on scroll vers le bas */
+		}
+
+		/* ── Top bar ── */
+		.header-top-area {
+			background-color: #2f2f2f;
+			padding: 5px 0;
+		}
+
+		/* ── Contact links ── */
+		.top-contact a {
+			display: inline-block;
+			line-height: 14px;
+			padding: 0 15px 2px 12px;
+			color: #eeeeee;
+			font-family: 'Roboto', sans-serif;
+			font-size: 14px;
+			text-decoration: none;
+		}
+
+		.top-contact a:first-child {
+			padding-left: 0;
+		}
+
+		.top-contact i.fa,
+		.top-contact i.far {
+			color: #eb0028;
+			margin-right: 6px;
+		}
+
+		/* ── Top menu ── */
+		.top-menu ul {
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+			display: flex;
+			align-items: center;
+		}
+
+		.top-menu ul li a {
+			color: #dddddd;
+			margin: 0 10px;
+			display: block;
+			text-decoration: none;
+			transition: color 0.3s ease;
+			white-space: nowrap;
+		}
+
+		.top-menu ul li a i {
+			margin-right: 5px;
+		}
+
+		.top-menu ul li a:hover {
+			color: #eb0028;
+		}
+
+		/* ── Language dropdown ── */
+		.language {
+			padding: 2px 0 0;
+		}
+
+		.language ul {
+			margin: 0;
+			padding: 0;
+			list-style-type: none;
+		}
+
+		.language > ul > li {
+			float: left;
+			padding: 0 0 0 15px;
+			position: relative;
+		}
+
+		.language > ul > li > a {
+			color: #dddddd;
+			text-decoration: none;
+		}
+
+		.language > ul > li::before {
+			display: block;
+			left: 0;
+			top: 50%;
+			height: 10px;
+			margin-top: -5px;
+			width: 1px;
+			content: "";
+			background-color: #adb1bd;
+			position: absolute;
+		}
+
+		.dropdown-toggle:hover {
+			color: #eb0028;
+		}
+		.header-area {
+			background-color: #fff;
+			position: relative;
+		}
+		
+		.logo img {
+			height: 44px;
+			width: 168px;
+			float: left;
+    margin-top: 15px;
+		}
+		.mainmenu {
+    float: right;
+}
+.mainmenu ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+    text-align: right
+}
+.mainmenu ul li {
+    display: inline-block;
+    position: relative;
+}
+.mainmenu ul li a {
+    display: block;
+    color: #222;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 28px 20px;
+		font-family: 'Roboto', sans-serif;
+}
+.mainmenu ul li a:hover {
+	background-color: #f3f3f3;
+	}
+	.header-search-bar {
+    float: right;
+    position: relative;
+    padding: 40px 0px;
+    margin-left: 20px;
+    width: 40px;
+}
+.header-search-bar span {
+    position: absolute;
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    color: #fff;
+    border-radius: 3px;
+    background-color: #eb0028;
+    line-height: 40px;
+    top: 50%;
+    margin-top: -20px;
+    right: 0px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.header-search-bar .search-box {
+    border: 1px solid #cccccc;
+    height: 36px;
+    width: 200px;
+    position: absolute;
+    bottom: -36px;
+    right: 0px;
+    padding: 0px 10px;
+    left: inherit;
+    top: inherit;
+    border-radius: 0px;
+    box-shadow: none;
+    margin: 0px;
+}
+	</style>
+
+	<div class="for-sticky">
+
+    {# ───────────────── TOP BAR ───────────────── #}
+    <div class="header-top-area">
+        <div class="container">
+            <div class="row align-items-center">
+
+                {# CONTACT INFO #}
+                <div class="col-12 col-lg-8">
+                    <div class="top-contact">
+                        <a href="#">
+                            <i class="fa fa-envelope"></i>
+                            exportBridge@gmail.com
+                        </a>
+
+                        <a href="#">
+                            <i class="fa fa-phone"></i>
+                            +216 58 810 370
+                        </a>
+
+                        <a href="#">
+                            <i class="far fa-clock"></i>
+                            9:00AM to 8:00PM
+                        </a>
+                    </div>
+                </div>
+
+                {# LOGIN + LANGUAGE #}
+                <div class="col-12 col-lg-4 d-flex justify-content-center justify-content-lg-end align-items-center gap-2">
+
+                    {# LOGIN MENU #}
+                    <div class="top-menu">
+                        <ul>
+                            <li>
+                                <a href="{{ path('app_login') }}">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    {{ 'login'|trans }}
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ path('app_register') }}">
+                                    <i class="fas fa-unlock-alt"></i>
+                                    {{ 'Register'|trans }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {# LANGUAGE SWITCHER #}
+                    <div class="language">
+                        <ul class="dropdown">
+                            <li class="dropdown">
+
+                                <a class="dropdown-toggle"
+                                   href="#"
+                                   data-bs-toggle="dropdown"
+                                   role="button"
+                                   aria-expanded="false"
+                                   style="display:flex;align-items:center;gap:5px;">
+
+                                    {% if app.request.locale == 'fr' %}
+                                        <img src="{{ asset('assets/images/flag-2.png') }}" width="20" alt="FR">
+                                        FR
+                                    {% else %}
+                                        <img src="{{ asset('assets/images/flag-1.png') }}" width="20" alt="EN">
+                                        EN
+                                    {% endif %}
+
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('home', {'_locale': 'fr'}) }}">
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <img src="{{ asset('assets/images/flag-2.png') }}" width="20" alt="FR">
+                                                FR
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('home', {'_locale': 'en'}) }}">
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <img src="{{ asset('assets/images/flag-1.png') }}" width="20" alt="EN">
+                                                EN
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ───────────────── MAIN HEADER ───────────────── #}
+    <div class="header-area" style="background-color: #fff;width: 100%;position: relative;    height: 77px;">
+        <div class="container">
+
+            {# LOGO #}
+            <div class="logo">
+                <a href="{{ path('home') }}">
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="Logo">
+                </a>
+            </div>
+
+            {# SEARCH BAR #}
+            <div class="dropdown header-search-bar">
+                <form action="#">
+                    <span data-toggle="dropdown-menu">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </span>
+
+                    <input type="search"
+                           placeholder="Keywords..."
+                           class="dropdown-menu search-box">
+                </form>
+            </div>
+
+            {# NAVBAR #}
+            <nav class="mainmenu">
+                <ul id="navigation">
+
+                    <li class="nav-active">
+                        <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'Services'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'Shipping'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'Tracking'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'Blog'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'pages'|trans }}</a>
+                    </li>
+
+                    <li>
+                        <a href="#">{{ 'Contact Us'|trans }}</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+</div>
+					
+
+
+{% endblock %}
