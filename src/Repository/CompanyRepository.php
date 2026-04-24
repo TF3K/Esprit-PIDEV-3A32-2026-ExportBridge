@@ -17,7 +17,7 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED level 7: cast (int) + getSingleScalarResult() peut retourner mixed
+     * Compte le nombre total de companies
      */
     public function countAll(): int
     {
@@ -28,8 +28,6 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED level 7: return type array<int, Company> au lieu de pas de type
-     *
      * @return array<int, Company>
      */
     public function findPaginated(int $page, int $limit): array
@@ -46,7 +44,8 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED level 7: return type array<int, Company> au lieu de pas de type
+     * ✅ FIXED: c.company_name (nom exact de la propriété PHP dans Company.php)
+     * ✅ FIXED: allowed fields utilisent aussi les vrais noms de propriétés PHP
      *
      * @return array<int, Company>
      */
@@ -55,11 +54,13 @@ class CompanyRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
 
         if (!empty($name)) {
-            $qb->andWhere('c.companyName LIKE :name')
+            // ✅ company_name = nom de la propriété PHP dans Company.php
+            $qb->andWhere('c.company_name LIKE :name')
                ->setParameter('name', '%' . $name . '%');
         }
 
-        $allowed = ['id', 'companyName', 'country', 'createdAt'];
+        // ✅ Noms des propriétés PHP (pas les noms de colonnes SQL)
+        $allowed = ['id', 'company_name', 'country', 'created_at'];
 
         if (!in_array($sortBy, $allowed, true)) {
             $sortBy = 'id';

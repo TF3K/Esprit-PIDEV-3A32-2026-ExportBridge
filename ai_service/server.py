@@ -1,13 +1,15 @@
 import os
 import json
 import mysql.connector
-from flask import Flask, request, jsonify
+from flask import Flask, Response, request, jsonify
 from flask_mail import Mail, Message
 from flask_cors import CORS
 from groq import Groq
 from dotenv import load_dotenv
 from datetime import datetime
 import random
+
+import requests
 # --- INITIALISATION ---
 load_dotenv()
 
@@ -26,8 +28,7 @@ app.config.update(
 mail = Mail(app)
 
 # --- CONFIGURATION GROQ ---
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-groq_client = Groq(api_key=GROQ_API_KEY)
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 SYSTEM_PROMPT_TEMPLATE = """Tu es Sikipon, l'assistant IA officiel de la plateforme ExportBridge.
 
@@ -204,8 +205,62 @@ def get_latest_updates():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500   
-    
-    
+
+
+from huggingface_hub import InferenceClient 
+import io
+
+HF_TOKEN = os.getenv("HF_TOKEN")
+# ✅ Nouveau client officiel HF (remplace requests manuel)
+hf_client = InferenceClient(provider="fal-ai", api_key=HF_TOKEN)
+
+@app.route('/api/generate-avatar', methods=['GET'])
+def generate_avatar():
+    if not HF_TOKEN:
+        return jsonify({"error": "HF_TOKEN manquant"}), 500
+    if not os.getenv("GROQ_API_KEY"):
+        return jsonify({"error": "GROQ_API_KEY manquant"}), 500
+
+    try:
+        seed = request.args.get('seed', 'guest')
+
+        # 🧠 Analyse du genre via Groq
+        chat_response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{
+                "role": "user",
+                "content": f"Is the name '{seed}' male or female? Answer only: male or female."
+            }],
+            temperature=0.1,
+            max_tokens=5
+        )
+
+        gender_raw = chat_response.choices[0].message.content.strip().lower()
+        gender = "female" if "female" in gender_raw else "male"
+        subject = "professional young woman" if gender == "female" else "professional young man"
+
+        image_prompt = (
+            f"Hyper realistic 2D portrait of a {subject}, "
+            "instagram profile picture style, soft lighting, "
+            "clean background, ultra detailed face, 4k"
+        )
+
+        # 🎨 ✅ Nouveau SDK HF — plus de requests manuel
+        pil_image = hf_client.text_to_image(
+            image_prompt,
+            model="black-forest-labs/FLUX.1-schnell",  # ✅ Modèle fiable
+        )
+
+        # Convertit PIL → bytes PNG
+        img_bytes = io.BytesIO()
+        pil_image.save(img_bytes, format="PNG")
+        img_bytes.seek(0)
+
+        return Response(img_bytes.read(), mimetype='image/png')
+
+    except Exception as e:
+        print(f"Erreur generate_avatar: {e}")
+        return jsonify({"error": str(e)}), 500
 
 # --- LANCEMENT ---
 if __name__ == '__main__':

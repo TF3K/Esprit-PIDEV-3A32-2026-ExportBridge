@@ -1,135 +1,245 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Login - ExportBridge{% endblock %}
+
 
 {% block body %}
-<main>
-    <section class="p-0 d-flex align-items-center position-relative overflow-hidden">
-        <div class="container-fluid">
-            <div class="row">
+<style>
+    .for-sticky {
+			position: relative;
+		}
+.wshipping-breadcroumb {
+    background-position: center;
+    background-size: cover;
+    color: #a3a3a3;
+    position: relative;
+}
 
-                {# Left side - decorative panel #}
-                <div class="col-12 col-lg-6 d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
-                    <div class="p-3 p-lg-5">
-                        <div class="text-center">
-                            <h2 class="fw-bold">Welcome to ExportBridge</h2>
-                            <p class="mb-0 h6 fw-light">Manage your EU export documentation</p>
-                        </div>
-                        <img src="{{ asset('assets/images/element/02.svg') }}" class="mt-5" alt="">
-                    </div>
+.wshipping-content-block {
+    padding: 80px 0px;
+    background-color: #fff;
+}
+.wshipping-breadcroumb:before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(22, 0, 1, 0.8);
+    display: block;
+    content: "";
+    left: 0px;
+    top: 0px;
+}
+.wshipping-breadcroumb h1 {
+    margin: 0px;
+    padding: 0px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 32px;
+}
+.wshipping-breadcroumb a, .wshipping-breadcroumb h4 span {
+    color: #eb0028;
+}
+
+        .wshipping-breadcroumb h4 {
+    margin: 0px;
+    color: #fff;
+    line-height: 26px;
+      font-size: 18px;
+}
+.wshipping-breadcroumb h4 span {
+    color: #eb0028;
+}
+.wshipping-content-block {
+    padding: 80px 0px;
+    background-color: #fff;
+}
+.customer-login {
+
+    min-height: 400px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    position: relative;
+}
+.customer-login:before {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    content: "";
+    display: block;
+    background-color: rgba(235, 0, 40, 0.8);
+}
+.customer-login-left {
+    padding: 50px 30px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+}
+.login-icon .fa {
+    border: 15px solid rgba(92, 0, 16, 0.4);
+    color: #fff;
+    font-size: 60px;
+    border-radius: 100%;
+    width: 120px;
+    height: 120px;
+    line-height: 90px;
+}
+.customer-login-left h4 {
+    margin-top: 40px;
+    font-size: 18px;
+}
+.customer-login-left a {
+    color: #000;
+    text-transform: uppercase;
+    font-style: 16px;
+    font-weight: 600;
+}
+.customer-login-block{
+        position: relative;
+    z-index: 1;
+    padding: 30px 30px 20px 15px;
+}
+.customer-login:after {
+ position: absolute;
+    right: -555px;
+    top: 0px;
+    width: 555px;
+    height: 100%;
+    content: "";
+    display: block;
+    background-color: #e8e8e8;
+}
+.customer-login-block h2 {
+    margin-top: 0px;
+    margin-bottom: 30px;
+    position: relative;
+}
+.customer-login-block h2:before {
+    position: absolute;
+    left: 0px;
+    bottom: -10px;
+    height: 2px;
+    width: 60px;
+    background-color: #eb0028;
+    content: "";
+}
+.form-group label{
+    color: #444444;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.customer-login-block .form-control {
+    height: 38px;
+}
+button.btn-submit {
+    background-color: #eb0028;
+    border-color: #e60329;
+    color: #fff;
+    cursor: pointer;
+}
+</style>
+<div class="wshipping-content-block wshipping-breadcroumb"
+     style="background-image: url('{{ asset('assets/images/inner-banner.jpg') }}');">
+     <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-7" style="z-index: 2;">
+              <h1>Customer Login</h1>
+                  <a href="{{ path('home') }}">Home</a> / Customer Login
+            </div>
+                <div class="col-12 col-lg-5 " style="text-align: right;z-index: 2;">
+<h4>We freight to all over the world
+The best logistic company, <span>FAST</span> and <span>SAFELY!</span></h4>
                 </div>
+        </div>
+     </div>
+</div>
+<div class="wshipping-content-block">
+    <div class="container">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-6" >
+                        <div class="customer-login" style="background-image: url('{{ asset('assets/images/single-blog-pic1.jpg') }}');">
 
-                {# Right side - login form #}
-                <div class="col-12 col-lg-6 m-auto">
-                    <div class="row my-5">
-                        <div class="col-sm-10 col-xl-8 m-auto">
+                <div class="customer-login-left">
+                     <div class="login-icon">
+                        <i class="fa fa-lock"></i>
+                     </div>
+                     <h4 style="color: #ffffff;">Welcome To your account</h4>
+                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                     <a href="#">Create A new Account</a>
+                </div>
+ 
+            </div>
 
-                            <span class="mb-0 fs-1">👋</span>
-                            <h1 class="fs-2">Login into ExportBridge!</h1>
-                            <p class="lead mb-4">Nice to see you! Please log in with your account.</p>
-
-                            {# Error message #}
-                            {% if error %}
-                                <div class="alert alert-danger" role="alert">
-                                    {{ error.messageKey | trans(error.messageData, 'security') }}
-                                </div>
-                            {% endif %}
-
-                            {# Form - action and method are handled by Symfony security #}
-                            <form action="{{ path('app_login') }}" method="post" data-validate>
-
-                                {# Email #}
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">Email address *</label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                        <input type="email"
-                                               class="form-control border-0 bg-light rounded-end ps-1"
-                                               placeholder="E-mail"
+          </div>
+ <div class="col-12 col-md-6 col-lg-6">
+<div class="customer-login-block">
+<h2>Login To Your Account</h2>
+   <form action="{{ path('app_login') }}" method="post" data-validate>
+<div class="form-group" style="margin-bottom: 12px;">
+    <label>Email address:</label>
+      <input type="email"
+                                               class="form-control"
+                                            
                                                id="email"
                                                name="_username"
                                                value="{{ last_username }}"
                                                autocomplete="email"
                                                required
                                                data-validation="required email">
-                                    </div>
-                                </div>
-
-                                {# Password #}
-                                <div class="mb-4">
-                                    <label for="password" class="form-label">Password *</label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
-                                        <input type="password"
-                                               class="form-control border-0 bg-light rounded-end ps-1"
-                                               placeholder="Password"
+</div>
+<div class="form-group" style="margin-bottom: 12px;">
+    <label>Password:</label>
+      <input type="password"
+                                               class="form-control "
+                                             
                                                id="password"
                                                name="_password"
                                                autocomplete="current-password"
                                                required
                                                data-validation="required">
-                                    </div>
-                                </div>
 
-                                {# Remember me + CSRF token #}
-                                <div class="mb-4 d-flex justify-content-between">
+</div>
+  <div class="mb-4 d-flex justify-content-between">
                                     <div class="form-check">
                                         <input type="checkbox"
-                                            class="form-check-input"
-                                            id="remember_me"
-                                            name="_remember_me">
+                                               class="form-check-input"
+                                               id="remember_me"
+                                               name="_remember_me">
                                         <label class="form-check-label" for="remember_me">Remember me</label>
                                     </div>
-                                    <a href="{{ path('app_forgot_password_request') }}" class="text-muted small">Forgot password?</a>
                                 </div>
 
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                                {# Submit #}    
-                                <div class="d-grid">
-                                    <button class="btn btn-primary mb-0" type="submit">Login</button>
-                                </div>
-
-                                {# Divider #}
-                                <div class="position-relative my-4">
-                                    <hr>
-                                    <p class="mb-0 bg-white px-2 position-absolute top-50 start-50 translate-middle text-muted small">OR</p>
-                                </div>
-
-                                {# Google OAuth #}
-                                <div class="d-grid">
-                                    <a href="{{ path('hwi_oauth_redirect_to_service', {service: 'google'}) }}"
-                                    class="btn btn-light border d-flex align-items-center justify-content-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
-                                            <path fill="#EA4335" d="M24 9.5c3.14 0 5.95 1.08 8.17 2.85l6.08-6.08C34.42 3.09 29.48 1 24 1 14.82 1 7.01 6.48 3.44 14.22l7.08 5.5C12.3 13.4 17.67 9.5 24 9.5z"/>
-                                            <path fill="#4285F4" d="M46.52 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.7c-.55 2.96-2.2 5.47-4.68 7.16l7.18 5.57C43.36 37.26 46.52 31.36 46.52 24.5z"/>
-                                            <path fill="#FBBC05" d="M10.52 28.28A14.6 14.6 0 0 1 9.5 24c0-1.49.26-2.93.72-4.28l-7.08-5.5A23.93 23.93 0 0 0 .5 24c0 3.87.92 7.53 2.54 10.77l7.48-6.49z"/>
-                                            <path fill="#34A853" d="M24 46.5c5.48 0 10.08-1.82 13.44-4.93l-7.18-5.57c-1.82 1.22-4.15 1.95-6.26 1.95-6.33 0-11.7-3.9-13.48-9.22l-7.48 6.49C7.01 41.52 14.82 47 24 47z"/>
-                                        </svg>
-                                        Continue with Google
-                                    </a>
-                                </div>
-
-                                <div class="mt-4 text-center">
-                                    <span>Don't have an account? <a href="{{ path('app_register') }}">Signup here</a></span>
-                                </div>
-
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-</main>
-
-<div class="back-top">
-    <i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i>
+                                 <button class="btn btn-submit" type="submit">Login</button>
+  
+   </form>
 </div>
+  </div>
+</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock %}

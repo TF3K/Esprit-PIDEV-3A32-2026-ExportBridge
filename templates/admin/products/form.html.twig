@@ -1,4 +1,5 @@
 {% extends 'admin/base_admin.html.twig' %}
+
 {% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Product - ExportBridge Admin{% endblock %}
 
 {% block admin_content %}
@@ -19,49 +20,36 @@
             <h5 class="card-header-title">Product Information</h5>
         </div>
         <div class="card-body">
-            <form action="" method="post" enctype="multipart/form-data" class="row g-4" id="productForm">
+            <form action="" method="post" class="row g-4">
 
                 {# Name #}
                 <div class="col-lg-6">
                     <label class="form-label">Product Name *</label>
-                    <input type="text" name="name"
-                           class="form-control {{ errors.name is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.name ?? product.name ?? '' }}" required>
-                    {% if errors.name is defined %}
-                        <div class="invalid-feedback">{{ errors.name }}</div>
-                    {% endif %}
+                    <input type="text" name="name" class="form-control"
+                           value="{{ product.name ?? '' }}" required>
                 </div>
 
                 {# HS Code #}
                 <div class="col-lg-6">
                     <label class="form-label">HS Code</label>
-                    <input type="text" name="hs_code"
-                           class="form-control {{ errors.hs_code is defined ? 'is-invalid' : '' }}"
+                    <input type="text" name="hs_code" class="form-control"
                            placeholder="e.g. 6109.10"
-                           value="{{ old.hsCode ?? product.hsCode ?? '' }}">
-                    {% if errors.hs_code is defined %}
-                        <div class="invalid-feedback">{{ errors.hs_code }}</div>
-                    {% else %}
-                        <div class="form-text">Harmonized System code for EU export</div>
-                    {% endif %}
+                           value="{{ product.hsCode ?? '' }}">
+                    <div class="form-text">Harmonized System code for EU export</div>
                 </div>
 
                 {# Company #}
                 <div class="col-lg-6">
                     <label class="form-label">Company *</label>
-                    <select name="company_id"
-                            class="form-select {{ errors.company_id is defined ? 'is-invalid' : '' }}" required>
+                    <select name="company_id" class="form-select" required>
                         <option value="">— Select Company —</option>
                         {% for company in companies %}
                             <option value="{{ company.id }}"
-                                {{ (old.companyId ?? product.company.id ?? '') == company.id ? 'selected' : '' }}>
+                                {{ product.company and product.company.id == company.id ? 'selected' : '' }}>
                                 {{ company.companyName }}
                             </option>
                         {% endfor %}
                     </select>
-                    {% if errors.company_id is defined %}
-                        <div class="invalid-feedback">{{ errors.company_id }}</div>
-                    {% endif %}
                 </div>
 
                 {# Category #}
@@ -71,7 +59,7 @@
                         <option value="">— No Category —</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}"
-                                {{ (old.categoryId ?? product.productCategory.id ?? '') == category.id ? 'selected' : '' }}>
+                                {{ product.productCategory and product.productCategory.id == category.id ? 'selected' : '' }}>
                                 {{ category.name }}
                             </option>
                         {% endfor %}
@@ -81,12 +69,8 @@
                 {# Quantity #}
                 <div class="col-lg-4">
                     <label class="form-label">Quantity</label>
-                    <input type="number" step="0.01" name="quantity"
-                           class="form-control {{ errors.quantity is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.quantity ?? product.quantity ?? '' }}">
-                    {% if errors.quantity is defined %}
-                        <div class="invalid-feedback">{{ errors.quantity }}</div>
-                    {% endif %}
+                    <input type="number" step="0.01" name="quantity" class="form-control"
+                           value="{{ product.quantity ?? '' }}">
                 </div>
 
                 {# Unit #}
@@ -96,7 +80,7 @@
                         <option value="">— Select Unit —</option>
                         {% for unit in ['kg', 'g', 'ton', 'L', 'mL', 'pcs', 'm', 'm²', 'm³'] %}
                             <option value="{{ unit }}"
-                                {{ (old.unit ?? product.unit ?? '') == unit ? 'selected' : '' }}>
+                                {{ product.unit == unit ? 'selected' : '' }}>
                                 {{ unit }}
                             </option>
                         {% endfor %}
@@ -106,74 +90,37 @@
                 {# Unit Price #}
                 <div class="col-lg-4">
                     <label class="form-label">Unit Price</label>
-                    <input type="number" step="0.01" name="unit_price"
-                           class="form-control {{ errors.unit_price is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.unitPrice ?? product.unitPrice ?? '' }}">
-                    {% if errors.unit_price is defined %}
-                        <div class="invalid-feedback">{{ errors.unit_price }}</div>
-                    {% endif %}
+                    <input type="number" step="0.01" name="unit_price" class="form-control"
+                           value="{{ product.unitPrice ?? '' }}">
                 </div>
 
                 {# Currency #}
                 <div class="col-lg-6">
-                    <label class="form-label">Currency *</label>
-                    <select name="currency"
-                            class="form-select {{ errors.currency is defined ? 'is-invalid' : '' }}">
+                    <label class="form-label">Currency</label>
+                    <select name="currency" class="form-select">
                         <option value="">— Select Currency —</option>
                         {% for currency in ['EUR', 'USD', 'TND', 'GBP'] %}
                             <option value="{{ currency }}"
-                                {{ (old.currency ?? product.currency ?? '') == currency ? 'selected' : '' }}>
+                                {{ product.currency == currency ? 'selected' : '' }}>
                                 {{ currency }}
                             </option>
                         {% endfor %}
                     </select>
-                    {% if errors.currency is defined %}
-                        <div class="invalid-feedback">{{ errors.currency }}</div>
-                    {% endif %}
                 </div>
 
                 {# Origin Criteria #}
                 <div class="col-lg-6">
                     <label class="form-label">Origin Criteria</label>
-                    <input type="text" name="origin_criteria"
-                           class="form-control {{ errors.origin_criteria is defined ? 'is-invalid' : '' }}"
+                    <input type="text" name="origin_criteria" class="form-control"
                            placeholder="e.g. Wholly obtained"
-                           value="{{ old.originCriteria ?? product.originCriteria ?? '' }}">
-                    {% if errors.origin_criteria is defined %}
-                        <div class="invalid-feedback">{{ errors.origin_criteria }}</div>
-                    {% endif %}
+                           value="{{ product.originCriteria ?? '' }}">
                 </div>
 
                 {# Description #}
                 <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label mb-0">Description *</label>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="aiDescriptionBtn">
-                            <i class="bi bi-stars me-1"></i>Draft with AI
-                        </button>
-                    </div>
-                    <textarea name="description" rows="3"
-                              class="form-control {{ errors.description is defined ? 'is-invalid' : '' }}"
-                              id="descriptionField">{{ old.description ?? product.description ?? '' }}</textarea>
-                    {% if errors.description is defined %}
-                        <div class="invalid-feedback">{{ errors.description }}</div>
-                    {% endif %}
-                    <div class="form-text" id="aiDescriptionStatus"></div>
-                </div>
-
-                {# Product image #}
-                <div class="col-12">
-                    <label class="form-label">Product Image</label>
-                    <input type="file" name="image" accept="image/png,image/jpeg,image/webp" class="form-control {{ errors.image is defined ? 'is-invalid' : '' }}">
-                    {% if errors.image is defined %}
-                        <div class="invalid-feedback">{{ errors.image }}</div>
-                    {% endif %}
-                    <div class="form-text">Accepted formats: JPG, PNG, WebP.</div>
-                    {% if mode == 'edit' and product.imagePath %}
-                        <div class="mt-3">
-                            <img src="{{ asset(product.imagePath) }}" alt="Current product image" class="img-thumbnail" style="max-height: 180px;">
-                        </div>
-                    {% endif %}
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control"
+                              rows="3">{{ product.description ?? '' }}</textarea>
                 </div>
 
                 <div class="d-sm-flex justify-content-end">
@@ -186,71 +133,4 @@
         </div>
     </div>
 
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-    (function () {
-        const button = document.getElementById('aiDescriptionBtn');
-        const statusEl = document.getElementById('aiDescriptionStatus');
-        const descriptionField = document.getElementById('descriptionField');
-        const form = document.getElementById('productForm');
-
-        if (!button || !descriptionField || !form) {
-            return;
-        }
-
-        function valueOf(name) {
-            const element = form.querySelector('[name="' + name + '"]');
-            return element ? element.value : '';
-        }
-
-        function selectedTextOf(name) {
-            const select = form.querySelector('select[name="' + name + '"]');
-            if (!select || !select.selectedOptions || !select.selectedOptions[0]) {
-                return '';
-            }
-            return select.selectedOptions[0].textContent.trim();
-        }
-
-        button.addEventListener('click', async function () {
-            button.disabled = true;
-            statusEl.textContent = 'Generating description...';
-
-            try {
-                const response = await fetch('{{ path('app_admin_products_ai_description') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        name: valueOf('name'),
-                        hs_code: valueOf('hs_code'),
-                        quantity: valueOf('quantity'),
-                        unit: valueOf('unit'),
-                        unit_price: valueOf('unit_price'),
-                        currency: valueOf('currency'),
-                        origin_criteria: valueOf('origin_criteria'),
-                        category: selectedTextOf('category_id'),
-                        company: selectedTextOf('company_id')
-                    })
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Unable to generate description.');
-                }
-
-                descriptionField.value = data.description || '';
-                statusEl.textContent = 'Description drafted successfully.';
-            } catch (error) {
-                statusEl.textContent = error.message || 'Unable to generate description.';
-            } finally {
-                button.disabled = false;
-            }
-        });
-    })();
-    </script>
 {% endblock %}

@@ -1,121 +1,268 @@
+{# templates/admin/managers/index.html.twig #}
 {% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Admin Dashboard - ExportBridge{% endblock %}
+{% block title %}Managers - ExportBridge Admin{% endblock %}
 
 {% block admin_content %}
 
-    {# Title #}
-    <div class="row">
-        <div class="col-12 mb-3">
-            <h1 class="h3 mb-0">Dashboard</h1>
+    {# ================= FLASH MESSAGES ================= #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {# ================= PAGE HEADER ================= #}
+    <div class="row mb-4">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-3 mb-sm-0">Managers</h1>
+
+            <a href="{{ path('app_admin_managers_add') }}"
+               class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>
+                Add Manager
+            </a>
         </div>
     </div>
 
-    {# Counter boxes #}
-    <div class="row g-4 mb-4">
-        <div class="col-md-6 col-xxl-3">
-            <div class="card card-body bg-warning bg-opacity-15 p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="mb-0 fw-bold">{{ stats.companies }}</h2>
-                        <span class="mb-0 h6 fw-light">Companies</span>
-                    </div>
-                    <div class="icon-lg rounded-circle bg-warning text-white mb-0">
-                        <i class="bi bi-building fa-fw"></i>
+    {# ================= CARD ================= #}
+    <div class="card border-0 shadow-sm rounded-4">
+
+        {# FILTER BAR #}
+        <div class="card-header bg-white border-0 pb-0">
+            <div class="row g-3">
+
+                {# Search #}
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input type="text"
+                               id="searchInput"
+                               class="form-control border-0 bg-light"
+                               placeholder="Search name, email, company...">
                     </div>
                 </div>
+
+                {# Role Filter #}
+                <div class="col-md-3">
+                    <select id="filterSelect" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                {# Sort #}
+                <div class="col-md-3">
+                    <select id="sortSelect" class="form-select">
+                        <option value="name-asc">Name A → Z</option>
+                        <option value="name-desc">Name Z → A</option>
+                        <option value="email-asc">Email A → Z</option>
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+
+                {# Counter #}
+                <div class="col-md-1 d-flex align-items-center">
+                    <small class="text-muted" id="resultCount"></small>
+                </div>
+
             </div>
         </div>
 
-        <div class="col-md-6 col-xxl-3">
-            <div class="card card-body bg-purple bg-opacity-15 p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="mb-0 fw-bold">{{ stats.products }}</h2>
-                        <span class="mb-0 h6 fw-light">Products</span>
-                    </div>
-                    <div class="icon-lg rounded-circle bg-purple text-white mb-0">
-                        <i class="bi bi-box-seam fa-fw"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {# TABLE #}
+        <div class="card-body">
 
-        <div class="col-md-6 col-xxl-3">
-            <div class="card card-body bg-success bg-opacity-15 p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="mb-0 fw-bold">{{ stats.certificates }}</h2>
-                        <span class="mb-0 h6 fw-light">Certificates</span>
-                    </div>
-                    <div class="icon-lg rounded-circle bg-success text-white mb-0">
-                        <i class="bi bi-patch-check fa-fw"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <div class="table-responsive">
 
-        <div class="col-md-6 col-xxl-3">
-            <div class="card card-body bg-info bg-opacity-15 p-4 h-100">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h2 class="mb-0 fw-bold">{{ stats.managers }}</h2>
-                        <span class="mb-0 h6 fw-light">Managers</span>
-                    </div>
-                    <div class="icon-lg rounded-circle bg-info text-white mb-0">
-                        <i class="bi bi-people fa-fw"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <table class="table align-middle table-hover" id="managersTable">
 
-    {# Recent companies table #}
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header border-bottom p-4 d-flex justify-content-between align-items-center">
-                    <h5 class="card-header-title mb-0">Recent Companies</h5>
-                    <a href="{{ path('app_admin_companies') }}" class="btn btn-sm btn-primary mb-0">View all</a>
-                </div>
-                <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Company Name</th>
-                                    <th>Country</th>
-                                    <th>Domain</th>
-                                    <th>Rating</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for company in recentCompanies %}
-                                <tr>
-                                    <td>{{ company.companyName }}</td>
-                                    <td>{{ company.country ?? '—' }}</td>
-                                    <td>{{ company.domain ?? '—' }}</td>
-                                    <td>{{ company.rating ?? '—' }}</td>
-                                    <td>
-                                        {% if company.isBanned %}
-                                            <span class="badge text-bg-danger">Banned</span>
-                                        {% else %}
-                                            <span class="badge text-bg-success">Active</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Company</th>
+                            <th>Role</th>
+                            <th>Created At</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for manager in managers %}
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ manager.firstName }} {{ manager.lastName }}
+                                </strong>
+                            </td>
+
+                            <td>{{ manager.email }}</td>
+
+                            <td>
+                                {{ manager.company ? manager.company.companyName : '—' }}
+                            </td>
+
+                            <td class="role-cell">
+                                {% if 'ROLE_ADMIN' in manager.roles %}
+                                    <span class="badge bg-danger">Admin</span>
                                 {% else %}
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">No companies yet</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                    <span class="badge bg-secondary">User</span>
+                                {% endif %}
+                            </td>
+
+                            <td data-date="{{ manager.createdAt ? manager.createdAt|date('Y-m-d') : '' }}">
+                                {{ manager.createdAt ? manager.createdAt|date('d/m/Y') : '—' }}
+                            </td>
+
+                            <td class="text-end">
+
+                                <a href="{{ path('app_admin_managers_edit', {id: manager.id}) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                {% if app.user and manager.id != app.user.id %}
+                                    <form method="post"
+                                          action="{{ path('app_admin_managers_delete', {id: manager.id}) }}"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Delete this manager ?')">
+
+                                        <input type="hidden"
+                                               name="_token"
+                                               value="{{ csrf_token('delete-manager-' ~ manager.id) }}">
+
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted small ms-2">Current user</span>
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                No managers found.
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
             </div>
+
         </div>
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const table       = document.getElementById('managersTable');
+    const searchInput = document.getElementById('searchInput');
+    const filterSel   = document.getElementById('filterSelect');
+    const sortSel     = document.getElementById('sortSelect');
+    const countEl     = document.getElementById('resultCount');
+
+    if (!table) return;
+
+    const tbody = table.querySelector('tbody');
+
+    function rows() {
+        return Array.from(tbody.querySelectorAll('tr'))
+            .filter(row => row.children.length > 1);
+    }
+
+    function text(el) {
+        return el.textContent.toLowerCase().trim();
+    }
+
+    function applyFilters() {
+
+        let data = rows();
+
+        const search = searchInput.value.toLowerCase().trim();
+        const role   = filterSel.value;
+        const sort   = sortSel.value;
+
+        data.forEach(row => {
+
+            const fullText = text(row);
+            const roleText = text(row.querySelector('.role-cell'));
+
+            let visible = true;
+
+            if (search && !fullText.includes(search)) {
+                visible = false;
+            }
+
+            if (role && !roleText.includes(role)) {
+                visible = false;
+            }
+
+            row.style.display = visible ? '' : 'none';
+        });
+
+        let visibleRows = data.filter(row => row.style.display !== 'none');
+
+        visibleRows.sort((a, b) => {
+
+            const nameA  = text(a.children[0]);
+            const nameB  = text(b.children[0]);
+
+            const emailA = text(a.children[1]);
+            const emailB = text(b.children[1]);
+
+            const dateA  = a.children[4].dataset.date;
+            const dateB  = b.children[4].dataset.date;
+
+            switch (sort) {
+                case 'name-desc': return nameB.localeCompare(nameA);
+                case 'email-asc': return emailA.localeCompare(emailB);
+                case 'newest':    return dateB.localeCompare(dateA);
+                case 'oldest':    return dateA.localeCompare(dateB);
+                default:          return nameA.localeCompare(nameB);
+            }
+
+        });
+
+        visibleRows.forEach(row => tbody.appendChild(row));
+
+        countEl.textContent = visibleRows.length;
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    filterSel.addEventListener('change', applyFilters);
+    sortSel.addEventListener('change', applyFilters);
+
+    applyFilters();
+});
+</script>
 
 {% endblock %}

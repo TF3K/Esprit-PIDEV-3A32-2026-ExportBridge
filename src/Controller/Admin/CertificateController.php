@@ -10,13 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Traits\FormValidationTrait;
 
 #[Route('/admin/certificates')]
 class CertificateController extends AbstractController
 {
-    use FormValidationTrait;
-
     #[Route('', name: 'app_admin_certificates')]
     public function index(CertificateRepository $repo): Response
     {
@@ -32,31 +29,23 @@ class CertificateController extends AbstractController
         CompanyRepository $companyRepo
     ): Response {
         $certificate = new Certificate();
-        $errors      = [];
-        $old         = [];
 
         if ($request->isMethod('POST')) {
-            [$errors, $old] = $this->validateCertificateForm($request);
+            $this->handleForm($certificate, $request, $companyRepo);
+            $certificate->setCreatedAt(new \DateTime());
+            $certificate->setLastUpdated(new \DateTime());
 
-            if (empty($errors)) {
-                $this->applyToEntity($certificate, $request, $companyRepo);
-                $certificate->setCreatedAt(new \DateTime());
-                $certificate->setLastUpdated(new \DateTime());
+            $em->persist($certificate);
+            $em->flush();
 
-                $em->persist($certificate);
-                $em->flush();
-
-                $this->addFlash('success', 'Certificate added successfully.');
-                return $this->redirectToRoute('app_admin_certificates');
-            }
+            $this->addFlash('success', 'Certificate added successfully.');
+            return $this->redirectToRoute('app_admin_certificates');
         }
 
         return $this->render('admin/certificates/form.html.twig', [
             'certificate' => $certificate,
             'companies'   => $companyRepo->findAll(),
             'mode'        => 'add',
-            'errors'      => $errors,
-            'old'         => $old,
         ]);
     }
 
@@ -67,29 +56,20 @@ class CertificateController extends AbstractController
         EntityManagerInterface $em,
         CompanyRepository $companyRepo
     ): Response {
-        $errors = [];
-        $old    = [];
-
         if ($request->isMethod('POST')) {
-            [$errors, $old] = $this->validateCertificateForm($request);
+            $this->handleForm($certificate, $request, $companyRepo);
+            $certificate->setLastUpdated(new \DateTime());
 
-            if (empty($errors)) {
-                $this->applyToEntity($certificate, $request, $companyRepo);
-                $certificate->setLastUpdated(new \DateTime());
+            $em->flush();
 
-                $em->flush();
-
-                $this->addFlash('success', 'Certificate updated successfully.');
-                return $this->redirectToRoute('app_admin_certificates');
-            }
+            $this->addFlash('success', 'Certificate updated successfully.');
+            return $this->redirectToRoute('app_admin_certificates');
         }
 
         return $this->render('admin/certificates/form.html.twig', [
             'certificate' => $certificate,
             'companies'   => $companyRepo->findAll(),
             'mode'        => 'edit',
-            'errors'      => $errors,
-            'old'         => $old,
         ]);
     }
 
@@ -149,88 +129,7 @@ class CertificateController extends AbstractController
         return $this->redirectToRoute('app_admin_certificates_show', ['id' => $certificate->getId()]);
     }
 
-    // Extracted since add and edit share identical validation logic
-    private function validateCertificateForm(Request $request): array
-    {
-        $certificateNumber = trim($request->request->get('certificate_number') ?? '');
-        $type              = trim($request->request->get('type') ?? '');
-        $status            = trim($request->request->get('status') ?? '');
-        $countryOfOrigin   = trim($request->request->get('country_of_origin') ?? '');
-        $issuingAuthority  = trim($request->request->get('issuing_authority') ?? '');
-        $documentFile      = trim($request->request->get('document_file') ?? '');
-        $issueDate         = $request->request->get('issue_date');
-        $expiryDate        = $request->request->get('expiry_date');
-        $companyId         = $request->request->get('company_id');
-
-        $old = compact(
-            'certificateNumber', 'type', 'status', 'countryOfOrigin',
-            'issuingAuthority', 'documentFile', 'issueDate', 'expiryDate', 'companyId'
-        );
-
-        $errors = [];
-        $this->clearValidationErrors();
-
-        $this->validateAlphanumeric($certificateNumber, 'Certificate number', true);
-        if ($this->hasValidationErrors()) {
-            $errors['certificate_number'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateRequired($type, 'Type', 1);
-        if ($this->hasValidationErrors()) {
-            $errors['type'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateRequired($status, 'Status', 1);
-        if ($this->hasValidationErrors()) {
-            $errors['status'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateName($countryOfOrigin, 'Country of origin', false);
-        if ($this->hasValidationErrors()) {
-            $errors['country_of_origin'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateName($issuingAuthority, 'Issuing authority', false);
-        if ($this->hasValidationErrors()) {
-            $errors['issuing_authority'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateUrl($documentFile, false);
-        if ($this->hasValidationErrors()) {
-            $errors['document_file'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateDate($issueDate, 'Issue date', false);
-        if ($this->hasValidationErrors()) {
-            $errors['issue_date'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        $this->validateDate($expiryDate, 'Expiry date', false);
-        if ($this->hasValidationErrors()) {
-            $errors['expiry_date'] = $this->getFirstValidationError();
-            $this->clearValidationErrors();
-        }
-
-        if (!isset($errors['issue_date']) && !isset($errors['expiry_date'])
-            && $issueDate && $expiryDate) {
-            $this->validateDateRange($issueDate, $expiryDate);
-            if ($this->hasValidationErrors()) {
-                $errors['expiry_date'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-        }
-
-        return [$errors, $old];
-    }
-
-    private function applyToEntity(
+    private function handleForm(
         Certificate $certificate,
         Request $request,
         CompanyRepository $companyRepo
