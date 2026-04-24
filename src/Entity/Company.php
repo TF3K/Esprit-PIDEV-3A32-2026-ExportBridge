@@ -364,6 +364,12 @@ class Company
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'company')]
     private Collection $products;
 
+    public function __construct()
+    {
+        $this->contactHistory = new ArrayCollection();
+        $this->products = new ArrayCollection();
+        $this->managers = new ArrayCollection();
+    }
     /**
      * @return Collection<int, Product>
      */
@@ -402,16 +408,5 @@ class Company
     {
         $this->market = $market;
         return $this;
-    }
-
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
-
-    public function __construct()
-    {
-        $this->managers       = new ArrayCollection();
-        $this->contactHistory = new ArrayCollection();
-        $this->products       = new ArrayCollection();
     }
 }
