@@ -1,0 +1,167 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Company List - Admin{% endblock %}
+
+{% block body %}
+<div class="container" style="    position: relative;
+    left: 249px;
+    background-color: #f7f7f7;
+    padding: 20px;
+    width: 82%; margin: 0;">
+    <div class="row">
+        <div class="col-xl-9 border rounded-3 mb-5" style="    width: 99%;>
+
+            <!-- HEADER (même style Market) -->
+            <div class="card-header bg-transparent border-bottom" style="padding:16px">
+                <h3 class="mb-0">Company List</h3>
+            </div>
+
+            <div class="card-body" style="padding: 16px;">
+
+                <!-- SEARCH + SORT (même structure Market) -->
+                <div class="row g-3 align-items-center justify-content-between mb-4">
+
+                    <div class="col-md-8">
+                        <input type="text"
+                               id="searchCompany"
+                               class="form-control bg-transparent"
+                               placeholder="Search company by name...">
+                    </div>
+
+                    <div class="col-md-3">
+                        <select id="sortCompany"
+                                class="form-select bg-transparent">
+                            <option value="id">Newest</option>
+                            <option value="companyName">Name</option>
+                            <option value="country">Country</option>
+                            <option value="createdAt">Date</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- TABLE -->
+                <div class="table-responsive border-0">
+
+                    {% if companies is empty %}
+
+                        <div class="text-center p-5 border rounded-3 bg-light">
+                            <i class="fas fa-exclamation-circle fa-3x text-secondary mb-3"></i>
+                            <p class="h5 text-secondary">
+                                No company found "{{ app.request.query.get('name') }}"
+                            </p>
+                            <a href="{{ path('app_company_list') }}"
+                               class="btn btn-primary-soft btn-sm mt-2">
+                                Show all companies
+                            </a>
+                        </div>
+
+                    {% else %}
+
+                        <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                            <thead>
+                                <tr>
+                                        <th> id</th>
+                                    <th class="border-0 rounded-start">Company</th>
+                                    <th class="border-0">Market</th>
+                                    <th class="border-0">Country</th>
+                                    <th class="border-0">Email</th>
+                                    <th class="border-0">Domain</th>
+                                    <th class="border-0 rounded-end">Created At</th>
+                                  
+                                </tr>
+                            </thead>
+
+                            <tbody id="companyTable">
+                                {% for c in companies %}
+                                    <tr>
+                                        <td>  {{ c.id }}</td>
+                                    <td>
+  <a href="{{ path('app_company_show', {'id': c.id}) }}"
+   class="text-decoration-none">
+    <h6 class="mb-0 ms-2 text-primary">
+        {{ c.companyName }}
+    </h6>
+</a>
+</td>
+
+                                        <td>{{ c.market ? c.market.name : 'N/A' }}</td>
+                                        <td>{{ c.country }}</td>
+                                        <td>{{ c.contactEmail }}</td>
+                                        <td>{{ c.domain }}</td>
+                                        <td>
+                                            {{ c.createdAt ? c.createdAt|date('Y-m-d') : '' }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- PAGINATION (copié Market style) -->
+                <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+
+                    <p class="mb-0 text-center text-sm-start">
+                        Showing {{ from|default(0) }} to {{ to|default(0) }} of {{ totalEntries|default(0) }} entries
+                    </p>
+
+                    <nav class="d-flex justify-content-center mb-0">
+                        <ul class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0">
+
+                            <li class="page-item mb-0 {% if currentPage|default(1) == 1 %}disabled{% endif %}">
+                                <a class="page-link"
+                                   href="{{ path('app_company_list', {page: currentPage|default(1)-1}) }}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+
+                            {% for i in 1..totalPages|default(1) %}
+                                <li class="page-item mb-0 {% if i == currentPage|default(1) %}active{% endif %}">
+                                    <a class="page-link"
+                                       href="{{ path('app_company_list', {page: i}) }}">
+                                        {{ i }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+                            <li class="page-item mb-0 {% if currentPage|default(1) == totalPages|default(1) %}disabled{% endif %}">
+                                <a class="page-link"
+                                   href="{{ path('app_company_list', {page: currentPage|default(1)+1}) }}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX SEARCH (inchangé mais corrigé) -->
+<script>
+function loadCompanies() {
+    let name = document.getElementById('searchCompany').value;
+    let sort = document.getElementById('sortCompany').value;
+
+    fetch(`/company/search?name=${encodeURIComponent(name)}&sort=${sort}`)
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('companyTable').innerHTML =
+                new DOMParser()
+                    .parseFromString(html, 'text/html')
+                    .querySelector('#companyTable').innerHTML;
+        });
+}
+
+document.getElementById('searchCompany').addEventListener('input', loadCompanies);
+document.getElementById('sortCompany').addEventListener('change', loadCompanies);
+</script>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+{% block title %}Update Market{% endblock %}
+
+{% block body %}
+
+
+<section>
+	<div class="container">
+	
+	<div class="container">
+		<div class="card-body border rounded-3 mb-5" style="padding: 1rem 16px;">
+
+<form method="post">
+    <input type="hidden" name="_token" value="{{ csrf_token('market_update_' ~ market.id) }}">
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi {{ label == 'error' ? 'bi-exclamation-octagon-fill' : 'bi-check-circle-fill' }} me-2"></i>
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+    <h4>Update market</h4>
+    <hr>
+
+    <div class="row g-4">
+
+        <!-- TITLE -->
+        <div class="col-12">
+            <label class="form-label">Market title</label>
+            <input type="text" class="form-control" name="title" value="{{ market.name }}" value="{{ app.request.request.get('title') }}">
+        </div>
+
+        <!-- TRADE AGREEMENT -->
+        <div class="col-12">
+            <label class="form-label">Trade agreement</label>
+            <textarea class="form-control" name="trade_agreement">{{ market.tradeAgreement }}</textarea>
+        </div>
+
+        <!-- REGION -->
+        <div class="col-md-6">
+            <label class="form-label">Region</label>
+            <select class="form-select" name="region">
+                <option value="">Select Region</option>
+                <option value="UE" {% if market.region == 'UE' %}selected{% endif %}>UE</option>
+                <option value="USMCA" {% if market.region == 'USMCA' %}selected{% endif %}>ACEUM / USMCA</option>
+                <option value="ASEAN" {% if market.region == 'ASEAN' %}selected{% endif %}>RCEP & ASEAN</option>
+                <option value="AfCFTA" {% if market.region == 'AfCFTA' %}selected{% endif %}>ZLECAF / AfCFTA</option>
+                <option value="CCG" {% if market.region == 'CCG' %}selected{% endif %}>CCG</option>
+            </select>
+        </div>
+
+        <!-- COUNTRY CODE -->
+        <div class="col-md-6">
+            <label class="form-label">Country Code</label>
+            <select class="form-select" name="country_code">
+                <option value="">Select country</option>
+                <option value="FR" {% if market.countryCode == 'FR' %}selected{% endif %}>FR</option>
+                <option value="DE" {% if market.countryCode == 'DE' %}selected{% endif %}>DE</option>
+                <option value="IT" {% if market.countryCode == 'IT' %}selected{% endif %}>IT</option>
+                <option value="ES" {% if market.countryCode == 'ES' %}selected{% endif %}>ES</option>
+                <option value="US" {% if market.countryCode == 'US' %}selected{% endif %}>US</option>
+                <option value="TN" {% if market.countryCode == 'TN' %}selected{% endif %}>TN</option>
+                <option value="MA" {% if market.countryCode == 'MA' %}selected{% endif %}>MA</option>
+            </select>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" >{{ market.description }}</textarea>
+        </div>
+
+        <!-- CHECKBOX -->
+        <div class="col-12">
+            <input type="checkbox" name="featured" {% if market.isEu %}checked{% endif %}> EU
+        </div>
+
+        <!-- BUTTON -->
+        <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+
+    </div>
+</form>
+
+		</div>
+	</div>
+</section>
+
+{% endblock %}
