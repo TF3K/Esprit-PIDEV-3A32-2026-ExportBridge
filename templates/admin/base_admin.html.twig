@@ -29,15 +29,4 @@
     <script src="{{ asset('assets/vendor/purecounterjs/dist/purecounter_vanilla.js') }}"></script>
     <script src="{{ asset('assets/vendor/apexcharts/js/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/overlay-scrollbar/js/overlayscrollbars.min.js') }}"></script>
-    <script>
-    setInterval(function () {
-        fetch('/admin/ping', { credentials: 'same-origin' })
-            .then(res => {
-                if (res.redirected || res.status === 401 || res.url.includes('/login')) {
-                    window.location.href = '/login';
-                }
-            })
-            .catch(() => {});
-    }, 5000);
-    </script>
 {% endblock %}

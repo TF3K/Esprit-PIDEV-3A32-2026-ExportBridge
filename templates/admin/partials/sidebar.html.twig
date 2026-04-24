@@ -23,7 +23,7 @@
                     <a class="nav-link" data-bs-toggle="collapse" href="#collapseCompanies" role="button" aria-expanded="false">
                         <i class="bi bi-building fa-fw me-2"></i>Companies
                     </a>
-                    <ul class="nav collapse flex-column" id="collapseCompanies" >
+                    <ul class="nav collapse flex-column" id="collapseCompanies" data-bs-parent="#navbar-sidebar">
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_companies') }}">All Companies</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_companies_add') }}">Add Company</a></li>
                     </ul>
@@ -34,7 +34,7 @@
                     <a class="nav-link" data-bs-toggle="collapse" href="#collapseProducts" role="button" aria-expanded="false">
                         <i class="bi bi-box-seam fa-fw me-2"></i>Products
                     </a>
-                    <ul class="nav collapse flex-column" id="collapseProducts" >
+                    <ul class="nav collapse flex-column" id="collapseProducts" data-bs-parent="#navbar-sidebar">
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_products') }}">All Products</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_product_categories') }}">Categories</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_admin_products_add') }}">Add Product</a></li>

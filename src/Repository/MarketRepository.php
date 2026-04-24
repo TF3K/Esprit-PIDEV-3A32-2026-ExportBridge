@@ -17,7 +17,18 @@ class MarketRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED level 7: return type array<int, Market> au lieu de array
+     * Compte le nombre total de markets
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('count(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * ✅ Noms de propriétés PHP exacts de Market.php
      *
      * @return array<int, Market>
      */
@@ -25,17 +36,19 @@ class MarketRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
 
-        // 1. Gestion de la recherche
+        // Recherche par nom
         if ($term) {
             $qb->andWhere('m.name LIKE :term')
                ->setParameter('term', '%' . $term . '%');
         }
 
-        // 2. Gestion du tri
+        // Tri — noms des propriétés PHP dans Market.php
         if ($sortBy) {
-            $allowedSorts = ['region', 'is_eu'];
+            $allowedSorts = ['region', 'is_eu', 'name', 'created_at'];
             if (in_array($sortBy, $allowedSorts, true)) {
                 $qb->orderBy('m.' . $sortBy, 'ASC');
+            } else {
+                $qb->orderBy('m.created_at', 'DESC');
             }
         } else {
             $qb->orderBy('m.created_at', 'DESC');
@@ -48,8 +61,6 @@ class MarketRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED level 7: return type array<int, Market> au lieu de array
-     *
      * @return array<int, Market>
      */
     public function findPaginated(int $page, int $limit): array
@@ -63,16 +74,5 @@ class MarketRepository extends ServiceEntityRepository
             ->getResult();
 
         return $result;
-    }
-
-    /**
-     * Compte le nombre total de lignes dans la table
-     */
-    public function countAll(): int
-    {
-        return (int) $this->createQueryBuilder('m')
-            ->select('count(m.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 }

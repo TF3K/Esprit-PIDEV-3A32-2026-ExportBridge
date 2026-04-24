@@ -21,37 +21,9 @@
     </div>
 
     <div class="card bg-transparent border">
-        <div class="row g-2 mb-2">
-
-            {# Search #}
-            <div class="col-12 col-md-5 px-4 pt-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-0">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" id="searchInput"
-                        class="form-control bg-light border-0"
-                        placeholder="Search...">
-                </div>
-            </div>
-
-            {# Sort #}
-            <div class="col-6 col-md-2 px-4 pt-4">
-                <select id="sortSelect" class="form-select">
-                    {# sort options #}
-                    <option value="name-asc">Name A→Z</option>
-                    <option value="name-desc">Name Z→A</option>
-                    <option value="email-asc">Email A→Z</option>
-                    <option value="newest">Newest first</option>
-                    <option value="oldest">Oldest first</option>
-                </select>
-            </div>
-
-            {# Result count #}
-            <div class="col-12 col-md-2 d-flex align-items-center">
-                <small class="text-muted" id="resultCount"></small>
-            </div>
-
+        <div class="card-header bg-light border-bottom">
+            <input class="form-control bg-body" type="search"
+                   id="managerSearch" placeholder="Search managers...">
         </div>
         <div class="card-body">
             <div class="table-responsive border-0 rounded-3">
@@ -121,72 +93,11 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        (function () {
-            // ── CONFIG ─────────────────────────────────────────────
-            const config = {
-                rowSelector:  '#managersTable tbody tr',
-                searchFields: ['td:nth-child(2)', 'td:nth-child(3)'],
-                filterField:  'td:nth-child(5)',
-                sortFields: {
-                    'name-asc':     { col: 1, dir: 'asc',  type: 'text' },
-                    'name-desc':    { col: 1, dir: 'desc', type: 'text' },
-                    'email-asc':    { col: 2, dir: 'asc',  type: 'text' },
-                    'newest':       { col: 4, dir: 'desc', type: 'text' },
-                    'oldest':       { col: 4, dir: 'asc',  type: 'text' },
-                }
-            };
-            // ───────────────────────────────────────────────────────
-
-            const rows        = () => [...document.querySelectorAll(config.rowSelector)];
-            const searchInput = document.getElementById('searchInput');
-            const filterSel   = document.getElementById('filterSelect');
-            const sortSel     = document.getElementById('sortSelect');
-            const countEl     = document.getElementById('resultCount');
-
-            function normalize(str) {
-                return (str || '').toLowerCase().trim();
-            }
-
-            function cellText(row, selector) {
-                const el = row.querySelector(selector);
-                return el ? normalize(el.textContent) : '';
-            }
-
-            function apply() {
-                const query  = normalize(searchInput.value);
-                const sort   = sortSel.value;
-
-                let visible = rows().filter(row => {
-                    // search across configured fields
-                    const matchSearch = !query || config.searchFields.some(sel =>
-                        cellText(row, sel).includes(query)
-                    );
-                    row.style.display = matchSearch ? '' : 'none';
-                    return matchSearch;
-                });
-
-                // sort visible rows
-                const { col, dir, type } = config.sortFields[sort] || {};
-                if (col !== undefined) {
-                    const tbody = document.querySelector('#managersTable tbody');
-                    visible.sort((a, b) => {
-                        let va = cellText(a, `td:nth-child(${col + 1})`);
-                        let vb = cellText(b, `td:nth-child(${col + 1})`);
-                        if (type === 'num') { va = parseFloat(va) || 0; vb = parseFloat(vb) || 0; }
-                        if (va < vb) return dir === 'asc' ? -1 : 1;
-                        if (va > vb) return dir === 'asc' ?  1 : -1;
-                        return 0;
-                    }).forEach(row => tbody.appendChild(row));
-                }
-
-                countEl.textContent = `${visible.length} result${visible.length !== 1 ? 's' : ''}`;
-            }
-
-            searchInput.addEventListener('input',  apply);
-            filterSel.addEventListener('change',   apply);
-            sortSel.addEventListener('change',     apply);
-
-            apply(); // run on load to set count
-        })();
+        document.getElementById('managerSearch').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('#managersTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
     </script>
 {% endblock %}

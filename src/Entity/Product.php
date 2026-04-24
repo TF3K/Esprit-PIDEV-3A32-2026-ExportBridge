@@ -101,15 +101,15 @@ class Product
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private ?string $quantity = null;
+    #[ORM\Column(type: 'decimal', nullable: true)]
+    private ?float $quantity = null;
 
-    public function getQuantity(): ?string
+    public function getQuantity(): ?float
     {
         return $this->quantity;
     }
 
-    public function setQuantity(?string $quantity): self
+    public function setQuantity(?float $quantity): self
     {
         $this->quantity = $quantity;
         return $this;
@@ -129,15 +129,15 @@ class Product
         return $this;
     }
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private ?string $unit_price = null;
+    #[ORM\Column(type: 'decimal', nullable: true)]
+    private ?float $unit_price = null;
 
-    public function getUnitPrice(): ?string
+    public function getUnitPrice(): ?float
     {
         return $this->unit_price;
     }
 
-    public function setUnitPrice(?string $unit_price): self
+    public function setUnitPrice(?float $unit_price): self
     {
         $this->unit_price = $unit_price;
         return $this;
@@ -168,20 +168,6 @@ class Product
     public function setOriginCriteria(?string $origin_criteria): self
     {
         $this->origin_criteria = $origin_criteria;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $image_path = null;
-
-    public function getImagePath(): ?string
-    {
-        return $this->image_path;
-    }
-
-    public function setImagePath(?string $image_path): self
-    {
-        $this->image_path = $image_path;
         return $this;
     }
 

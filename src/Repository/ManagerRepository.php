@@ -16,16 +16,6 @@ class ManagerRepository extends ServiceEntityRepository
         parent::__construct($registry, Manager::class);
     }
 
-    public function findNonAdmins(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->where('m.roles NOT LIKE :role')
-            ->setParameter('role', '%ROLE_ADMIN%')
-            ->orderBy('m.created_at', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
     //    /**
     //     * @return Manager[] Returns an array of Manager objects
     //     */
@@ -50,4 +40,39 @@ class ManagerRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+  public function getCountByDay(): array
+{
+    // On définit le point de départ : il y a 6 jours à minuit
+    $last7Days = new \DateTime('-6 days');
+    $last7Days->setTime(0, 0, 0);
+
+    // 1. Récupération des données groupées par date
+    // Notez l'utilisation de m.created_at (avec underscore)
+    $results = $this->createQueryBuilder('m')
+        ->select("SUBSTRING(m.created_at, 1, 10) as dateOnly, COUNT(m.id) as total")
+        ->where('m.created_at >= :date')
+        ->setParameter('date', $last7Days)
+        ->groupBy('dateOnly')
+        ->orderBy('dateOnly', 'ASC')
+        ->getQuery()
+        ->getResult();
+
+    // 2. Initialisation du tableau pour les 7 derniers jours (pour boucher les trous à 0)
+    $chartData = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $date = new \DateTime("-$i days");
+        $formattedDate = $date->format('Y-m-d');
+        
+        $count = 0;
+        foreach ($results as $row) {
+            if ($row['dateOnly'] === $formattedDate) {
+                $count = (int)$row['total'];
+                break;
+            }
+        }
+        $chartData[] = $count;
+    }
+
+    return $chartData;
+}
 }

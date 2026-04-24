@@ -1,7 +1,10 @@
 {% extends 'admin/base_admin.html.twig' %}
+
 {% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Company - ExportBridge Admin{% endblock %}
 
 {% block admin_content %}
+
+    {# Title #}
     <div class="row mb-3">
         <div class="col-12 d-sm-flex justify-content-between align-items-center">
             <h1 class="h3 mb-2 mb-sm-0">
@@ -23,99 +26,68 @@
                 {# Company Name #}
                 <div class="col-lg-6">
                     <label class="form-label">Company Name *</label>
-                    <input type="text" name="company_name"
-                           class="form-control {{ errors.company_name is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.companyName ?? company.companyName ?? '' }}" required>
-                    {% if errors.company_name is defined %}
-                        <div class="invalid-feedback">{{ errors.company_name }}</div>
-                    {% endif %}
+                    <input type="text" name="company_name" class="form-control"
+                           value="{{ company.companyName ?? '' }}" required>
                 </div>
 
                 {# Domain #}
                 <div class="col-lg-6">
                     <label class="form-label">Domain</label>
-                    <input type="text" name="domain"
-                           class="form-control {{ errors.domain is defined ? 'is-invalid' : '' }}"
+                    <input type="text" name="domain" class="form-control"
                            placeholder="e.g. manufacturing"
-                           value="{{ old.domain ?? company.domain ?? '' }}">
-                    {% if errors.domain is defined %}
-                        <div class="invalid-feedback">{{ errors.domain }}</div>
-                    {% endif %}
+                           value="{{ company.domain ?? '' }}">
                 </div>
 
                 {# Tax Number #}
                 <div class="col-lg-6">
                     <label class="form-label">Tax Number</label>
-                    <input type="text" name="tax_number"
-                           class="form-control {{ errors.tax_number is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.taxNumber ?? company.taxNumber ?? '' }}">
-                    {% if errors.tax_number is defined %}
-                        <div class="invalid-feedback">{{ errors.tax_number }}</div>
-                    {% endif %}
+                    <input type="text" name="tax_number" class="form-control"
+                           value="{{ company.taxNumber ?? '' }}">
                 </div>
 
                 {# Registration Number #}
                 <div class="col-lg-6">
                     <label class="form-label">Registration Number</label>
-                    <input type="text" name="registration_number"
-                           class="form-control {{ errors.registration_number is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.registrationNumber ?? company.registrationNumber ?? '' }}">
-                    {% if errors.registration_number is defined %}
-                        <div class="invalid-feedback">{{ errors.registration_number }}</div>
-                    {% endif %}
+                    <input type="text" name="registration_number" class="form-control"
+                           value="{{ company.registrationNumber ?? '' }}">
                 </div>
 
                 {# Country #}
                 <div class="col-lg-6">
                     <label class="form-label">Country</label>
-                    <input type="text" name="country"
-                           class="form-control {{ errors.country is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.country ?? company.country ?? '' }}">
-                    {% if errors.country is defined %}
-                        <div class="invalid-feedback">{{ errors.country }}</div>
-                    {% endif %}
+                    <input type="text" name="country" class="form-control"
+                           value="{{ company.country ?? '' }}">
                 </div>
 
                 {# Contact Email #}
                 <div class="col-lg-6">
                     <label class="form-label">Contact Email</label>
-                    <input type="email" name="contact_email"
-                           class="form-control {{ errors.contact_email is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.contactEmail ?? company.contactEmail ?? '' }}">
-                    {% if errors.contact_email is defined %}
-                        <div class="invalid-feedback">{{ errors.contact_email }}</div>
-                    {% endif %}
+                    <input type="email" name="contact_email" class="form-control"
+                           value="{{ company.contactEmail ?? '' }}">
                 </div>
 
                 {# Contact Phone #}
                 <div class="col-lg-6">
                     <label class="form-label">Contact Phone</label>
-                    <input type="text" name="contact_phone"
-                           class="form-control {{ errors.contact_phone is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.contactPhone ?? company.contactPhone ?? '' }}">
-                    {% if errors.contact_phone is defined %}
-                        <div class="invalid-feedback">{{ errors.contact_phone }}</div>
-                    {% endif %}
+                    <input type="text" name="contact_phone" class="form-control"
+                           value="{{ company.contactPhone ?? '' }}">
                 </div>
 
                 {# Rating #}
                 <div class="col-lg-6">
-                    <label class="form-label">Rating (1–5)</label>
-                    <input type="number" name="rating" min="1" max="5"
-                           class="form-control {{ errors.rating is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.rating ?? company.rating ?? '' }}">
-                    {% if errors.rating is defined %}
-                        <div class="invalid-feedback">{{ errors.rating }}</div>
-                    {% endif %}
+                    <label class="form-label">Rating (1-5)</label>
+                    <input type="number" name="rating" class="form-control"
+                           min="1" max="5"
+                           value="{{ company.rating ?? '' }}">
                 </div>
 
                 {# Address #}
                 <div class="col-12">
                     <label class="form-label">Address</label>
-                    <textarea name="address" class="form-control" rows="3">{{ old.address ?? company.address ?? '' }}</textarea>
+                    <textarea name="address" class="form-control" rows="3">{{ company.address ?? '' }}</textarea>
                 </div>
 
-                {# Banned toggle — edit only #}
+                {# Banned toggle — only show in edit mode #}
                 {% if mode == 'edit' %}
                 <div class="col-12">
                     <div class="form-check form-switch form-check-lg">
@@ -137,4 +109,5 @@
             </form>
         </div>
     </div>
+
 {% endblock %}

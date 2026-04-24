@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+namespace App\Entity;
 
 use App\Repository\ManagerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: ManagerRepository::class)]
 #[ORM\Table(name: 'managers')]
@@ -18,19 +18,58 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $first_name = null;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $last_name = null;
+
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(type: 'string')]
+    private ?string $password = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $last_login = null;
+
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'managers')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', nullable: true)]
+    private ?Company $company = null;
+
+    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'manager')]
+    private Collection $companies;
+
+    #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'manager')]
+    private Collection $contactHistory;
+
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'manager')]
+    private Collection $notifications;
+
+    #[ORM\OneToOne(targetEntity: Setting::class, mappedBy: 'manager')]
+    private ?Setting $setting = null;
+
+    public function __construct()
+    {
+        $this->companies = new ArrayCollection();
+        $this->contactHistory = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+    }
+
+    /* ===================== ID ===================== */
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $first_name = null;
+    /* ===================== FIRST NAME ===================== */
 
     public function getFirstName(): ?string
     {
@@ -43,8 +82,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $last_name = null;
+    /* ===================== LAST NAME ===================== */
 
     public function getLastName(): ?string
     {
@@ -57,23 +95,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'managers')]
-    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
-    private ?Company $company = null;
-
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
-
-    public function setCompany(?Company $company): self
-    {
-        $this->company = $company;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $email = null;
+    /* ===================== EMAIL ===================== */
 
     public function getEmail(): ?string
     {
@@ -82,16 +104,15 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): self
     {
-        $this->email = $email;
+        $this->email = strtolower($email);
         return $this;
     }
 
-    #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $password = null;
+    /* ===================== PASSWORD ===================== */
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
-        return $this->password;
+        return $this->password ?? '';
     }
 
     public function setPassword(string $password): self
@@ -100,36 +121,38 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'text', nullable: false)]
-    private ?string $roles = null;
+    /* ===================== ROLES ===================== */
 
     public function getRoles(): array
     {
-        $roles = json_decode($this->roles ?? '[]', true);
+        $roles = $this->roles;
 
-        if (!is_array($roles)) {
-            $roles = [];
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
         }
 
-        // Guarantee a baseline role for Symfony security checks.
-        $roles[] = 'ROLE_USER';
-
-        return array_values(array_unique($roles));
+        return array_unique($roles);
     }
 
-    public function setRoles(array|string $roles): self
+    public function setRoles(array $roles): self
     {
-        if (is_string($roles)) {
-            $decoded = json_decode($roles, true);
-            $roles = is_array($decoded) ? $decoded : [$roles];
-        }
-
-        $this->roles = json_encode(array_values(array_unique($roles)), JSON_UNESCAPED_SLASHES);
+        $this->roles = $roles;
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTimeInterface $created_at = null;
+    /* ===================== USER IDENTIFIER ===================== */
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email ?? '';
+    }
+
+    public function eraseCredentials(): void
+    {
+        // clear temporary sensitive data if needed
+    }
+
+    /* ===================== CREATED AT ===================== */
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
@@ -142,8 +165,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $last_login = null;
+    /* ===================== LAST LOGIN ===================== */
 
     public function getLastLogin(): ?\DateTimeInterface
     {
@@ -156,99 +178,86 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'manager')]
-    private Collection $companies;
+    /* ===================== COMPANY ===================== */
 
-    /**
-     * @return Collection<int, Company>
-     */
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): self
+    {
+        $this->company = $company;
+        return $this;
+    }
+
+    /* ===================== COMPANIES ===================== */
+
     public function getCompanies(): Collection
     {
-        if (!$this->companies instanceof Collection) {
-            $this->companies = new ArrayCollection();
-        }
         return $this->companies;
     }
 
     public function addCompany(Company $company): self
     {
-        if (!$this->getCompanies()->contains($company)) {
-            $this->getCompanies()->add($company);
+        if (!$this->companies->contains($company)) {
+            $this->companies->add($company);
         }
+
         return $this;
     }
 
     public function removeCompany(Company $company): self
     {
-        $this->getCompanies()->removeElement($company);
+        $this->companies->removeElement($company);
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'manager')]
-    private Collection $contactHistory;
+    /* ===================== CONTACT HISTORY ===================== */
 
-    /**
-     * @return Collection<int, ContactHistory>
-     */
     public function getContactHistory(): Collection
     {
-        if (!$this->contactHistory instanceof Collection) {
-            $this->contactHistory = new ArrayCollection();
-        }
         return $this->contactHistory;
     }
 
     public function addContactHistory(ContactHistory $contactHistory): self
     {
-        if (!$this->getContactHistory()->contains($contactHistory)) {
-            $this->getContactHistory()->add($contactHistory);
+        if (!$this->contactHistory->contains($contactHistory)) {
+            $this->contactHistory->add($contactHistory);
         }
+
         return $this;
     }
 
     public function removeContactHistory(ContactHistory $contactHistory): self
     {
-        $this->getContactHistory()->removeElement($contactHistory);
+        $this->contactHistory->removeElement($contactHistory);
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'manager')]
-    private Collection $notifications;
+    /* ===================== NOTIFICATIONS ===================== */
 
-    /**
-     * @return Collection<int, Notification>
-     */
     public function getNotifications(): Collection
     {
-        if (!$this->notifications instanceof Collection) {
-            $this->notifications = new ArrayCollection();
-        }
         return $this->notifications;
     }
 
     public function addNotification(Notification $notification): self
     {
-        if (!$this->getNotifications()->contains($notification)) {
-            $this->getNotifications()->add($notification);
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
         }
+
         return $this;
     }
 
     public function removeNotification(Notification $notification): self
     {
-        $this->getNotifications()->removeElement($notification);
+        $this->notifications->removeElement($notification);
         return $this;
     }
 
-    #[ORM\OneToOne(targetEntity: Setting::class, mappedBy: 'manager')]
-    private ?Setting $setting = null;
-
-    public function __construct()
-    {
-        $this->companies = new ArrayCollection();
-        $this->contactHistory = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
-    }
+    /* ===================== SETTING ===================== */
 
     public function getSetting(): ?Setting
     {
@@ -259,15 +268,5 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->setting = $setting;
         return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
-
-    public function eraseCredentials(): void
-    {
-        // nothing to clear for now
     }
 }

@@ -12,40 +12,35 @@ use App\Entity\Manager;
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use App\Traits\FormValidationTrait;
 
 class AuthController extends AbstractController
 {
-    use FormValidationTrait;
+#[Route('/login', name: 'app_login')]
+public function login(AuthenticationUtils $authenticationUtils): Response
+{
+    $user = $this->getUser();
 
-    #[Route('/', name: 'app_home')]
-    public function home(): Response
-    {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_redirect');
+    if ($user) {
+        $userId = $user->getId();
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin_dashboard', ['id' => $userId]);
         }
-
-        return $this->redirectToRoute('app_login');
+        
+        return $this->redirectToRoute('app_dashboard', ['id' => $userId]);
     }
 
-    #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        if ($this->getUser()) {
-            if ($this->isGranted('ROLE_ADMIN')) {
-                return $this->redirectToRoute('app_admin_dashboard');
-            }
-            return $this->redirectToRoute('app_dashboard');
-        }
+    // Récupère l'erreur si elle existe
+    $error = $authenticationUtils->getLastAuthenticationError();
+    
+    // Récupère le dernier identifiant (email) saisi par l'utilisateur
+    $lastUsername = $authenticationUtils->getLastUsername();
 
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('auth/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
-        ]);
-    }
+    return $this->render('auth/login.html.twig', [
+        'last_username' => $lastUsername, // On garde le nom standard Symfony pour le formulaire
+        'error' => $error,
+    ]);
+}
 
     #[Route('/register', name: 'app_register')]
     public function register(
@@ -58,67 +53,21 @@ class AuthController extends AbstractController
             return $this->redirectToRoute('app_redirect');
         }
 
-        $errors = [];
-        $old    = [];
+        $error = null;
 
         if ($request->isMethod('POST')) {
-            $firstName       = trim($request->request->get('first_name') ?? '');
-            $lastName        = trim($request->request->get('last_name') ?? '');
-            $email           = trim($request->request->get('email') ?? '');
-            $password        = $request->request->get('password') ?? '';
-            $confirmPassword = $request->request->get('confirm_password') ?? '';
-            $companyId       = $request->request->get('company_id');
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
+            $confirmPassword = $request->request->get('confirm_password');
+            $firstName = $request->request->get('first_name');
+            $lastName = $request->request->get('last_name');
+            $companyId = $request->request->get('company_id');
 
-            // Keep old values so form repopulates on error (never repopulate passwords)
-            $old = [
-                'first_name' => $firstName,
-                'last_name'  => $lastName,
-                'email'      => $email,
-            ];
-
-            // --- Validate each field individually ---
-
-            $this->clearValidationErrors();
-            $this->validateName($firstName, 'First name', true);
-            if ($this->hasValidationErrors()) {
-                $errors['first_name'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-
-            $this->validateName($lastName, 'Last name', true);
-            if ($this->hasValidationErrors()) {
-                $errors['last_name'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-
-            $this->validateEmail($email, 'Email', true);
-            if ($this->hasValidationErrors()) {
-                $errors['email'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-
-            // Only check for duplicate email if the format is valid
-            if (!isset($errors['email'])) {
-                $existingManager = $em->getRepository(Manager::class)->findOneBy(['email' => $email]);
-                if ($existingManager) {
-                    $errors['email'] = 'This email address is already registered.';
-                }
-            }
-
-            $this->validatePassword($password, true);
-            if ($this->hasValidationErrors()) {
-                $errors['password'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-
-            $this->validatePasswordMatch($password, $confirmPassword);
-            if ($this->hasValidationErrors()) {
-                $errors['confirm_password'] = $this->getFirstValidationError();
-                $this->clearValidationErrors();
-            }
-
-            // --- Only persist if no errors ---
-            if (empty($errors)) {
+            if ($password !== $confirmPassword) {
+                $error = 'Passwords do not match.';
+            } elseif (strlen($password) < 8) {
+                $error = 'Password must be at least 8 characters.';
+            } else {
                 $manager = new Manager();
                 $manager->setFirstName($firstName);
                 $manager->setLastName($lastName);
@@ -137,8 +86,7 @@ class AuthController extends AbstractController
         }
 
         return $this->render('auth/register.html.twig', [
-            'errors'    => $errors,
-            'old'       => $old,
+            'error'     => $error,
             'companies' => $companyRepo->findAll(),
         ]);
     }
@@ -153,18 +101,9 @@ class AuthController extends AbstractController
         return $this->redirectToRoute('app_dashboard');
     }
 
-    #[Route('/admin/ping', name: 'app_admin_ping')]
-    public function ping(): Response
-    {
-        if (!$this->getUser()) {
-            return new Response('', 401);
-        }
-        return new Response('', 200);
-    }
-
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // Symfony intercepts this automatically
+        // Symfony intercepts this automatically, method body never executes
     }
 }

@@ -1,4 +1,5 @@
 {% extends 'admin/base_admin.html.twig' %}
+
 {% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Category - ExportBridge Admin{% endblock %}
 
 {% block admin_content %}
@@ -21,38 +22,22 @@
         <div class="card-body">
             <form action="" method="post" class="row g-4">
 
-                {# Name #}
                 <div class="col-lg-6">
                     <label class="form-label">Name *</label>
-                    <input type="text" name="name" id="nameInput"
-                           class="form-control {{ errors.name is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.name ?? category.name ?? '' }}" required>
-                    {% if errors.name is defined %}
-                        <div class="invalid-feedback">{{ errors.name }}</div>
-                    {% endif %}
+                    <input type="text" name="name" class="form-control"
+                           value="{{ category.name ?? '' }}" required>
                 </div>
 
-                {# Slug #}
                 <div class="col-lg-6">
                     <label class="form-label">Slug *</label>
-                    <input type="text" name="slug" id="slugInput"
-                           class="form-control {{ errors.slug is defined ? 'is-invalid' : '' }}"
-                           value="{{ old.slug ?? category.slug ?? '' }}" required>
-                    {% if errors.slug is defined %}
-                        <div class="invalid-feedback">{{ errors.slug }}</div>
-                    {% else %}
-                        <div class="form-text">URL-friendly identifier, e.g. "textile-goods"</div>
-                    {% endif %}
+                    <input type="text" name="slug" class="form-control" id="slugInput"
+                           value="{{ category.slug ?? '' }}" required>
+                    <div class="form-text">URL-friendly identifier, e.g. "textile-goods"</div>
                 </div>
 
-                {# Description #}
                 <div class="col-12">
-                    <label class="form-label">Description *</label>
-                    <textarea name="description" rows="3"
-                              class="form-control {{ errors.description is defined ? 'is-invalid' : '' }}">{{ old.description ?? category.description ?? '' }}</textarea>
-                    {% if errors.description is defined %}
-                        <div class="invalid-feedback">{{ errors.description }}</div>
-                    {% endif %}
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3">{{ category.description ?? '' }}</textarea>
                 </div>
 
                 <div class="d-sm-flex justify-content-end">
@@ -70,8 +55,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        {# Auto-generate slug from name #}
         {% if mode == 'add' %}
-        document.getElementById('nameInput').addEventListener('input', function () {
+        document.querySelector('[name="name"]').addEventListener('input', function() {
             document.getElementById('slugInput').value = this.value
                 .toLowerCase()
                 .trim()
