@@ -369,8 +369,15 @@ bottom: 0;
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button>
                                 <span style="display: inline-flex;align-items: center;">
-                                    <img src="{{ asset('assets/images/per.png') }}" alt="" class="rounded-circle header-profile-user" style="width: 32px;height: 32px;margin-right: 5px;">
-                                     <span class="text-start ">
+
+ <img id="sikipon-avatar"
+       src=""
+       alt="Avatar Généré"
+       data-seed="houssem" style="width: 40px;height: 40px;border-radius: 50%;">
+
+
+
+                                <span class="text-start ">
                                         <span class="d-none d-xl-inline-block " style="color: #1f242e;font-weight: 500;font-size: 14px;">{{ app.user ? app.user.firstName : 'Guest' }} </span>
                                         <span class="d-none d-xl-block   user-name-sub-text" style="font-size: 13px;">
                                  {{ app.user ? app.user.firstName : 'Guest' }}
@@ -550,7 +557,38 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+  document.addEventListener("DOMContentLoaded", function () {
+      const avatarImg = document.getElementById("sikipon-avatar");
+      const loader    = document.getElementById("loader");
+      const seed      = avatarImg.dataset.seed;
 
+      async function loadAvatar() {
+        try {
+          // ✅ Lance automatiquement la requête au chargement
+          const response = await fetch(
+            `http://127.0.0.1:3000/api/generate-avatar?seed=${encodeURIComponent(seed)}`
+          );
+
+          if (response.ok) {
+            const blob     = await response.blob();
+            const imageUrl = URL.createObjectURL(blob);
+
+            avatarImg.src          = imageUrl;
+            avatarImg.style.display = "block";   // ✅ Affiche l'image
+            loader.style.display   = "none";      // ✅ Cache le loader
+          } else {
+            const err = await response.json().catch(() => ({}));
+            loader.innerHTML = `❌ ${err.error || "Sikipon est occupé..."}`;
+          }
+
+        } catch (error) {
+          console.error(error);
+          loader.innerHTML = "❌ Erreur de connexion à l'IA";
+        }
+      }
+
+      loadAvatar(); // ✅ Déclenchement automatique
+    });
 </script>
     {% endblock %}
 

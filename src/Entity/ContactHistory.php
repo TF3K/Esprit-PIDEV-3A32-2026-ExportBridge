@@ -29,7 +29,11 @@ class ContactHistory
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contactHistorys')]
+    /**
+     * ✅ FIXED Doctrine Doctor: inversedBy corrigé de 'contactHistorys' → 'contactHistory'
+     * La propriété dans Company.php s'appelle $contactHistory (sans s)
+     */
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'contactHistory')]
     #[ORM\JoinColumn(name: 'source_company_id', referencedColumnName: 'id')]
     private ?Company $company = null;
 
@@ -86,7 +90,11 @@ class ContactHistory
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'contactHistorys')]
+    /**
+     * ✅ FIXED Doctrine Doctor: inversedBy corrigé de 'contactHistorys' → 'contactHistory'
+     * La propriété dans Manager.php doit s'appeler $contactHistory (sans s)
+     */
+    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'contactHistory')]
     #[ORM\JoinColumn(name: 'contacted_by_manager_id', referencedColumnName: 'id')]
     private ?Manager $manager = null;
 
@@ -100,5 +108,4 @@ class ContactHistory
         $this->manager = $manager;
         return $this;
     }
-
 }

@@ -16,65 +16,61 @@ class CompanyRepository extends ServiceEntityRepository
         parent::__construct($registry, Company::class);
     }
 
-    //    /**
-    //     * @return Company[] Returns an array of Company objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Company
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Compte le nombre total de companies
+     */
     public function countAll(): int
-{
-    return $this->createQueryBuilder('c')
-        ->select('COUNT(c.id)')
-        ->getQuery()
-        ->getSingleScalarResult();
-}
-
-public function findPaginated(int $page, int $limit)
-{
-    return $this->createQueryBuilder('c')
-        ->orderBy('c.id', 'DESC')
-        ->setFirstResult(($page - 1) * $limit)
-        ->setMaxResults($limit)
-        ->getQuery()
-        ->getResult();
-}
-
-public function searchAndSort(?string $name, string $sortBy = 'id')
-{
-    $qb = $this->createQueryBuilder('c');
-
-    if (!empty($name)) {
-        $qb->andWhere('c.companyName LIKE :name')
-           ->setParameter('name', '%' . $name . '%');
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
-    $allowed = ['id', 'companyName', 'country', 'createdAt'];
+    /**
+     * @return array<int, Company>
+     */
+    public function findPaginated(int $page, int $limit): array
+    {
+        /** @var array<int, Company> $result */
+        $result = $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
 
-    if (!in_array($sortBy, $allowed)) {
-        $sortBy = 'id';
+        return $result;
     }
 
-    $qb->orderBy('c.' . $sortBy, 'DESC');
+    /**
+     * ✅ FIXED: c.company_name (nom exact de la propriété PHP dans Company.php)
+     * ✅ FIXED: allowed fields utilisent aussi les vrais noms de propriétés PHP
+     *
+     * @return array<int, Company>
+     */
+    public function searchAndSort(?string $name, string $sortBy = 'id'): array
+    {
+        $qb = $this->createQueryBuilder('c');
 
-    return $qb->getQuery()->getResult();
-}
+        if (!empty($name)) {
+            // ✅ company_name = nom de la propriété PHP dans Company.php
+            $qb->andWhere('c.company_name LIKE :name')
+               ->setParameter('name', '%' . $name . '%');
+        }
+
+        // ✅ Noms des propriétés PHP (pas les noms de colonnes SQL)
+        $allowed = ['id', 'company_name', 'country', 'created_at'];
+
+        if (!in_array($sortBy, $allowed, true)) {
+            $sortBy = 'id';
+        }
+
+        $qb->orderBy('c.' . $sortBy, 'DESC');
+
+        /** @var array<int, Company> $result */
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
 }

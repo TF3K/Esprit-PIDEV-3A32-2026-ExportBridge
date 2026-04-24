@@ -2,17 +2,19 @@
 
 namespace App\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
 use App\Repository\CompanyRepository;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[ORM\Table(name: 'companies')]
 class Company
 {
+    // -------------------------------------------------------------------------
+    // ID
+    // -------------------------------------------------------------------------
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -28,6 +30,10 @@ class Company
         $this->id = $id;
         return $this;
     }
+
+    // -------------------------------------------------------------------------
+    // Basic Info
+    // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $company_name = null;
@@ -113,6 +119,10 @@ class Company
         return $this;
     }
 
+    // -------------------------------------------------------------------------
+    // Contact
+    // -------------------------------------------------------------------------
+
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $contact_email = null;
 
@@ -140,6 +150,10 @@ class Company
         $this->contact_phone = $contact_phone;
         return $this;
     }
+
+    // -------------------------------------------------------------------------
+    // Status
+    // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $rating = null;
@@ -183,20 +197,27 @@ class Company
         return $this;
     }
 
-    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'companies')]
-    #[ORM\JoinColumn(name: 'company_manager_id', referencedColumnName: 'id')]
-    private ?Manager $manager = null;
+    // -------------------------------------------------------------------------
+    // Contract
+    // -------------------------------------------------------------------------
 
-    public function getManager(): ?Manager
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $contractHash = null;
+
+    public function getContractHash(): ?string
     {
-        return $this->manager;
+        return $this->contractHash;
     }
 
-    public function setManager(?Manager $manager): self
+    public function setContractHash(?string $contractHash): self
     {
-        $this->manager = $manager;
+        $this->contractHash = $contractHash;
         return $this;
     }
+
+    // -------------------------------------------------------------------------
+    // Timestamps
+    // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'datetime', nullable: false)]
     private ?\DateTimeInterface $created_at = null;
@@ -226,34 +247,67 @@ class Company
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Certificate::class, mappedBy: 'company')]
-    private Collection $certificates;
+    // -------------------------------------------------------------------------
+    // Relations
+    // -------------------------------------------------------------------------
 
     /**
-     * @return Collection<int, Certificate>
+     * Single manager (ManyToOne)
      */
-    public function getCertificates(): Collection
+    #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(name: 'company_manager_id', referencedColumnName: 'id')]
+    private ?Manager $manager = null;
+
+    public function getManager(): ?Manager
     {
-        if (!$this->certificates instanceof Collection) {
-            $this->certificates = new ArrayCollection();
-        }
-        return $this->certificates;
+        return $this->manager;
     }
 
-    public function addCertificate(Certificate $certificate): self
+    public function setManager(?Manager $manager): self
     {
-        if (!$this->getCertificates()->contains($certificate)) {
-            $this->getCertificates()->add($certificate);
+        $this->manager = $manager;
+        return $this;
+    }
+
+    /**
+     * Multiple managers (OneToMany)
+     *
+     * @var Collection<int, Manager>
+     */
+    #[ORM\OneToMany(targetEntity: Manager::class, mappedBy: 'company')]
+    private Collection $managers;
+
+    /**
+     * @return Collection<int, Manager>
+     */
+    public function getManagers(): Collection
+    {
+        return $this->managers;
+    }
+
+    public function addManager(Manager $manager): self
+    {
+        if (!$this->managers->contains($manager)) {
+            $this->managers->add($manager);
         }
         return $this;
     }
 
-    public function removeCertificate(Certificate $certificate): self
+    public function removeManager(Manager $manager): self
     {
-        $this->getCertificates()->removeElement($certificate);
+        $this->managers->removeElement($manager);
         return $this;
     }
 
+    /**
+     * Contact History (OneToMany)
+     * ✅ FIXED Doctrine Doctor: mappedBy corrigé de 'contactHistorys' → 'company'
+     * car dans ContactHistory.php la propriété s'appelle $company avec inversedBy: 'contactHistorys'
+     * On doit aligner : mappedBy ici = nom de la propriété dans ContactHistory = 'company'
+     * ET renommer inversedBy dans ContactHistory = 'contactHistory' (sans s)
+     *
+     * @var Collection<int, ContactHistory>
+     */
     #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'company')]
     private Collection $contactHistory;
 
@@ -262,51 +316,32 @@ class Company
      */
     public function getContactHistory(): Collection
     {
-        if (!$this->contactHistory instanceof Collection) {
-            $this->contactHistory = new ArrayCollection();
-        }
         return $this->contactHistory;
     }
 
     public function addContactHistory(ContactHistory $contactHistory): self
     {
-        if (!$this->getContactHistory()->contains($contactHistory)) {
-            $this->getContactHistory()->add($contactHistory);
+        if (!$this->contactHistory->contains($contactHistory)) {
+            $this->contactHistory->add($contactHistory);
         }
         return $this;
     }
 
     public function removeContactHistory(ContactHistory $contactHistory): self
     {
-        $this->getContactHistory()->removeElement($contactHistory);
+        $this->contactHistory->removeElement($contactHistory);
         return $this;
     }
-    
+
     /**
-     * @return Collection<int, Manager>
+     * ✅ FIXED Doctrine Doctor: suppression de la relation certificates
+     * Certificate.php utilise $company_id (entier brut) et n'a PAS de ManyToOne vers Company
+     * Donc OneToMany ici est invalide — relation supprimée
      */
-    public function getManagers(): Collection
-    {
-        if (!$this->managers instanceof Collection) {
-            $this->managers = new ArrayCollection();
-        }
-        return $this->managers;
-    }
 
-    public function addManager(Manager $manager): self
-    {
-        if (!$this->getManagers()->contains($manager)) {
-            $this->getManagers()->add($manager);
-        }
-        return $this;
-    }
-
-    public function removeManager(Manager $manager): self
-    {
-        $this->getManagers()->removeElement($manager);
-        return $this;
-    }
-
+    /**
+     * Partnership (OneToOne)
+     */
     #[ORM\OneToOne(targetEntity: Partnership::class, mappedBy: 'company')]
     private ?Partnership $partnership = null;
 
@@ -321,67 +356,62 @@ class Company
         return $this;
     }
 
+    /**
+     * Products (OneToMany)
+     *
+     * @var Collection<int, Product>
+     */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'company')]
     private Collection $products;
-
-    public function __construct()
-    {
-        $this->certificates = new ArrayCollection();
-        $this->contactHistory = new ArrayCollection();
-        $this->products = new ArrayCollection();
-    }
-
-    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Market $market = null;
-
-    // Getter
-    public function getMarket(): ?Market
-    {
-        return $this->market;
-    }
-
-    // Setter
-    public function setMarket(?Market $market): static
-    {
-        $this->market = $market;
-        return $this;
-    }
 
     /**
      * @return Collection<int, Product>
      */
     public function getProducts(): Collection
     {
-        if (!$this->products instanceof Collection) {
-            $this->products = new ArrayCollection();
-        }
         return $this->products;
     }
 
     public function addProduct(Product $product): self
     {
-        if (!$this->getProducts()->contains($product)) {
-            $this->getProducts()->add($product);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
         }
         return $this;
     }
 
     public function removeProduct(Product $product): self
     {
-        $this->getProducts()->removeElement($product);
+        $this->products->removeElement($product);
         return $this;
-    }
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $contractHash = null;
-    public function getContractHash(): ?string
-    {
-        return $this->contractHash;
     }
 
-    public function setContractHash(?string $contractHash): self
+    /**
+     * Market (ManyToOne)
+     */
+    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Market $market = null;
+
+    public function getMarket(): ?Market
     {
-        $this->contractHash = $contractHash;
+        return $this->market;
+    }
+
+    public function setMarket(?Market $market): static
+    {
+        $this->market = $market;
         return $this;
+    }
+
+    // -------------------------------------------------------------------------
+    // Constructor
+    // -------------------------------------------------------------------------
+
+    public function __construct()
+    {
+        $this->managers       = new ArrayCollection();
+        $this->contactHistory = new ArrayCollection();
+        $this->products       = new ArrayCollection();
     }
 }

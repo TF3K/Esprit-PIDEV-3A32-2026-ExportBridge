@@ -21,17 +21,18 @@ use Dompdf\Options;
 class CompanyController extends AbstractController
 {
     #[Route('/company/new', name: 'app_company_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, HttpClientInterface $httpClient): Response 
+    public function new(Request $request, EntityManagerInterface $entityManager, HttpClientInterface $httpClient): Response
     {
         $markets = $entityManager->getRepository(Market::class)->findAll();
 
         if ($request->isMethod('POST')) {
-            $companyName = $request->request->get('company_name');
-            $marketName = $request->request->get('market_name');
-            $domain = $request->request->get('domain');
-            $email = $request->request->get('email');
-            $country = $request->request->get('country');
-            $address = $request->request->get('address');
+            // ✅ cast explicite en string pour éviter mixed
+            $companyName = (string) $request->request->get('company_name', '');
+            $marketName  = (string) $request->request->get('market_name', '');
+            $domain      = (string) $request->request->get('domain', '');
+            $email       = (string) $request->request->get('email', '');
+            $country     = (string) $request->request->get('country', '');
+            $address     = (string) $request->request->get('address', '');
 
             if (!$companyName || !$marketName || !$email || !$country || !$address) {
                 $this->addFlash('error', 'Veuillez remplir tous les champs obligatoires.');
@@ -42,9 +43,9 @@ class CompanyController extends AbstractController
                 $aiResponse = $httpClient->request('POST', 'http://127.0.0.1:3000/api/validate-company', [
                     'json' => [
                         'company_name' => $companyName,
-                        'market_name' => $marketName,
-                        'email' => $email,
-                        'domain' => $domain
+                        'market_name'  => $marketName,
+                        'email'        => $email,
+                        'domain'       => $domain,
                     ]
                 ]);
 
@@ -60,19 +61,19 @@ class CompanyController extends AbstractController
                 return $this->redirectToRoute('app_company_new');
             }
 
+            $contractHash = '';
             try {
                 $bcResponse = $httpClient->request('POST', 'http://127.0.0.1:5000/api/sign-contract', [
                     'json' => [
                         'company_name' => $companyName,
-                        'market_name' => $marketName,
-                        'email' => $email,
-                        'domain' => $domain
+                        'market_name'  => $marketName,
+                        'email'        => $email,
+                        'domain'       => $domain,
                     ]
                 ]);
 
-                $bcResult = $bcResponse->toArray();
-                $contractHash = $bcResult['contract_hash'];
-
+                $bcResult     = $bcResponse->toArray();
+                $contractHash = (string) ($bcResult['contract_hash'] ?? '');
             } catch (\Exception $e) {
                 $this->addFlash('error', "Échec de la sécurisation Blockchain.");
                 return $this->redirectToRoute('app_company_new');
@@ -80,11 +81,13 @@ class CompanyController extends AbstractController
 
             $company = new Company();
             $company->setCompanyName($companyName);
-            $company->setDomain($domain);
-            $company->setContactEmail($email);
-            $company->setCountry($country);
-            $company->setAddress($address);
-            $company->setContractHash($contractHash);
+            // ✅ FIXED level 7: strlen() au lieu de ?: pour éviter "ternary always true"
+            // après un cast (string), la valeur est toujours un string donc ?: null est toujours true
+            $company->setDomain(strlen($domain) > 0 ? $domain : null);
+            $company->setContactEmail(strlen($email) > 0 ? $email : null);
+            $company->setCountry(strlen($country) > 0 ? $country : null);
+            $company->setAddress(strlen($address) > 0 ? $address : null);
+            $company->setContractHash(strlen($contractHash) > 0 ? $contractHash : null);
 
             $market = $entityManager->getRepository(Market::class)->findOneBy(['name' => $marketName]);
             if ($market) {
@@ -112,44 +115,43 @@ class CompanyController extends AbstractController
     #[Route('/company/list', name: 'app_company_list')]
     public function list(Request $request, CompanyRepository $repo): Response
     {
-        $limit = 5;
-        $page = max(1, (int)$request->query->get('page', 1));
+        $limit        = 5;
+        $page         = max(1, (int) $request->query->get('page', 1));
         $totalEntries = $repo->countAll();
-        $companies = $repo->findPaginated($page, $limit);
+        $companies    = $repo->findPaginated($page, $limit);
 
-        $from = $totalEntries > 0 ? ($page - 1) * $limit + 1 : 0;
-        $to = min($page * $limit, $totalEntries);
+        $from       = $totalEntries > 0 ? ($page - 1) * $limit + 1 : 0;
+        $to         = min($page * $limit, $totalEntries);
         $totalPages = (int) ceil($totalEntries / $limit);
 
         return $this->render('company/listCompany.html.twig', [
-            'companies' => $companies,
+            'companies'    => $companies,
             'totalEntries' => $totalEntries,
-            'from' => $from,
-            'to' => $to,
-            'currentPage' => $page,
-            'totalPages' => $totalPages
+            'from'         => $from,
+            'to'           => $to,
+            'currentPage'  => $page,
+            'totalPages'   => $totalPages,
         ]);
     }
 
     #[Route('/company/search', name: 'app_company_search')]
     public function search(Request $request, CompanyRepository $repo): Response
     {
-        $name = $request->query->get('name');
-        $sortBy = $request->query->get('sort', 'id');
+        $name   = $request->query->get('name') !== null ? (string) $request->query->get('name') : null;
+        $sortBy = (string) $request->query->get('sort', 'id');
 
         $list = $repo->searchAndSort($name, $sortBy);
 
         return $this->render('company/listCompany.html.twig', [
-            'companies' => $list,
+            'companies'    => $list,
             'totalEntries' => count($list),
-            'from' => count($list) > 0 ? 1 : 0,
-            'to' => count($list),
-            'currentPage' => 1,
-            'totalPages' => 1
+            'from'         => count($list) > 0 ? 1 : 0,
+            'to'           => count($list),
+            'currentPage'  => 1,
+            'totalPages'   => 1,
         ]);
     }
 
-    // ✅ Route show — remise avec le bon chemin
     #[Route('/company/{id}/show', name: 'app_company_show')]
     public function show(int $id, CompanyRepository $repo): Response
     {
@@ -172,13 +174,13 @@ class CompanyController extends AbstractController
             margin: 10
         );
 
-        $writer = new SvgWriter();
-        $result = $writer->write($qrCode);
+        $writer        = new SvgWriter();
+        $result        = $writer->write($qrCode);
         $qrCodeDataUri = $result->getDataUri();
 
         return $this->render('company/show.html.twig', [
             'company' => $company,
-            'qrCode' => $qrCodeDataUri
+            'qrCode'  => $qrCodeDataUri,
         ]);
     }
 
@@ -191,7 +193,6 @@ class CompanyController extends AbstractController
             throw $this->createNotFoundException('Company not found');
         }
 
-        // ✅ Pointe vers app_company_show qui existe maintenant
         $url = $this->generateUrl(
             'app_company_show',
             ['id' => $company->getId()],
@@ -205,13 +206,13 @@ class CompanyController extends AbstractController
             margin: 10
         );
 
-        $writer = new SvgWriter();
-        $result = $writer->write($qrCode);
+        $writer        = new SvgWriter();
+        $result        = $writer->write($qrCode);
         $qrCodeDataUri = $result->getDataUri();
 
         $html = $this->renderView('company/pdf.html.twig', [
             'company' => $company,
-            'qrCode' => $qrCodeDataUri
+            'qrCode'  => $qrCodeDataUri,
         ]);
 
         $options = new Options();
@@ -223,11 +224,13 @@ class CompanyController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $pdfContent = $dompdf->output();
+        // ✅ FIXED level 7: output() retourne toujours string après render()
+        // suppression du ?? '' qui causait "variable always exists and is not nullable"
+        $pdfContent = (string) $dompdf->output();
 
         return new Response($pdfContent, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="certificat-' . $company->getId() . '.pdf"'
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="certificat-' . $company->getId() . '.pdf"',
         ]);
     }
 }
