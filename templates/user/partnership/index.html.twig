@@ -1,0 +1,142 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Partnership - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="mb-0">My Partnership</h3>
+            <p class="text-muted mt-1">Your company's partnership details and collaborations</p>
+        </div>
+    </div>
+
+    {% if partnership %}
+
+        <div class="row g-4">
+
+            {# Partnership details #}
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-header-title mb-0">Partnership Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-borderless">
+                            <li class="list-group-item px-0">
+                                <span class="text-muted small">Type</span>
+                                <div>{{ partnership.type ?? '—' }}</div>
+                            </li>
+                            <li class="list-group-item px-0">
+                                <span class="text-muted small">Status</span>
+                                <div>
+                                    {% if partnership.status == 'active' %}
+                                        <span class="badge text-bg-success">Active</span>
+                                    {% elseif partnership.status == 'pending' %}
+                                        <span class="badge text-bg-warning">Pending</span>
+                                    {% elseif partnership.status == 'terminated' %}
+                                        <span class="badge text-bg-danger">Terminated</span>
+                                    {% else %}
+                                        <span class="badge text-bg-secondary">{{ partnership.status }}</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            <li class="list-group-item px-0">
+                                <span class="text-muted small">Established</span>
+                                <div>
+                                    {{ partnership.establishedDate
+                                        ? partnership.establishedDate|date('d/m/Y')
+                                        : '—' }}
+                                </div>
+                            </li>
+                            {% if partnership.notes %}
+                            <li class="list-group-item px-0">
+                                <span class="text-muted small">Notes</span>
+                                <div class="small">{{ partnership.notes }}</div>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {# Collaborations #}
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-header-title mb-0">
+                            Collaborations
+                            <span class="badge text-bg-primary ms-2">
+                                {{ partnership.collaborations|length }}
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if partnership.collaborations|length > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for collab in partnership.collaborations %}
+                                        <tr>
+                                            <td>
+                                                <h6 class="mb-0">{{ collab.title }}</h6>
+                                                {% if collab.description %}
+                                                    <small class="text-muted">
+                                                        {{ collab.description|slice(0, 80) }}
+                                                        {% if collab.description|length > 80 %}...{% endif %}
+                                                    </small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if collab.status == 'active' %}
+                                                    <span class="badge text-bg-success">Active</span>
+                                                {% elseif collab.status == 'pending' %}
+                                                    <span class="badge text-bg-warning">Pending</span>
+                                                {% elseif collab.status == 'completed' %}
+                                                    <span class="badge text-bg-info">Completed</span>
+                                                {% else %}
+                                                    <span class="badge text-bg-secondary">{{ collab.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ collab.startDate ? collab.startDate|date('d/m/Y') : '—' }}</td>
+                                            <td>{{ collab.endDate ? collab.endDate|date('d/m/Y') : '—' }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center py-4 mb-0">
+                                No collaborations defined yet.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-handshake display-4 text-muted mb-3"></i>
+                <h5>No Partnership Found</h5>
+                <p class="text-muted mb-0">
+                    Your company doesn't have a partnership set up yet.
+                    Please contact an administrator.
+                </p>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

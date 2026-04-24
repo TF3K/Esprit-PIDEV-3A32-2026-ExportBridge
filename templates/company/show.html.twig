@@ -1,0 +1,92 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Company Certificate{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card bg-dark text-white border-primary shadow-lg">
+
+                <!-- HEADER -->
+                <div class="card-header border-secondary text-center py-4">
+                    <i class="fas fa-file-contract fa-3x text-info mb-3"></i>
+                    <h2 class="h4">Certificat d'Enregistrement Numérique</h2>
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body p-5">
+
+                    <div class="row mb-4">
+
+                        <div class="col-6">
+                            <label class="text-muted small">ENTREPRISE</label>
+                            <p class="h5" style="color: #fff;">{{ company.companyName }}</p>
+                        </div>
+
+                        <div class="col-6">
+                            <label class="text-muted small">DATE D'ÉMISSION</label>
+                            <p class="h5" style="color: #fff;">
+                                {{ company.createdAt ? company.createdAt|date('d/m/Y H:i') : 'N/A' }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-muted small d-block">
+                            SIGNATURE BLOCKCHAIN (HASH)
+                        </label>
+
+                        <div class="p-3 bg-black rounded border border-secondary">
+                            <code class="text-info" style="word-break: break-all;">
+                                {{ company.contractHash ?? 'NO HASH AVAILABLE' }}
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <ul class="list-unstyled small text-muted">
+                                <li>
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Validé par Sikipon AI
+                                </li>
+                                <li>
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Inscrit sur le registre ExportBridge
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-6 text-end">
+    <img src="{{ qrCode }}" alt="QR Code" class="img-fluid" style="max-width:120px;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="card-footer border-secondary d-flex justify-content-between">
+
+                    <a href="{{ path('app_company_list') }}"
+                       class="btn btn-outline-light btn-sm">
+                        Back
+                    </a>
+
+                <a href="{{ path('app_company_pdf', {'id': company.id}) }}"
+   class="btn btn-danger btn-sm">
+    <i class="fas fa-file-pdf me-1"></i> Télécharger PDF
+</a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

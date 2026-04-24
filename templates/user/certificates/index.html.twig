@@ -1,0 +1,110 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Certificates - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    <div class="row mb-4">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h3 class="mb-0">My Certificates</h3>
+        </div>
+    </div>
+
+    {# Stats #}
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-center p-3 bg-primary bg-opacity-10 border border-primary rounded-3">
+                <h6>Total</h6>
+                <h3 class="mb-0 text-primary">{{ certificates|length }}</h3>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-center p-3 bg-success bg-opacity-10 border border-success rounded-3">
+                <h6>Active</h6>
+                <h3 class="mb-0 text-success">
+                    {{ certificates|filter(c => c.status == 'active')|length }}
+                </h3>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-center p-3 bg-warning bg-opacity-10 border border-warning rounded-3">
+                <h6>Pending</h6>
+                <h3 class="mb-0 text-warning">
+                    {{ certificates|filter(c => c.status == 'pending')|length }}
+                </h3>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-center p-3 bg-danger bg-opacity-10 border border-danger rounded-3">
+                <h6>Expired</h6>
+                <h3 class="mb-0 text-danger">
+                    {{ certificates|filter(c => c.status == 'expired')|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border bg-transparent rounded-3">
+        <div class="card-header bg-transparent border-bottom">
+            <input class="form-control bg-body" type="search"
+                   id="certSearch" placeholder="Search certificates...">
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="certsTable">
+                    <thead>
+                        <tr>
+                            <th>Certificate #</th>
+                            <th>Type</th>
+                            <th>Issuing Authority</th>
+                            <th>Issue Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cert in certificates %}
+                        <tr>
+                            <td><code>{{ cert.certificateNumber }}</code></td>
+                            <td>{{ cert.type }}</td>
+                            <td>{{ cert.issuingAuthority ?? '—' }}</td>
+                            <td>{{ cert.issueDate ? cert.issueDate|date('d/m/Y') : '—' }}</td>
+                            <td>{{ cert.expiryDate ? cert.expiryDate|date('d/m/Y') : '—' }}</td>
+                            <td>
+                                {% if cert.status == 'active' %}
+                                    <span class="badge text-bg-success">Active</span>
+                                {% elseif cert.status == 'pending' %}
+                                    <span class="badge text-bg-warning">Pending</span>
+                                {% elseif cert.status == 'expired' %}
+                                    <span class="badge text-bg-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">{{ cert.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No certificates found for your company.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.getElementById('certSearch').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('#certsTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<style>
+    .for-sticky {
+			position: relative;
+		}
+.wshipping-breadcroumb {
+    background-position: center;
+    background-size: cover;
+    color: #a3a3a3;
+    position: relative;
+}
+
+.wshipping-content-block {
+    padding: 80px 0px;
+    background-color: #fff;
+}
+.wshipping-breadcroumb:before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(22, 0, 1, 0.8);
+    display: block;
+    content: "";
+    left: 0px;
+    top: 0px;
+}
+.wshipping-breadcroumb h1 {
+    margin: 0px;
+    padding: 0px;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 32px;
+}
+.wshipping-breadcroumb a, .wshipping-breadcroumb h4 span {
+    color: #eb0028;
+}
+
+        .wshipping-breadcroumb h4 {
+    margin: 0px;
+    color: #fff;
+    line-height: 26px;
+      font-size: 18px;
+}
+.wshipping-breadcroumb h4 span {
+    color: #eb0028;
+}
+.wshipping-content-block {
+    padding: 80px 0px;
+    background-color: #fff;
+}
+.customer-login {
+
+    min-height: 400px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    position: relative;
+}
+.customer-login:before {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    content: "";
+    display: block;
+    background-color: rgba(235, 0, 40, 0.8);
+}
+.customer-login-left {
+    padding: 50px 30px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+}
+.login-icon .fa {
+    border: 15px solid rgba(92, 0, 16, 0.4);
+    color: #fff;
+    font-size: 60px;
+    border-radius: 100%;
+    width: 120px;
+    height: 120px;
+    line-height: 90px;
+}
+.customer-login-left h4 {
+    margin-top: 40px;
+    font-size: 18px;
+}
+.customer-login-left a {
+    color: #000;
+    text-transform: uppercase;
+    font-style: 16px;
+    font-weight: 600;
+}
+.customer-login-block{
+        position: relative;
+    z-index: 1;
+    padding: 30px 30px 20px 15px;
+}
+.customer-login:after {
+ position: absolute;
+    right: -555px;
+    top: 0px;
+    width: 555px;
+    height: 100%;
+    content: "";
+    display: block;
+    background-color: #e8e8e8;
+}
+.customer-login-block h2 {
+    margin-top: 0px;
+    margin-bottom: 30px;
+    position: relative;
+}
+.customer-login-block h2:before {
+    position: absolute;
+    left: 0px;
+    bottom: -10px;
+    height: 2px;
+    width: 60px;
+    background-color: #eb0028;
+    content: "";
+}
+.form-group label{
+    color: #444444;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.customer-login-block .form-control {
+    height: 38px;
+}
+button.btn-submit {
+    background-color: #eb0028;
+    border-color: #e60329;
+    color: #fff;
+    cursor: pointer;
+}
+</style>
+<div class="wshipping-content-block wshipping-breadcroumb"
+     style="background-image: url('{{ asset('assets/images/inner-banner.jpg') }}');">
+     <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-7" style="z-index: 2;">
+              <h1>Customer Login</h1>
+                  <a href="{{ path('home') }}">Home</a> / Customer Login
+            </div>
+                <div class="col-12 col-lg-5 " style="text-align: right;z-index: 2;">
+<h4>We freight to all over the world
+The best logistic company, <span>FAST</span> and <span>SAFELY!</span></h4>
+                </div>
+        </div>
+     </div>
+</div>
+<div class="wshipping-content-block">
+    <div class="container">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-6" >
+                        <div class="customer-login" style="background-image: url('{{ asset('assets/images/single-blog-pic1.jpg') }}');">
+
+                <div class="customer-login-left">
+                     <div class="login-icon">
+                        <i class="fa fa-lock"></i>
+                     </div>
+                     <h4 style="color: #ffffff;">Welcome To your account</h4>
+                     <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                     <a href="#">Create A new Account</a>
+                </div>
+ 
+            </div>
+
+          </div>
+ <div class="col-12 col-md-6 col-lg-6">
+<div class="customer-login-block">
+<h2>Login To Your Account</h2>
+   <form action="{{ path('app_login') }}" method="post" data-validate>
+<div class="form-group" style="margin-bottom: 12px;">
+    <label>Email address:</label>
+      <input type="email"
+                                               class="form-control"
+                                            
+                                               id="email"
+                                               name="_username"
+                                               value="{{ last_username }}"
+                                               autocomplete="email"
+                                               required
+                                               data-validation="required email">
+</div>
+<div class="form-group" style="margin-bottom: 12px;">
+    <label>Password:</label>
+      <input type="password"
+                                               class="form-control "
+                                             
+                                               id="password"
+                                               name="_password"
+                                               autocomplete="current-password"
+                                               required
+                                               data-validation="required">
+
+</div>
+  <div class="mb-4 d-flex justify-content-between">
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               id="remember_me"
+                                               name="_remember_me">
+                                        <label class="form-check-label" for="remember_me">Remember me</label>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                 <button class="btn btn-submit" type="submit">Login</button>
+  
+   </form>
+</div>
+  </div>
+</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

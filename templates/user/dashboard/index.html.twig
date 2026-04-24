@@ -1,0 +1,180 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Dashboard - ExportBridge{% endblock %}
+
+{# TOUT le CSS doit être dans un bloc (généralement appelé stylesheets) #}
+{% block stylesheets %}
+    {{ parent() }} {# Conserve les styles de base (Phosphor, Bootstrap, etc.) #}
+    <style>
+        .page-title-box h4 {
+            font-weight: 700;
+            font-size: 15px !important;
+            text-transform: uppercase;
+        }
+        .page-title-box {
+    padding: 0 0 .6rem;
+}
+.breadcrumb-item+.breadcrumb-item:before {
+    font-family: Material Design Icons;
+    font-size: 15px;
+    line-height: 20px;
+        content: "\F0142";
+        padding: 0;
+}
+.card{
+    padding: 19.2px;
+}
+.card p{
+    font-size: 14px;
+    font-weight: 300;
+    color: #878a99;
+}
+table>thead {
+    vertical-align: bottom;
+}
+table>thead {
+border-bottom: 1px solid #dde1ef;
+}
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div style="position: relative; left: 249px; background-color: #f7f7f7; padding: 20px;    width: 82%;">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    {# Insertion de l'icône corrigée ici #}
+                    <h4 class="mb-sm-0">
+                        ANALYTICS
+                    </h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item active ng-star-inserted" style="padding: 0;">Dashboards</li>
+                              <li class="breadcrumb-item active ng-star-inserted" style="padding: 0;">Analytics</li>
+                            </ol>
+                            </div>
+                </div>
+            </div>
+        </div>
+ <div class="row">
+    {# PREMIÈRE CARTE : USERS #}
+    <div class="col-xl-3 col-sm-6">
+        <div class="card" style="height: 185px;">
+            <p class="fs-md mb-0">Total Users</p>
+            <div class="row align-items-center">
+                <div class="col-lg-6" style="padding-right: 4px;">
+                    <h3 class="mb-4"><span class="counter-value">{{ stats.totalUsers }}</span></h3>
+                    <p class="mb-0 text-success">
+                        <i class="bi bi-arrow-up me-1"></i>  06.41% Last Month
+                    </p>
+                </div>
+                <div class="col-lg-6" style="padding-left: 4px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6">
+             <div class="card" style="height: 185px;">
+            <p class="fs-md mb-0">Total Companies</p>
+            <div class="row align-items-center">
+                <div class="col-lg-6" style="padding-right: 4px;">
+                    <h3 class="mb-4"><span class="counter-value">{{ stats.totalCompanies }}</span></h3>
+                    <p class="mb-0 text-primary">
+                        <i class="bi bi-arrow-right me-1"></i> 13% Last Month
+                    </p>
+                </div>
+                <div class="col-lg-6" style="padding-left: 4px;">
+                    {# Note: Si vous voulez un autre graphique ici, créez un id différent comme #company-chart #}
+               <div id="company-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-xl-3 col-sm-6">
+             <div class="card" style="height: 185px;">
+            <p class="fs-md mb-0">Total Partnerships</p>
+            <div class="row align-items-center">
+                <div class="col-lg-6" style="padding-right: 4px;">
+                    <h3 class="mb-4"><span class="counter-value">{{ stats.totalPartnerships }}</span></h3>
+                    <p class="mb-0 " style="color: #ed706f;">
+                  <i class="bi bi-arrow-down me-1"></i>   07.26% Last Week
+                    </p>
+                </div>
+                <div class="col-lg-6" style="padding-left: 4px;">
+                    {# Note: Si vous voulez un autre graphique ici, créez un id différent comme #company-chart #}
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-xl-3 col-sm-6">
+             <div class="card" style="height: 185px;">
+            <p class="fs-md mb-0">Total Companies</p>
+            <div class="row align-items-center">
+                <div class="col-lg-6" style="padding-right: 4px;">
+                    <h3 class="mb-4"><span class="counter-value">{{ stats.totalProducts }}</span></h3>
+                    <p class="mb-0 text-success">
+                        <i class="bi bi-arrow-up me-1"></i>  06.41% Last Month
+                    </p>
+                </div>
+                <div class="col-lg-6" style="padding-left: 4px;">
+                    {# Note: Si vous voulez un autre graphique ici, créez un id différent comme #company-chart #}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <div class="row" style="margin-top: 10px;">
+    <div class="col-xl-8">
+        <div class="card">
+           <div class="card-header d-flex align-items-center flex-wrap gap-3 p-0">
+                <h5 class="card-title mb-0 flex-grow-1" style="font-size: 16px;font-weight: 600;">Performance Overview</h5>
+           </div>
+           <div class="card-body ps-0">
+           </div>
+        </div>
+
+    </div>
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header d-flex p-0">
+                <h5 class="card-title mb-0 flex-grow-1" style="font-size: 16px;font-weight: 600;">Our USer</h5>
+
+            </div>
+            <div class="card-body">
+               <div class="table-responsive">
+                <table class="table align-middle table-nowrap mb-0">
+                    <thead style="background-color: #f7f7f7;">
+                 
+                            <tr>
+                                    <th style="padding: 12px 9px;font-size: 14px;" class="sort cursor-pointer"><h5 style="font-size: 15px;font-weight: 500;">#</h5></th>
+                                <th style="padding: 12px 9px;font-size: 14px;" class="sort cursor-pointer">
+                                    
+                                    <h5 style="font-size: 15px;font-weight: 500;">name</h5>
+                                </th>
+                                                            
+
+                            </tr>
+                    </thead>
+         <tbody>
+    {% for manager in allManagers %}
+        <tr>
+            <td>{{ manager.id }}</td>
+            <td>{{ manager.firstName  }}</td>
+            <td>
+                {{ manager.company ? manager.company.companyName : 'No Company' }}
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
+                </table>
+
+               </div>
+            </div>
+        </div>
+
+    </div>
+ </div>
+   
+{% endblock %}

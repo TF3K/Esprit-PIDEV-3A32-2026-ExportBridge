@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 30px;
+        }
+
+        .page {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            max-width: 680px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Bande top */
+        .band-top {
+            height: 6px;
+            background: #185FA5;
+            border-bottom: 2px solid #0F6E56;
+        }
+
+        /* Coins décoratifs */
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.4;
+        }
+        .corner-tl { top: 18px; left: 18px; border-top: 2px solid #185FA5; border-left: 2px solid #185FA5; }
+        .corner-tr { top: 18px; right: 18px; border-top: 2px solid #185FA5; border-right: 2px solid #185FA5; }
+        .corner-bl { bottom: 18px; left: 18px; border-bottom: 2px solid #185FA5; border-left: 2px solid #185FA5; }
+        .corner-br { bottom: 18px; right: 18px; border-bottom: 2px solid #185FA5; border-right: 2px solid #185FA5; }
+
+        /* TAMPON */
+        .stamp {
+            position: absolute;
+            top: 45%;
+            right: 50px;
+            width: 130px;
+            height: 130px;
+            border: 3px solid #0F6E56;
+            border-radius: 50%;
+            text-align: center;
+            opacity: 0.12;
+            transform: rotate(-20deg);
+            padding-top: 30px;
+        }
+        .stamp span {
+            display: block;
+            color: #0F6E56;
+        }
+        .stamp .s1 { font-size: 11px; font-weight: bold; letter-spacing: 3px; }
+        .stamp .s2 { font-size: 9px;  letter-spacing: 1px; margin: 3px 0; }
+        .stamp .s3 { font-size: 8px; }
+        .stamp .line {
+            width: 70%;
+            height: 1px;
+            background: #0F6E56;
+            margin: 4px auto;
+        }
+
+        /* CONTENU */
+        .content { padding: 2.5rem 3rem; }
+
+        /* HEADER */
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        .header .sub {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+        .header h1 {
+            font-size: 17px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .header .tagline { font-size: 11px; color: #bbb; }
+
+        .divider { border: none; border-top: 1px solid #eee; margin: 1.25rem 0; }
+
+        /* GRILLE CHAMPS */
+        .grid { width: 100%; margin-bottom: 1.5rem; }
+        .grid td { width: 50%; padding-bottom: 1rem; vertical-align: top; }
+        .field-label {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: #aaa;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .field-value-lg { font-size: 15px; font-weight: bold; color: #1a1a1a; }
+        .field-value    { font-size: 13px; color: #333; }
+
+        /* HASH */
+        .hash-label { font-size: 9px; letter-spacing: 2px; color: #aaa; margin-bottom: 6px; }
+        .hash-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-left: 3px solid #185FA5;
+            padding: 10px 14px;
+            margin-bottom: 1.5rem;
+        }
+        .hash-box code { font-size: 10px; color: #185FA5; word-break: break-all; }
+
+        /* BADGES */
+        .badges { margin-bottom: 1.5rem; }
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-right: 6px;
+            margin-bottom: 4px;
+        }
+        .badge-green  { background: #EAF3DE; color: #3B6D11; border: 1px solid #C0DD97; }
+        .badge-blue   { background: #E6F1FB; color: #185FA5; border: 1px solid #B5D4F4; }
+        .badge-purple { background: #EEEDFE; color: #3C3489; border: 1px solid #CECBF6; }
+
+        /* FOOTER */
+        .footer { width: 100%; }
+        .footer td { vertical-align: bottom; }
+        .qr-label { font-size: 9px; letter-spacing: 2px; color: #aaa; margin-bottom: 6px; }
+        .qr-box {
+            border: 1px solid #eee;
+            padding: 6px;
+            display: inline-block;
+        }
+        .qr-box img { width: 85px; height: 85px; display: block; }
+        .gen-label { font-size: 10px; color: #aaa; margin-bottom: 3px; text-align: right; }
+        .gen-date  { font-size: 11px; color: #666; text-align: right; }
+
+        /* Bande bottom */
+        .band-bottom { height: 4px; background: #185FA5; border-top: 2px solid #0F6E56; }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <div class="band-top"></div>
+
+    <!-- Coins -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Tampon -->
+    <div class="stamp">
+        <span class="s1">CERTIFIÉ</span>
+        <div class="line"></div>
+        <span class="s2">EXPORTBRIDGE</span>
+        <div class="line"></div>
+        <span class="s3">BLOCKCHAIN</span>
+        <span class="s3">SIKIPON AI</span>
+    </div>
+
+    <div class="content">
+
+        <!-- HEADER -->
+        <div class="header">
+            <p class="sub">— EXPORTBRIDGE PLATFORM —</p>
+            <h1>Certificat d'Enregistrement Numérique</h1>
+            <p class="tagline">Document officiel · Vérifié et scellé</p>
+        </div>
+
+        <hr class="divider">
+
+        <!-- CHAMPS -->
+        <table class="grid">
+            <tr>
+                <td>
+                    <p class="field-label">Entreprise</p>
+                    <p class="field-value-lg">{{ company.companyName }}</p>
+                </td>
+                <td>
+                    <p class="field-label">Date d'émission</p>
+                    <p class="field-value-lg">{{ company.createdAt ? company.createdAt|date('d/m/Y') : 'N/A' }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="field-label">Marché</p>
+                    <p class="field-value">{{ company.market ? company.market.name : 'N/A' }}</p>
+                </td>
+                <td>
+                    <p class="field-label">Pays</p>
+                    <p class="field-value">{{ company.country }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="field-label">Email</p>
+                    <p class="field-value">{{ company.contactEmail }}</p>
+                </td>
+                <td>
+                    <p class="field-label">Domaine</p>
+                    <p class="field-value">{{ company.domain ?? 'N/A' }}</p>
+                </td>
+            </tr>
+        </table>
+
+        <!-- HASH -->
+        <p class="hash-label">Signature Blockchain (Hash)</p>
+        <div class="hash-box">
+            <code>{{ company.contractHash ?? 'NO HASH AVAILABLE' }}</code>
+        </div>
+
+        <!-- BADGES -->
+        <div class="badges">
+            <span class="badge badge-green">✔ Validé par Sikipon AI</span>
+            <span class="badge badge-blue">✔ Registre ExportBridge</span>
+            <span class="badge badge-purple">✔ Scellé Blockchain</span>
+        </div>
+
+        <hr class="divider">
+
+        <!-- FOOTER : QR + date -->
+        <table class="footer">
+            <tr>
+                <td>
+                    <p class="qr-label">QR Code de vérification</p>
+                    <div class="qr-box">
+                        <img src="{{ qrCode }}" alt="QR Code">
+                    </div>
+                </td>
+                <td>
+                    <p class="gen-label">Document généré le</p>
+                    <p class="gen-date">{{ company.createdAt ? company.createdAt|date('d/m/Y à H:i') : 'N/A' }}</p>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="band-bottom"></div>
+</div>
+</body>
+</html>

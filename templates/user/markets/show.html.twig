@@ -1,0 +1,122 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}{{ market.name }} - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    <div class="row mb-4">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="mb-1">
+                    {{ market.name }}
+                    <code class="fs-6 text-muted ms-2">{{ market.countryCode }}</code>
+                    {% if market.isEu %}
+                        <span class="badge text-bg-success ms-2">EU</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary ms-2">Non-EU</span>
+                    {% endif %}
+                </h3>
+                {% if market.region %}
+                    <p class="text-muted mb-0"><i class="bi bi-geo-alt me-1"></i>{{ market.region }}</p>
+                {% endif %}
+            </div>
+            <a href="{{ path('app_user_markets') }}" class="btn btn-sm btn-secondary mt-2 mt-sm-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to Markets
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        {# Market info card #}
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">Market Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-borderless">
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Country Code</span>
+                            <div><code>{{ market.countryCode }}</code></div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Region</span>
+                            <div>{{ market.region ?? '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Trade Agreement</span>
+                            <div>{{ market.tradeAgreement ?? '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">EU Member</span>
+                            <div>
+                                {% if market.isEu %}
+                                    <span class="badge text-bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">No</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+                    {% if market.description %}
+                        <hr>
+                        <p class="small mb-0">{{ market.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Certificate requirements #}
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">
+                        Certificate Requirements
+                        <span class="badge text-bg-primary ms-2">
+                            {{ market.certificateRequirements|length }}
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if market.certificateRequirements|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Certificate Type</th>
+                                        <th>Product Category</th>
+                                        <th>Mandatory</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in market.certificateRequirements %}
+                                    <tr>
+                                        <td><span class="badge text-bg-info">{{ req.certificateType }}</span></td>
+                                        <td>{{ req.productCategory }}</td>
+                                        <td>
+                                            {% if req.isMandatory %}
+                                                <span class="badge text-bg-danger">Mandatory</span>
+                                            {% else %}
+                                                <span class="badge text-bg-warning">Optional</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="small">{{ req.description ?? '—' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4 mb-0">
+                            No certificate requirements defined for this market yet.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

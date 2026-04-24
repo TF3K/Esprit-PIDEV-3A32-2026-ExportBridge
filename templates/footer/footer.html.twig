@@ -1,0 +1,241 @@
+{% block body %}
+    <style>
+.footer-top-area, .footer-top-area a {
+    color: #a7a7a7;
+    background-color: #141414;
+    padding: 30px 0px;
+
+}
+    .footer-wiz {
+    padding: 20px 0px;
+    text-align: left;
+}
+.footer-wiz h3.footer-logo {
+    margin-bottom: 20px;
+}
+.footer-wiz h3.footer-logo {
+    margin-bottom: 20px;
+}
+
+.footer-wiz h3 {
+    color: #fff;
+    margin-top: 0px;
+    position: relative;
+    text-transform: uppercase;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+.footer-wiz ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: none;
+}
+.footer-wiz ul.footer-contact li {
+    color: #eb0028;
+    padding-bottom: 5px;
+}
+.footer-wiz ul.footer-contact li i.fa {
+    padding-right: 4px;
+    color: #a7a7a7;
+}
+.bottom-social {
+    text-align: left !important;
+}
+.footer-top-area, .footer-top-area a {
+    color: #a7a7a7;
+}
+.top-social .aa {
+    display: inline-block;
+    background-color: #626262;
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 14px;
+        transition: all 0.3s ease 0s
+}
+.top-social .aa:hover {
+ background-color: #eb0028;
+}
+.footer-wiz h3:before {
+    position: absolute;
+    display: block;
+    height: 2px;
+    background-color: #eb0028;
+    left: 0px;
+    bottom: -10px;
+    content: "";
+    width: 40px;
+}
+.footer-menu ul li {
+    padding-bottom: 10px;
+    padding-left: 15px;
+    position: relative;
+}
+.footer-menu ul li a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-menu ul li a:hover {
+    color: #eb0028;
+}
+.footer-menu ul li:before {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    content: "\f105";
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+}
+.footer-wiz ul.open-hours li:first-child {
+    padding-top: 0px;
+}
+.footer-wiz ul.open-hours li {
+    border-bottom: 1px dashed #404040;
+    padding: 10px 0px;
+}
+.newsletter {
+    margin-top: 30px;
+    position: relative;
+}
+.newsletter .news-btn {
+    color: #fff;
+    background-color: #eb0028;
+    width: 50px;
+    height: 100%;
+    position: absolute;
+    right: 0px;
+    border: 0px;
+    border-radius: 0px 3px 3px 0px;
+    font-size: 26px;
+    top: 0px;
+    cursor: pointer;
+}
+.newsletter .news-input {
+    padding: 15px 65px 15px 15px;
+    background: #252525;
+    color: #a7a7a7;
+    width: 100%;
+    border: 0px;
+    border-radius: 3px;
+}
+.footer-bottom-area {
+    background-color: #181818;
+    color: #a7a7a7;
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 25px 0px;
+}
+.footer-bottom-area span, .footer-bottom-area a {
+    color: #eb0028;
+}
+
+    </style>
+<div class="footer-top-area">
+<div class="container">
+    <div class="row">
+    <div class="col-12 col-md-6 col-lg-3">
+        <div class="footer-wiz">
+<h3 class="footer-logo">
+    <img src="{{ asset('assets/images/logob.png') }}" alt="footer logo" style="height: 44px;">
+    </h3>
+    <p>{{ 'It was popularised in the 1960s with the release of Letraset sheets containing.'|trans }}</p>
+    <ul class="footer-contact">
+<li>
+<i class="fa fa-phone"></i>
++216 58 810 370
+</li>
+<li><i class="fa fa-envelope"></i> exportBridge@gmail.com</li>
+<li><i class="fa fa-fax"></i> +88 02 123456</li>
+    </ul>
+        </div>
+        <div class="top-social bottom-social">
+<div href="#" style="height: 30px;" class="aa"><i class="fab fa-facebook-f"></i></div>
+<div href="#"style="height: 30px;" class="aa"><i class="fab fa-twitter"></i></div>
+<div href="#"style="height: 30px;" class="aa"><i class="fab fa-youtube"></i></div>
+<div href="#"style="height: 30px;" class="aa"><i class="fab fa-instagram"></i></div>
+
+        </div>
+        </div>    
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="footer-wiz footer-menu">
+        <h3 class="footer-wiz-title">{{ 'Quick Links'|trans }}</h3>
+             <ul>
+<li><a href="#">{{ 'Company Overview'|trans }}</a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Our Services'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Media & Publications'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Blog'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Contact Us'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Freight Gallery'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Image Gallery'|trans }}</p></a></li>
+
+             </ul>
+    </div>
+
+</div>
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="footer-wiz footer-menu">
+        <h3 class="footer-wiz-title">{{ 'Usefull Links'|trans }}</h3>
+             <ul>
+<li><a href="#">Create Shipping</a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Tracking'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Shipment History'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Typography'|trans }}</p></a></li>
+<li><a href="#"><p style="margin: 0;">{{ 'Tracking Result'|trans }}</p></a></li>
+
+
+             </ul>
+    </div>
+
+</div>
+<div class="col-12 col-md-6 col-lg-3">
+    <div class="footer-wiz footer-menul">
+        <h3 class="footer-wiz-title">{{ 'Opening Hours'|trans }}</h3>
+             <ul class="open-hours">
+<li><span>{{ 'Mon to Fri:'|trans }}</span> <span class="text-right">{{ '09:30AM to 05:30PM'|trans }}</span></li> 
+
+
+
+<li><span>{{ 'Sun:'|trans }}</span> <span class="text-right">{{ 'Closed'|trans }}</span></li>
+             </ul>
+             <div class="newsletter">
+<form id="newsletter-form">
+
+    <input type="email"
+           name="from_email"
+           placeholder="Enter your email"
+           class="news-input"
+           required>
+
+    <button type="submit" class="news-btn">
+        <i class="fa fa-location-arrow"></i>
+    </button>
+
+</form>
+             </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div>
+<div class="footer-bottom-area">
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-6" data-aos="fade-left" data-aos-duration="1000">
+            Copyright &copy;  2017 
+<span>Wrold shipping</span>. All rights reserved.
+        </div>
+
+             <div class="col-12 col-lg-6 " data-aos="fade-right" data-aos-duration="1000" style="text-align: right;">
+         Design &amp; Development By: 
+<a href="#">web24service</a>
+        </div>
+
+    </div>
+</div>
+</div>
+    {% endblock %}
