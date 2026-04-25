@@ -8,7 +8,8 @@ from groq import Groq
 from dotenv import load_dotenv
 from datetime import datetime
 import random
-
+from huggingface_hub import InferenceClient 
+import io
 import requests
 # --- INITIALISATION ---
 load_dotenv()
@@ -207,8 +208,7 @@ def get_latest_updates():
         return jsonify({'error': str(e)}), 500   
 
 
-from huggingface_hub import InferenceClient 
-import io
+
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 # ✅ Nouveau client officiel HF (remplace requests manuel)
@@ -261,6 +261,97 @@ def generate_avatar():
     except Exception as e:
         print(f"Erreur generate_avatar: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/chat-db', methods=['POST'])
+def chat_db():
+    """Sikipon répond UNIQUEMENT sur les données de la base"""
+    data = request.json
+    user_question = data.get('question', '')
+
+    if not user_question:
+        return jsonify({'error': 'Question requise'}), 400
+
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute("SELECT company_name, country, rating, is_banned, contact_email FROM companies")
+        companies = cursor.fetchall()
+
+        cursor.execute("SELECT name, region, trade_agreement FROM markets")
+        markets = cursor.fetchall()
+
+        db.close()
+
+        db_context = json.dumps({
+            "entreprises": companies,
+            "marches": markets
+        }, default=str, ensure_ascii=False)
+
+        system_prompt = f"""Tu es Sikipon, l'assistant IA d'ExportBridge.
+Tu DOIS répondre UNIQUEMENT à partir des données suivantes de la base de données.
+Si la question ne concerne pas ces données, réponds : "Je ne peux répondre qu'aux questions sur les entreprises et marchés enregistrés sur ExportBridge."
+Ne jamais inventer des données. Base-toi STRICTEMENT sur ceci :
+
+{db_context}
+
+Réponds en français, de façon concise et professionnelle."""
+
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_question}
+            ],
+            max_tokens=500
+        )
+
+        answer = response.choices[0].message.content
+        return jsonify({"status": "success", "answer": answer})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/autocomplete', methods=['POST'])
+def autocomplete():
+    """Autocomplétion style VS Code — complète la phrase de l'utilisateur"""
+    data = request.json
+    partial = data.get('text', '')
+
+    if len(partial) < 2:
+        return jsonify({"suggestion": ""})
+
+    try:
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT company_name FROM companies")
+        companies = [r['company_name'] for r in cursor.fetchall()]
+        cursor.execute("SELECT name FROM markets")
+        markets = [r['name'] for r in cursor.fetchall()]
+        db.close()
+
+        context = f"Entreprises: {', '.join(companies)}. Marchés: {', '.join(markets)}."
+
+        prompt = f"""Tu es un assistant de complétion de texte pour ExportBridge.
+Données disponibles: {context}
+L'utilisateur a tapé: "{partial}"
+Complète UNIQUEMENT la fin de la phrase (5-8 mots max), sans répéter ce qui a déjà été tapé.
+Réponds UNIQUEMENT avec la suite du texte, rien d'autre."""
+
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=30,
+            temperature=0.3
+        )
+
+        suggestion = response.choices[0].message.content.strip()
+        return jsonify({"suggestion": suggestion})
+
+    except Exception as e:
+        return jsonify({"suggestion": ""})
 
 # --- LANCEMENT ---
 if __name__ == '__main__':
