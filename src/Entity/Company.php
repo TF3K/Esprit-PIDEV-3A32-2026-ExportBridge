@@ -336,13 +336,43 @@ class Company
     /**
      * ✅ FIXED Doctrine Doctor: suppression de la relation certificates
      * Certificate.php utilise $company_id (entier brut) et n'a PAS de ManyToOne vers Company
-     * Donc OneToMany ici est invalide — relation supprimée
+     * La relation ManyToOne existe côté Certificate, donc l'inverse doit être exposé ici
+     * pour garder le mapping Doctrine cohérent.
      */
+    /**
+     * @var Collection<int, Certificate>
+     */
+    #[ORM\OneToMany(targetEntity: Certificate::class, mappedBy: 'company')]
+    private Collection $certificates;
+
+    /**
+     * @return Collection<int, Certificate>
+     */
+    public function getCertificates(): Collection
+    {
+        return $this->certificates;
+    }
+
+    public function addCertificate(Certificate $certificate): self
+    {
+        if (!$this->certificates->contains($certificate)) {
+            $this->certificates->add($certificate);
+        }
+
+        return $this;
+    }
+
+    public function removeCertificate(Certificate $certificate): self
+    {
+        $this->certificates->removeElement($certificate);
+
+        return $this;
+    }
 
     /**
      * Partnership (OneToOne)
      */
-    #[ORM\OneToOne(targetEntity: Partnership::class, mappedBy: 'company')]
+    #[ORM\OneToOne(targetEntity: Partnership::class, mappedBy: 'company', cascade: ['persist', 'remove'])]
     private ?Partnership $partnership = null;
 
     public function getPartnership(): ?Partnership
@@ -367,6 +397,7 @@ class Company
     public function __construct()
     {
         $this->contactHistory = new ArrayCollection();
+        $this->certificates = new ArrayCollection();
         $this->products = new ArrayCollection();
         $this->managers = new ArrayCollection();
     }

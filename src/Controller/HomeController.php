@@ -16,6 +16,18 @@ use Knp\Component\Pager\PaginatorInterface;
 
 final class HomeController extends AbstractController
 {
+    #[Route('/', name: 'home_root')]
+    public function homeRoot(Request $request): Response
+    {
+        $locale = $request->getLocale();
+
+        if (!\in_array($locale, ['en', 'fr', 'ar'], true)) {
+            $locale = 'en';
+        }
+
+        return $this->redirectToRoute('home', ['_locale' => $locale]);
+    }
+
     #[Route('/{_locale}/home', name: 'home', requirements: ['_locale' => 'en|fr|ar'])]
     public function index(
         CompanyRepository $companyRepository,
@@ -24,8 +36,7 @@ final class HomeController extends AbstractController
         PartnershipRepository $partnershipRepository,
         PaginatorInterface $paginator,
         Request $request
-    ): Response
-    {
+    ): Response {
         // Données statiques avec extensions vérifiées
         $data = [
             [
@@ -52,7 +63,7 @@ final class HomeController extends AbstractController
             'productCount' => $productRepository->count([]),
             'partnerCount' => $partnershipRepository->count([]),
             // Correction : ajout de la virgule manquante ici
-            'items'        => $pagination 
+            'items'        => $pagination
         ]);
     }
 }

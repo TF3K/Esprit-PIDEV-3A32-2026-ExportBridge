@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Market;
 use App\Repository\MarketRepository;
+use App\Repository\CertificateRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +18,17 @@ class MarketController extends AbstractController
     use FormValidationTrait;
 
     #[Route('', name: 'app_admin_markets')]
-    public function index(MarketRepository $repo): Response
-    {
+    public function index(
+        MarketRepository $repo,
+        CertificateRequirementRepository $certificateRequirementRepository
+    ): Response {
+        $markets = $repo->findAll();
+        $marketIds = array_map(static fn(Market $market): int => (int) $market->getId(), $markets);
+        $requirementCounts = $certificateRequirementRepository->getCountsByMarketIds($marketIds);
+
         return $this->render('admin/markets/index.html.twig', [
-            'markets' => $repo->findAll(),
+            'markets' => $markets,
+            'requirementCounts' => $requirementCounts,
         ]);
     }
 

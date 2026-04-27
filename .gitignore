@@ -18,3 +18,7 @@
 !.env.example
 !.env.dist
 .history/
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

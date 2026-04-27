@@ -5,6 +5,7 @@ namespace App\Twig;
 use App\Service\OAuthStorageService;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -14,8 +15,7 @@ class CurrentUserAvatarExtension extends AbstractExtension
         private Security $security,
         private OAuthStorageService $oauthStorage,
         private Packages $assets,
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {
@@ -28,8 +28,8 @@ class CurrentUserAvatarExtension extends AbstractExtension
     {
         $user = $this->security->getUser();
 
-        if ($user && method_exists($user, 'getEmail')) {
-            $email = (string) $user->getEmail();
+        if ($user instanceof UserInterface) {
+            $email = (string) $user->getUserIdentifier();
             if ($email !== '') {
                 $oauthData = $this->oauthStorage->get($email);
                 $imageUrl = $oauthData['image_url'] ?? null;

@@ -28,8 +28,10 @@
 
    
 
-    {# ===== NAVBAR ===== #}
-    {% include 'header/navbarvesitor.html.twig' %}
+    {% block site_header %}
+      {# ===== NAVBAR ===== #}
+      {% include 'header/navbarvesitor.html.twig' %}
+    {% endblock %}
 
     {# ===== PAGE CONTENT ===== #}
     <main>
@@ -37,7 +39,9 @@
     </main>
 
 
-     {% include 'footer/footer.html.twig' %}
+    {% block site_footer %}
+      {% include 'footer/footer.html.twig' %}
+    {% endblock %}
     {% block javascripts %}
       <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
       <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>

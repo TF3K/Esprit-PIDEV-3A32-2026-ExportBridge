@@ -118,7 +118,7 @@
                             </td>
                             <td>
                                 <span class="badge text-bg-primary">
-                                    {{ market.certificateRequirements|length }} requirements
+                                    {{ requirementCounts[market.id]|default(0) }} requirements
                                 </span>
                             </td>
                             <td>
