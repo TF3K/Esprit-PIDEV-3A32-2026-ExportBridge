@@ -18,6 +18,7 @@ class Market
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     public function getId(): ?int
@@ -25,126 +26,61 @@ class Market
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
     // -------------------------------------------------------------------------
     // Basic Info
     // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $name = null;
+    private string $name = '';
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
+    public function getName(): string { return $this->name; }
+    public function setName(string $name): self { $this->name = $name; return $this; }
 
     #[ORM\Column(type: 'string', nullable: false)]
-    private ?string $country_code = null;
+    private string $country_code = '';
 
-    public function getCountryCode(): ?string
-    {
-        return $this->country_code;
-    }
-
-    public function setCountryCode(string $country_code): self
-    {
-        $this->country_code = $country_code;
-        return $this;
-    }
+    public function getCountryCode(): string { return $this->country_code; }
+    public function setCountryCode(string $country_code): self { $this->country_code = $country_code; return $this; }
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $region = null;
 
-    public function getRegion(): ?string
-    {
-        return $this->region;
-    }
-
-    public function setRegion(?string $region): self
-    {
-        $this->region = $region;
-        return $this;
-    }
+    public function getRegion(): ?string { return $this->region; }
+    public function setRegion(?string $region): self { $this->region = $region; return $this; }
 
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $is_eu = null;
 
-    public function isEu(): ?bool
-    {
-        return $this->is_eu;
-    }
-
-    public function setIsEu(?bool $is_eu): self
-    {
-        $this->is_eu = $is_eu;
-        return $this;
-    }
+    public function isEu(): ?bool { return $this->is_eu; }
+    public function setIsEu(?bool $is_eu): self { $this->is_eu = $is_eu; return $this; }
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-        return $this;
-    }
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(?string $description): self { $this->description = $description; return $this; }
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $trade_agreement = null;
 
-    public function getTradeAgreement(): ?string
-    {
-        return $this->trade_agreement;
-    }
-
-    public function setTradeAgreement(?string $trade_agreement): static
-    {
-        $this->trade_agreement = $trade_agreement;
-        return $this;
-    }
+    public function getTradeAgreement(): ?string { return $this->trade_agreement; }
+    public function setTradeAgreement(?string $trade_agreement): static { $this->trade_agreement = $trade_agreement; return $this; }
 
     // -------------------------------------------------------------------------
     // Timestamps
     // -------------------------------------------------------------------------
 
     #[ORM\Column(type: 'datetime', nullable: false)]
-    private ?\DateTimeInterface $created_at = null;
+    private \DateTimeInterface $created_at;
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-        return $this;
-    }
+    public function getCreatedAt(): \DateTimeInterface { return $this->created_at; }
+    public function setCreatedAt(\DateTimeInterface $created_at): self { $this->created_at = $created_at; return $this; }
 
     // -------------------------------------------------------------------------
     // Relations
     // -------------------------------------------------------------------------
 
     /**
-     * Companies (OneToMany)
-     * ✅ FIXED level 7: @var avec types génériques spécifiés
-     *
      * @var Collection<int, Company>
      */
     #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'market')]
@@ -178,6 +114,7 @@ class Market
 
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
+        $this->companies  = new ArrayCollection();
+        $this->created_at = new \DateTime();
     }
-}
+} 

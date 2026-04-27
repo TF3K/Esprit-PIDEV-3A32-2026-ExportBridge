@@ -1131,6 +1131,129 @@ setTimeout(function() {
 
 
 });
+(function () {
+  const FLASK_URL = 'http://localhost:3000';
+
+  const toggle        = document.getElementById('sikipon-toggle');
+  const win           = document.getElementById('sikipon-window');
+  const closeBtn      = document.getElementById('sikipon-close');
+  const input         = document.getElementById('sk-input');
+  const sendBtn       = document.getElementById('sk-send');
+  const messages      = document.getElementById('sk-messages');
+  const ghostTyped    = document.getElementById('sk-ghost-typed');
+  const ghostSuggestion = document.getElementById('sk-ghost-suggestion');
+
+  let currentSuggestion = '';
+  let autocompleteTimer = null;
+
+  // ---- Toggle ----
+  toggle.addEventListener('click', () => win.classList.toggle('open'));
+  closeBtn.addEventListener('click', () => win.classList.remove('open'));
+
+  // ---- Quick Replies ----
+  document.querySelectorAll('.sk-quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const question = btn.getAttribute('data-question');
+      document.getElementById('sk-quick-replies').classList.add('hidden');
+      input.value = question;
+      sendMessage();
+    });
+  });
+
+  // ---- Autocomplétion ----
+  input.addEventListener('input', () => {
+    const val = input.value;
+    ghostTyped.textContent = val;
+
+    clearTimeout(autocompleteTimer);
+    currentSuggestion = '';
+    ghostSuggestion.textContent = '';
+
+    if (val.length < 3) return;
+    autocompleteTimer = setTimeout(() => fetchSuggestion(val), 600);
+  });
+
+  async function fetchSuggestion(text) {
+    try {
+      const res = await fetch(`${FLASK_URL}/api/autocomplete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (data.suggestion && data.suggestion.length > 0) {
+        currentSuggestion = data.suggestion;
+        ghostSuggestion.textContent = ' ' + data.suggestion;
+      }
+    } catch (e) {}
+  }
+
+  // ---- Tab / Enter / Escape ----
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab' && currentSuggestion) {
+      e.preventDefault();
+      input.value = input.value + ' ' + currentSuggestion;
+      ghostTyped.textContent = input.value;
+      ghostSuggestion.textContent = '';
+      currentSuggestion = '';
+    }
+    if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+    if (e.key === 'Escape') { ghostSuggestion.textContent = ''; currentSuggestion = ''; }
+  });
+
+  // ---- Envoi ----
+  sendBtn.addEventListener('click', sendMessage);
+
+  async function sendMessage() {
+    const question = input.value.trim();
+    if (!question) return;
+
+    appendMessage('user', question);
+    input.value = '';
+    ghostTyped.textContent = '';
+    ghostSuggestion.textContent = '';
+    currentSuggestion = '';
+    sendBtn.disabled = true;
+
+    const typingEl = appendTyping();
+
+    try {
+      const res = await fetch(`${FLASK_URL}/api/chat-db`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const data = await res.json();
+      typingEl.remove();
+      appendMessage('bot', data.answer || data.error || 'Erreur inconnue.');
+    } catch (e) {
+      typingEl.remove();
+      appendMessage('bot', '⚠️ Impossible de contacter Sikipon. Vérifiez le serveur Flask.');
+    }
+
+    sendBtn.disabled = false;
+    input.focus();
+  }
+
+  function appendMessage(who, text) {
+    const div = document.createElement('div');
+    div.className = `sk-msg ${who}`;
+    div.innerHTML = text.replace(/\n/g, '<br>');
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function appendTyping() {
+    const div = document.createElement('div');
+    div.className = 'sk-msg typing';
+    div.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+})();
 </script>
     {% endblock %}
 

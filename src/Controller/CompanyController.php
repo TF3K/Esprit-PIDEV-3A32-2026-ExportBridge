@@ -25,10 +25,10 @@ class CompanyController extends AbstractController
         $markets = $marketRepository->findAll();
 
         if ($request->isMethod('POST')) {
-            // ✅ cast explicite en string pour éviter mixed
             $companyName = (string) $request->request->get('company_name', '');
             $marketName  = (string) $request->request->get('market_name', '');
-            $domain      = (string) $request->request->get('domain', '');
+            // champs optionnels : on récupère null si absent/vide
+            $domain      = $request->request->get('domain') !== null ? (string) $request->request->get('domain') : null;
             $email       = (string) $request->request->get('email', '');
             $country     = (string) $request->request->get('country', '');
             $address     = (string) $request->request->get('address', '');
@@ -38,13 +38,16 @@ class CompanyController extends AbstractController
                 return $this->redirectToRoute('app_company_new');
             }
 
+            // À ce stade PHPStan sait que $email, $country, $address sont non-vides
+            // On les passe directement sans ternaire inutile
+
             try {
                 $aiResponse = $httpClient->request('POST', 'http://127.0.0.1:3000/api/validate-company', [
                     'json' => [
                         'company_name' => $companyName,
                         'market_name'  => $marketName,
                         'email'        => $email,
-                        'domain'       => $domain,
+                        'domain'       => $domain ?? '',
                     ]
                 ]);
 
@@ -60,19 +63,19 @@ class CompanyController extends AbstractController
                 return $this->redirectToRoute('app_company_new');
             }
 
-            $contractHash = '';
+            $contractHash = null;
             try {
                 $bcResponse = $httpClient->request('POST', 'http://127.0.0.1:5000/api/sign-contract', [
                     'json' => [
                         'company_name' => $companyName,
                         'market_name'  => $marketName,
                         'email'        => $email,
-                        'domain'       => $domain,
+                        'domain'       => $domain ?? '',
                     ]
                 ]);
 
                 $bcResult     = $bcResponse->toArray();
-                $contractHash = (string) ($bcResult['contract_hash'] ?? '');
+                $contractHash = isset($bcResult['contract_hash']) ? (string) $bcResult['contract_hash'] : null;
             } catch (\Exception $e) {
                 $this->addFlash('error', "Échec de la sécurisation Blockchain.");
                 return $this->redirectToRoute('app_company_new');
@@ -80,13 +83,13 @@ class CompanyController extends AbstractController
 
             $company = new Company();
             $company->setCompanyName($companyName);
-            // ✅ FIXED level 7: strlen() au lieu de ?: pour éviter "ternary always true"
-            // après un cast (string), la valeur est toujours un string donc ?: null est toujours true
-            $company->setDomain(strlen($domain) > 0 ? $domain : null);
-            $company->setContactEmail(strlen($email) > 0 ? $email : null);
-            $company->setCountry(strlen($country) > 0 ? $country : null);
-            $company->setAddress(strlen($address) > 0 ? $address : null);
-            $company->setContractHash(strlen($contractHash) > 0 ? $contractHash : null);
+            // champs optionnels : null possible, pas de ternaire sur non-falsy-string
+            $company->setDomain($domain);
+            // champs obligatoires validés par le guard : on les passe directement
+            $company->setContactEmail($email);
+            $company->setCountry($country);
+            $company->setAddress($address);
+            $company->setContractHash($contractHash);
 
             $market = $marketRepository->findOneBy(['name' => $marketName]);
             if ($market) {
@@ -100,7 +103,7 @@ class CompanyController extends AbstractController
             $companyRepository->save($company, true);
 
             $this->addFlash('success', "Entreprise validée par l'IA et scellée sur la Blockchain.");
-            $this->addFlash('info', "Hash : " . $contractHash);
+            $this->addFlash('info', "Hash : " . ($contractHash ?? ''));
 
             return $this->redirectToRoute('app_company_list');
         }
@@ -222,8 +225,6 @@ class CompanyController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        // ✅ FIXED level 7: output() retourne toujours string après render()
-        // suppression du ?? '' qui causait "variable always exists and is not nullable"
         $pdfContent = (string) $dompdf->output();
 
         return new Response($pdfContent, 200, [

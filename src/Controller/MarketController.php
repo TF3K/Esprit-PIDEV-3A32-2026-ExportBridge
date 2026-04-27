@@ -18,8 +18,6 @@ class MarketController extends AbstractController
     {
         if ($request->isMethod('POST')) {
 
-            // 1. Validation CSRF
-            // ✅ FIXED level 7: cast en string pour isCsrfTokenValid()
             $token = (string) $request->request->get('_token', '');
             if (!$this->isCsrfTokenValid('market_create', $token)) {
                 throw $this->createAccessDeniedException('Invalid CSRF token');
@@ -27,8 +25,6 @@ class MarketController extends AbstractController
 
             $em = $doctrine->getManager();
 
-            // 2. Récupération et nettoyage des données
-            // ✅ FIXED level 7: cast en string avant trim() pour éviter mixed
             $name            = trim((string) $request->request->get('title', ''));
             $tradeAgreement  = trim((string) $request->request->get('trade_agreement', ''));
             $region          = $request->request->get('region') !== null ? (string) $request->request->get('region') : null;
@@ -36,25 +32,21 @@ class MarketController extends AbstractController
             $description     = trim((string) $request->request->get('description', ''));
             $isEu            = $request->request->getBoolean('featured');
 
-            // 3. Validations de présence
             if (empty($name) || empty($tradeAgreement) || empty($region) || empty($countryCode) || empty($description)) {
                 $this->addFlash('error', 'Tous les champs obligatoires doivent être remplis.');
                 return $this->redirectToRoute('app_market_create');
             }
 
-            // 4. Validation du format
             if (!preg_match("/^[a-zA-ZÀ-ÿ\s]{3,50}$/", $name)) {
                 $this->addFlash('error', 'Le titre du marché doit contenir uniquement des lettres (entre 3 et 50 caractères).');
                 return $this->redirectToRoute('app_market_create');
             }
 
-            // 5. Validation de longueur de la Description
             if (strlen($description) < 10) {
                 $this->addFlash('error', 'La description est trop courte (minimum 10 caractères).');
                 return $this->redirectToRoute('app_market_create');
             }
 
-            // 6. Création et Persistance
             $market = new Market();
             $market->setName($name);
             $market->setTradeAgreement($tradeAgreement);
@@ -105,7 +97,6 @@ class MarketController extends AbstractController
     #[Route('/search', name: 'search')]
     public function search(Request $request, MarketRepository $repo): Response
     {
-        // ✅ FIXED level 7: cast pour éviter mixed passé à searchAndSort()
         $name   = $request->query->get('name') !== null ? (string) $request->query->get('name') : null;
         $sortBy = $request->query->get('sort') !== null ? (string) $request->query->get('sort') : null;
 
@@ -121,16 +112,28 @@ class MarketController extends AbstractController
         ]);
     }
 
-    // ✅ FIXED level 7: type hint int $id + return type Response
-    #[Route('/deleteMarket/{id}', name: 'deleteMarket')]
+    // ✅ FIXED: méthode delete complète avec dissociation + remove + flush
+    #[Route('/deleteMarket/{id}', name: 'deleteMarket', methods: ['POST'])]
     public function delete(int $id, ManagerRegistry $manager, MarketRepository $repo): Response
     {
         $em     = $manager->getManager();
         $market = $repo->find($id);
 
         if ($market) {
+            // ✅ Dissocier toutes les companies avant suppression
+            foreach ($market->getCompanies() as $company) {
+                $company->setMarket(null);
+                $em->persist($company);
+            }
+
+            // ✅ flush pour sauvegarder la dissociation
+            $em->flush();
+
+            // ✅ Supprimer le market
             $em->remove($market);
             $em->flush();
+
+            $this->addFlash('success', 'Le marché a été supprimé avec succès.');
         }
 
         return $this->redirectToRoute('app_market_list');
@@ -141,15 +144,11 @@ class MarketController extends AbstractController
     {
         if ($request->isMethod('POST')) {
 
-            // 1. Validation CSRF
-            // ✅ FIXED level 7: cast en string
             $token = (string) $request->request->get('_token', '');
             if (!$this->isCsrfTokenValid('market_update_' . $market->getId(), $token)) {
                 throw $this->createAccessDeniedException('Invalid CSRF token');
             }
 
-            // 2. Récupération et nettoyage
-            // ✅ FIXED level 7: cast en string avant trim()
             $name           = trim((string) $request->request->get('title', ''));
             $tradeAgreement = trim((string) $request->request->get('trade_agreement', ''));
             $region         = $request->request->get('region') !== null ? (string) $request->request->get('region') : null;
@@ -157,25 +156,21 @@ class MarketController extends AbstractController
             $description    = trim((string) $request->request->get('description', ''));
             $isEu           = $request->request->getBoolean('featured');
 
-            // 3. Validations de présence
             if (empty($name) || empty($tradeAgreement) || empty($region) || empty($countryCode)) {
                 $this->addFlash('error', 'Tous les champs obligatoires doivent être remplis');
                 return $this->redirectToRoute('app_market_update', ['id' => $market->getId()]);
             }
 
-            // 4. Validation Format Titre
             if (!preg_match("/^[a-zA-ZÀ-ÿ\s]{3,50}$/", $name)) {
                 $this->addFlash('error', 'Le titre du marché doit contenir uniquement des lettres (entre 3 et 50 caractères).');
                 return $this->redirectToRoute('app_market_update', ['id' => $market->getId()]);
             }
 
-            // 5. Validation de longueur de la Description
             if (strlen($description) < 10) {
                 $this->addFlash('error', 'La description est trop courte (minimum 10 caractères).');
                 return $this->redirectToRoute('app_market_update', ['id' => $market->getId()]);
             }
 
-            // 6. Mise à jour
             $market->setName($name);
             $market->setTradeAgreement($tradeAgreement);
             $market->setRegion($region);
@@ -200,7 +195,7 @@ class MarketController extends AbstractController
     }
 
     #[Route('/marketUser/list', name: 'app_marketUser_list')]
-    public function Marketuserlist(Request $request, MarketRepository $repo): Response
+    public function marketUserList(Request $request, MarketRepository $repo): Response
     {
         $limit = 5;
         $page  = max(1, (int) $request->query->get('page', 1));
@@ -225,7 +220,6 @@ class MarketController extends AbstractController
     #[Route('/searchUser', name: 'searchUser')]
     public function searchUser(Request $request, MarketRepository $repo): Response
     {
-        // ✅ FIXED level 7: cast pour éviter mixed
         $name   = $request->query->get('name') !== null ? (string) $request->query->get('name') : null;
         $sortBy = $request->query->get('sort') !== null ? (string) $request->query->get('sort') : null;
 
@@ -244,7 +238,6 @@ class MarketController extends AbstractController
     #[Route('/searchUserOption', name: 'searchUserOption')]
     public function searchUserOption(Request $request, MarketRepository $repo): Response
     {
-        // ✅ FIXED level 7: cast pour éviter mixed
         $name   = $request->query->get('name') !== null ? (string) $request->query->get('name') : null;
         $sortBy = $request->query->get('sort') !== null ? (string) $request->query->get('sort') : null;
 
