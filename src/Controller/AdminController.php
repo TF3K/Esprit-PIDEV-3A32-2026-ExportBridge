@@ -27,6 +27,7 @@ class AdminController extends AbstractController
                 'managers'     => $managerRepo->count([]),
                 'certificates' => $certificateRepo->count([]),
             ],
+            'managers' => $managerRepo->findNonAdmins(),
             'recentCompanies' => $companyRepo->findBy([], ['created_at' => 'DESC'], 5),
         ]);
     }

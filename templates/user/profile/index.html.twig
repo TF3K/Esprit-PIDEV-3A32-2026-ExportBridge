@@ -17,7 +17,7 @@
             <div class="card shadow-sm text-center p-4">
                 <div class="avatar avatar-xxl mx-auto mb-3">
                     <img class="avatar-img rounded-circle border border-white border-3 shadow"
-                         src="{{ current_avatar_url() }}" alt="avatar">
+                         src="{{ current_avatar_url() }}" alt="avatar" onerror="this.onerror=null;this.src='{{ asset('assets/images/placeholder.svg') }}';">
                 </div>
                 <h5 class="mb-1">{{ manager.firstName }} {{ manager.lastName }}</h5>
                 <p class="text-muted small mb-2">{{ manager.email }}</p>
@@ -27,14 +27,14 @@
                 <hr>
                 <div class="text-start">
                     <span class="text-muted small">Company</span>
-                    <div class="fw-semibold">{{ manager.Company.companyName }}</div>
-                    {% if manager.Company.country %}
+                    <div class="fw-semibold">{{ manager.company.companyName }}</div>
+                    {% if manager.company.country %}
                         <div class="text-muted small">
-                            <i class="bi bi-geo-alt me-1"></i>{{ manager.Company.country }}
+                            <i class="bi bi-geo-alt me-1"></i>{{ manager.company.country }}
                         </div>
                     {% endif %}
                     <div class="mt-2">
-                        {% if manager.Company.isBanned %}
+                        {% if manager.company.isBanned %}
                             <span class="badge text-bg-danger">Company Banned</span>
                         {% else %}
                             <span class="badge text-bg-success">Company Active</span>

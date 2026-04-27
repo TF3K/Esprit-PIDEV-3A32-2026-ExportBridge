@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Company;
 use App\Repository\CompanyRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +21,7 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/add', name: 'app_admin_companies_add')]
-    public function add(Request $request, EntityManagerInterface $em): Response
+    public function add(Request $request, CompanyRepository $companyRepository): Response
     {
         $company = new Company();
 
@@ -41,8 +40,7 @@ class CompanyController extends AbstractController
             $company->setCreatedAt(new \DateTime());
             $company->setLastUpdated(new \DateTime());
 
-            $em->persist($company);
-            $em->flush();
+            $companyRepository->save($company, true);
 
             $this->addFlash('success', 'Company added successfully.');
             return $this->redirectToRoute('app_admin_companies');
@@ -55,7 +53,7 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_admin_companies_edit')]
-    public function edit(Company $company, Request $request, EntityManagerInterface $em): Response
+    public function edit(Company $company, Request $request, CompanyRepository $companyRepository): Response
     {
         if ($request->isMethod('POST')) {
             $company->setCompanyName($request->request->get('company_name'));
@@ -70,7 +68,7 @@ class CompanyController extends AbstractController
             $company->setIsBanned((bool) $request->request->get('is_banned'));
             $company->setLastUpdated(new \DateTime());
 
-            $em->flush();
+            $companyRepository->save($company, true);
 
             $this->addFlash('success', 'Company updated successfully.');
             return $this->redirectToRoute('app_admin_companies');
@@ -83,10 +81,9 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'app_admin_companies_delete', methods: ['POST'])]
-    public function delete(Company $company, EntityManagerInterface $em): Response
+    public function delete(Company $company, CompanyRepository $companyRepository): Response
     {
-        $em->remove($company);
-        $em->flush();
+        $companyRepository->remove($company, true);
 
         $this->addFlash('success', 'Company deleted.');
         return $this->redirectToRoute('app_admin_companies');

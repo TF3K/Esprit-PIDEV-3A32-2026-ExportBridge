@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ContactHistory;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -11,9 +12,30 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ContactHistoryRepository extends ServiceEntityRepository
 {
+    private EntityManagerInterface $entityManager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ContactHistory::class);
+        $this->entityManager = $this->getEntityManager();
+    }
+
+    public function save(ContactHistory $contactHistory, bool $flush = false): void
+    {
+        $this->entityManager->persist($contactHistory);
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+    }
+
+    public function remove(ContactHistory $contactHistory, bool $flush = false): void
+    {
+        $this->entityManager->remove($contactHistory);
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
     }
 
     //    /**

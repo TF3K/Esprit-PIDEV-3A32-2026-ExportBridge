@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Company;
-use App\Entity\Market;
 use App\Repository\CompanyRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\MarketRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +20,9 @@ use Dompdf\Options;
 class CompanyController extends AbstractController
 {
     #[Route('/company/new', name: 'app_company_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, HttpClientInterface $httpClient): Response
+    public function new(Request $request, CompanyRepository $companyRepository, MarketRepository $marketRepository, HttpClientInterface $httpClient): Response
     {
-        $markets = $entityManager->getRepository(Market::class)->findAll();
+        $markets = $marketRepository->findAll();
 
         if ($request->isMethod('POST')) {
             $companyName = (string) $request->request->get('company_name', '');
@@ -92,7 +91,7 @@ class CompanyController extends AbstractController
             $company->setAddress($address);
             $company->setContractHash($contractHash);
 
-            $market = $entityManager->getRepository(Market::class)->findOneBy(['name' => $marketName]);
+            $market = $marketRepository->findOneBy(['name' => $marketName]);
             if ($market) {
                 $company->setMarket($market);
             }
@@ -101,8 +100,7 @@ class CompanyController extends AbstractController
             $company->setCreatedAt($now);
             $company->setLastUpdated($now);
 
-            $entityManager->persist($company);
-            $entityManager->flush();
+            $companyRepository->save($company, true);
 
             $this->addFlash('success', "Entreprise validée par l'IA et scellée sur la Blockchain.");
             $this->addFlash('info', "Hash : " . ($contractHash ?? ''));

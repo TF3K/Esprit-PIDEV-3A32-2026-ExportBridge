@@ -174,6 +174,11 @@ The best logistic company, <span>FAST</span> and <span>SAFELY!</span></h4>
  <div class="col-12 col-md-6 col-lg-6">
 <div class="customer-login-block">
 <h2>Login To Your Account</h2>
+{% if error %}
+<div class="alert alert-danger" role="alert" style="margin-bottom: 12px;">
+    {{ error.messageKey|trans(error.messageData, 'security') }}
+</div>
+{% endif %}
    <form action="{{ path('app_login') }}" method="post" data-validate>
 <div class="form-group" style="margin-bottom: 12px;">
     <label>Email address:</label>
@@ -210,8 +215,18 @@ The best logistic company, <span>FAST</span> and <span>SAFELY!</span></h4>
                                 </div>
 
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                                 <button class="btn btn-submit" type="submit">Login</button>
-  
+                                                                 <button class="btn btn-submit w-100" type="submit">Login</button>
+
+                                                                <div class="text-center my-3 position-relative">
+                                                                        <span class="px-3 bg-white text-muted" style="position: relative; z-index: 1;">or</span>
+                                                                        <hr class="mt-0" style="margin-top: -11px;">
+                                                                </div>
+
+                                                                <a href="{{ path('google_login') }}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2" style="height: 38px;">
+                                                                        <i class="fa-brands fa-google"></i>
+                                                                        Continue with Google
+                                                                </a>
+
    </form>
 </div>
   </div>

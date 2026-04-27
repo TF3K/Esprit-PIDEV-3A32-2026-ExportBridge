@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Manager;
 use App\Entity\Notification;
 use App\Repository\NotificationRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class NotificationController extends AbstractController
 {
     #[Route('/read/{id}', name: 'app_notifications_read', methods: ['POST'], requirements: ['id' => '\\d+'])]
-    public function markAsRead(Notification $notification, Request $request, EntityManagerInterface $em): Response
+    public function markAsRead(Notification $notification, Request $request, NotificationRepository $notificationRepository): Response
     {
         /** @var Manager|null $manager */
         $manager = $this->getUser();
@@ -32,7 +31,7 @@ class NotificationController extends AbstractController
 
         if (!$notification->isRead()) {
             $notification->setIsRead(true);
-            $em->flush();
+            $notificationRepository->save($notification, true);
         }
 
         return $this->redirectToReferer($request);
