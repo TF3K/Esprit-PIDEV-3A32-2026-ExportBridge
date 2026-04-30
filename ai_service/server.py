@@ -66,7 +66,7 @@ Tu es l'assistant intelligent d'ExportBridge. Tu aides les utilisateurs à :
 # --- UTILITAIRES BASE DE DONNÉES ---
 def get_db_connection():
     return mysql.connector.connect(
-        host=os.getenv('DB_HOST', '127.0.0.1'),
+        host=os.getenv('DB_HOST', '172.22.224.1'),
         user=os.getenv('DB_USER', 'root'),
         password=os.getenv('DB_PASS', ''),
         database=os.getenv('DB_NAME', 'export_bridge'),
