@@ -257,15 +257,6 @@ class Company
         return $this;
     }
 
-    // ---------------------------------------------------------------------
-    // CONSTRUCTOR
-    // ---------------------------------------------------------------------
-    /**
-     * ✅ FIXED Doctrine Doctor: suppression de la relation certificates
-     * Certificate.php utilise $company_id (entier brut) et n'a PAS de ManyToOne vers Company
-     * La relation ManyToOne existe côté Certificate, donc l'inverse doit être exposé ici
-     * pour garder le mapping Doctrine cohérent.
-     */
     /**
      * @var Collection<int, Certificate>
      */
@@ -306,21 +297,11 @@ class Company
     {
         $this->products = new ArrayCollection();
         $this->contactHistory = new ArrayCollection();
+        $this->certificates = new ArrayCollection();
         $this->created_at = new \DateTime();
         $this->last_updated = new \DateTime();
     }
 
-    // ---------------------------------------------------------------------
-    // COLLECTION GETTERS
-    // ---------------------------------------------------------------------
-
-    public function __construct()
-    {
-        $this->contactHistory = new ArrayCollection();
-        $this->certificates = new ArrayCollection();
-        $this->products = new ArrayCollection();
-        $this->managers = new ArrayCollection();
-    }
     /**
      * @return Collection<int, Product>
      */
