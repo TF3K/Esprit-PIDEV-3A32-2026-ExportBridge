@@ -108,7 +108,7 @@ class CompanyController extends AbstractController
             return $this->redirectToRoute('app_company_list');
         }
 
-        return $this->render('company/new.html.twig', [
+        return $this->render('admin/companies/new.html.twig', [
             'markets' => $markets
         ]);
     }
@@ -125,7 +125,7 @@ class CompanyController extends AbstractController
         $to         = min($page * $limit, $totalEntries);
         $totalPages = (int) ceil($totalEntries / $limit);
 
-        return $this->render('company/listCompany.html.twig', [
+        return $this->render('admin/companies/listCompany.html.twig', [
             'companies'    => $companies,
             'totalEntries' => $totalEntries,
             'from'         => $from,
