@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Repository\ProductRepository;
+use App\Entity\Manager;
 use App\Repository\CertificateRepository;
-use App\Repository\CompanyRepository;
-use App\Repository\ManagerRepository;
-use App\Repository\PartnershipRepository;
+use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,96 +14,38 @@ class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(
         ProductRepository $productRepo,
-        CertificateRepository $certRepo,
-        CompanyRepository $companyRepo,
-        ManagerRepository $managerRepo,
-        PartnershipRepository $partnershipRepo
+        CertificateRepository $certRepo
     ): Response {
-
-        // ===============================
-        // Utilisateur connecté
-        // ===============================
         $user = $this->getUser();
-
         $company = null;
 
-        if ($user && method_exists($user, 'getCompany')) {
+        if ($user instanceof Manager) {
             $company = $user->getCompany();
         }
 
-        // ===============================
-        // Statistiques globales
-        // ===============================
-        $totalUsers = $managerRepo->count([]);
-        $totalCompanies = $companyRepo->count([]);
-        $totalProducts = $productRepo->count([]);
-        $totalPartnerships = $partnershipRepo->count([]);
-        $allManagers = $managerRepo->findAll();
-
-        // ===============================
-        // Statistiques personnelles
-        // ===============================
-        $myProductsCount = 0;
-        $myCertificatesCount = 0;
+        $products = [];
+        $certificates = [];
         $recentProducts = [];
 
         if ($company) {
+            $products = $productRepo->findBy(['company' => $company], ['created_at' => 'DESC']);
+            $certificates = $certRepo->findBy(['company' => $company], ['created_at' => 'DESC']);
 
-            $myProductsCount = $productRepo->count([
-                'company' => $company
-            ]);
-
-            $myCertificatesCount = $certRepo->count([
-                'company' => $company
-            ]);
-
-            $recentProducts = $productRepo->findBy(
-                ['company' => $company],
-                ['created_at' => 'DESC'],
-                5
-            );
+            $recentProducts = array_slice($products, 0, 5);
         }
 
-        // ===============================
-        // Graph Charts
-        // ===============================
-        $chartData = method_exists($managerRepo, 'getCountByDay')
-            ? $managerRepo->getCountByDay()
-            : [];
+        $activeCertificates = array_filter($certificates, static function ($certificate): bool {
+            return $certificate->getStatus() === 'active';
+        });
 
-        $companyChartData = method_exists($companyRepo, 'getCountByDay')
-            ? $companyRepo->getCountByDay()
-            : [];
-
-        $partnershipChartData = method_exists($partnershipRepo, 'getCountByDay')
-            ? $partnershipRepo->getCountByDay()
-            : [];
-
-        $productChartData = method_exists($productRepo, 'getCountByDay')
-            ? $productRepo->getCountByDay()
-            : [];
-
-        // ===============================
-        // Render
-        // ===============================
-        return $this->render('user/dashboard/index.html.twig', [
- 'allManagers' => $allManagers,
+        return $this->render('user/base_user.html.twig', [
             'stats' => [
-               
-                'totalUsers' => $totalUsers,
-                'totalCompanies' => $totalCompanies,
-                'totalProducts' => $totalProducts,
-                'totalPartnerships' => $totalPartnerships,
-                'myProducts' => $myProductsCount,
-                'myCertificates' => $myCertificatesCount,
+                'products' => count($products),
+                'certificates' => count($certificates),
+                'activeCertificates' => count($activeCertificates),
             ],
-
             'recentProducts' => $recentProducts,
-
-            'chartData' => $chartData,
-            'companyChartData' => $companyChartData,
-            'partnershipChartData' => $partnershipChartData,
-            'productChartData' => $productChartData,
+            'recentCertificates' => array_slice($certificates, 0, 5),
         ]);
     }
 }

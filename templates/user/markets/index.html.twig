@@ -63,7 +63,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <span class="badge text-bg-primary">
-                            {{ market.certificateRequirements|length }} requirements
+                            {{ requirementCounts[market.id]|default(0) }} requirements
                         </span>
                         <a href="{{ path('app_user_markets_show', {id: market.id}) }}"
                            class="btn btn-sm btn-outline-primary">

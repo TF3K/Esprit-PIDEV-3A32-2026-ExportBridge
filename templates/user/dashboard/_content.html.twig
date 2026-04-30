@@ -1,0 +1,162 @@
+<div style="position: relative; left: 249px; background-color: #f7f7f7; padding: 20px; width: 82%;">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0">ANALYTICS</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item active ng-star-inserted" style="padding: 0;">Dashboards</li>
+                        <li class="breadcrumb-item active ng-star-inserted" style="padding: 0;">Analytics</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-sm-6">
+            <div class="card" style="height: 185px;">
+                <p class="fs-md mb-0">My Products</p>
+                <div class="row align-items-center">
+                    <div class="col-lg-6" style="padding-right: 4px;">
+                        <h3 class="mb-4"><span class="counter-value">{{ stats.products }}</span></h3>
+                        <p class="mb-0 text-success">
+                            <i class="bi bi-arrow-up me-1"></i> 06.41% Last Month
+                        </p>
+                    </div>
+                    <div class="col-lg-6" style="padding-left: 4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-sm-6">
+            <div class="card" style="height: 185px;">
+                <p class="fs-md mb-0">Certificates</p>
+                <div class="row align-items-center">
+                    <div class="col-lg-6" style="padding-right: 4px;">
+                        <h3 class="mb-4"><span class="counter-value">{{ stats.certificates }}</span></h3>
+                        <p class="mb-0 text-primary">
+                            <i class="bi bi-arrow-right me-1"></i> 13% Last Month
+                        </p>
+                    </div>
+                    <div class="col-lg-6" style="padding-left: 4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-sm-6">
+            <div class="card" style="height: 185px;">
+                <p class="fs-md mb-0">Active Certificates</p>
+                <div class="row align-items-center">
+                    <div class="col-lg-6" style="padding-right: 4px;">
+                        <h3 class="mb-4"><span class="counter-value">{{ stats.activeCertificates }}</span></h3>
+                        <p class="mb-0" style="color: #ed706f;">
+                            <i class="bi bi-arrow-down me-1"></i> 07.26% Last Week
+                        </p>
+                    </div>
+                    <div class="col-lg-6" style="padding-left: 4px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border bg-transparent rounded-3">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-sm-flex justify-content-sm-between align-items-center">
+                        <h3 class="mb-2 mb-sm-0">My Recent Products</h3>
+                        <a href="{{ path('app_user_products') }}" class="btn btn-sm btn-primary-soft mb-0">View all</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>HS Code</th>
+                                    <th>Unit Price</th>
+                                    <th>Currency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in recentProducts %}
+                                    <tr>
+                                        <td><h6 class="mb-0">{{ product.name }}</h6></td>
+                                        <td>
+                                            {% if product.productCategory %}
+                                                <span class="badge text-bg-info">{{ product.productCategory.name }}</span>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                        <td><code>{{ product.hsCode ?? '—' }}</code></td>
+                                        <td>{{ product.unitPrice ?? '—' }}</td>
+                                        <td>{{ product.currency ?? '—' }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">No products yet.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border bg-transparent rounded-3">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-sm-flex justify-content-sm-between align-items-center">
+                        <h3 class="mb-2 mb-sm-0">My Recent Certificates</h3>
+                        <a href="{{ path('app_user_certificates') }}" class="btn btn-sm btn-primary-soft mb-0">View all</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Certificate #</th>
+                                    <th>Type</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cert in recentCertificates %}
+                                    <tr>
+                                        <td><code>{{ cert.certificateNumber }}</code></td>
+                                        <td>{{ cert.type }}</td>
+                                        <td>{{ cert.expiryDate ? cert.expiryDate|date('d/m/Y') : '—' }}</td>
+                                        <td>
+                                            {% if cert.status == 'active' %}
+                                                <span class="badge text-bg-success">Active</span>
+                                            {% elseif cert.status == 'pending' %}
+                                                <span class="badge text-bg-warning">Pending</span>
+                                            {% elseif cert.status == 'expired' %}
+                                                <span class="badge text-bg-danger">Expired</span>
+                                            {% else %}
+                                                <span class="badge text-bg-secondary">{{ cert.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-3">No certificates yet.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

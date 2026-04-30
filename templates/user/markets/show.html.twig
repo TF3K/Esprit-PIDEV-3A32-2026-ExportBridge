@@ -74,12 +74,12 @@
                     <h5 class="card-header-title mb-0">
                         Certificate Requirements
                         <span class="badge text-bg-primary ms-2">
-                            {{ market.certificateRequirements|length }}
+                            {{ requirements|length }}
                         </span>
                     </h5>
                 </div>
                 <div class="card-body">
-                    {% if market.certificateRequirements|length > 0 %}
+                    {% if requirements|length > 0 %}
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
@@ -91,7 +91,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for req in market.certificateRequirements %}
+                                    {% for req in requirements %}
                                     <tr>
                                         <td><span class="badge text-bg-info">{{ req.certificateType }}</span></td>
                                         <td>{{ req.productCategory }}</td>
