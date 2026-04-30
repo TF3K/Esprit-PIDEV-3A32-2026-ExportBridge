@@ -5,7 +5,7 @@
             {# Mobile logo #}
             <div class="d-flex align-items-center d-xl-none">
                 <a class="navbar-brand" href="{{ path('app_admin_dashboard') }}">
-                    <img class="navbar-brand-item h-30px" src="{{ asset('public/assets/images/logo_dark.svg') }}" alt="">
+                    <img class="navbar-brand-item h-30px" src="{{ asset('assets/images/logo_dark.svg') }}" alt="">
                 </a>
             </div>
 
@@ -41,13 +41,13 @@
                     {# Profile dropdown #}
                     <li class="nav-item ms-2 ms-md-3 dropdown">
                         <a class="avatar avatar-sm p-0" href="#" role="button" data-bs-toggle="dropdown">
-                            <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            <img class="avatar-img rounded-circle" src="{{ current_avatar_url() }}" alt="avatar">
                         </a>
                         <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3">
                             <li class="px-3 mb-2">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar me-3">
-                                        <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                                        <img class="avatar-img rounded-circle shadow" src="{{ current_avatar_url() }}" alt="avatar">
                                     </div>
                                     <div>
                                         <a class="h6 mt-2 mt-sm-0" href="#">

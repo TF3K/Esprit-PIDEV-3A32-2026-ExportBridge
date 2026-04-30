@@ -1,596 +1,131 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}ExportBridge{% endblock %}</title>
+{% extends 'base.html.twig' %}
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.css">
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" />
-        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
-        {{ encore_entry_link_tags('app') }}
-    {% endblock %}
-</head>
-<style>
-     header {
-                border-bottom: 1px solid rgb(220.66, 224.7, 238.84);
-}
-        
-.navbar-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    height: 70px;
-    padding: 10px 10px;
-}
-.navbar-brand-box {
-    text-align: center;
-    padding: 0 1.3rem;
-    transition: all .1s ease-out;
-}
-.header-item {
-    height:70px;
-    display: flex;
-    align-items: center;
-}
-.hamburger-icon {
-    width: 20px;
-    height: 14px;
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-}
-.app-search {
-    height: 70px;
-    align-items: center;
-}
-.app-search span.search-widget-icon {
-    position: absolute;
-    z-index: 10;
-    font-size: 18px;
-    line-height: 38px;
-    left: 13px;
-    top: 0;
-    color: #878a99;
-    cursor: pointer;
-}
-.app-search .form-control {
-    height: 38px;
-    padding-left: 40px;
-    padding-right: 30px;
-    transition: all .5s ease;
-    background-color: #fff;
-    border-color: #eef0f7;
-    color:#1f242e;
-}
-.navbar-header .btn-topbar {
-    height: 42px;
-    width: 42px;
-}
-.btn-ghost-dark{
-    color: #040c1e;
-    background-color: transparent;
-    border: 1px solid transparent;
-    transition: all .3s ease;
-} 
-button.btn-ghost-dark:hover {
-     background-color: rgba(4, 12, 30, .15);
-}
-.btn-icon {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;  
-    padding: 0;
-}
-.language {
-	padding-bottom: 10px;
-    height: 42px;
-    width: 42px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-		}
+{% block title %}
+    {% if app.request.get('_route') == 'app_dashboard' %}
+        My Dashboard - ExportBridge
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
 
-		.language ul {
-			margin: 0;
-			padding: 0;
-			list-style-type: none;
-		}
+{% block stylesheets %}
+    {{ parent() }}
+    {% if app.request.get('_route') == 'app_dashboard' %}
+        {% include 'user/dashboard/_styles.html.twig' %}
+    {% endif %}
+{% endblock %}
 
-	.dropdown .dropdown-toggle:after {
-    display: none !important;
-}
-.dropdown-menu {
-        padding-top: .5rem !important;
-    padding-bottom: .5rem !important;
-}
-.rounded-pill {
-    width: 18px;
-    height: 17px;
-    display: inline-flex;
-    justify-content: center;
-    font-size: 10px;
-}
-.btn .badge {
-    position: relative;
-    top: 9px;
-    left: 13px;
-}
-.notification-item.unread-message {
-    background-color: rgba(238, 240, 247, 0.8);
-}
-.avatar-xs {
-    height: 2rem;
-    width: 2rem;
-}
+{% block site_header %}{% endblock %}
 
-#chartdiv {
-  max-width: 100%;
-  height: 600px;
-background-color:#0a0e12;
-}
-.navbar-brand-box{
-    text-align: center;
-    padding: 0 1.3rem;
-    width: 249px;
-    position: relative;
-    left: -10px;
-    background-color: rgb(8.4, 78.6, 74.4);
-    border-right: 1px solid rgb(9.8, 91.7, 86.8);
-}
-.navbar-menu{
-width: 249px;
-background-color: rgb(8.4, 78.6, 74.4);
-border-right: 1px solid rgb(9.8, 91.7, 86.8);
-bottom: 0;
-    margin-top: 0;
-    position: fixed;
-    top: 0;
-}
-.navbar-nav{
-    display: flex;
-    flex-direction: column;
-    padding-left: 0;
-    margin-bottom: 0;
-    list-style: none;
-}
-.menu-title {
-    letter-spacing: .05em;
-    cursor: default;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: rgb(134.5, 193, 189.5);
-    font-weight: 600;
-}
-.menu-title span {
-    padding: 12px 20px;
-    display: inline-block;
-}
-.navbar-menu .navbar-nav .nav-link {
-    color: #f3f9f8;
-    display: flex;
-    align-items: center;
-    padding: .625rem 1rem;
-    align-items: center;
-}
-.navbar-menu .navbar-nav .nav-link i {
-    display: inline-block;
-    min-width: 1.75rem;
-      font-size: 19px;
-    line-height: inherit;
-}
-</style>
-<body>
+{% block site_footer %}{% endblock %}
 
-<header id="page-topbar">
- <div class="layout-width">
-    <div class="navbar-header">
-            <div class="d-flex">
-                <div class="navbar-brand-box" style="display: inline-flex;justify-content: center;">
-   <img src="{{ asset('public/assets/images/logo_dark.svg') }}" alt="" style="    margin-bottom: 13px;margin-top: 17px; width: 95px;">
-</div>
-            <button type="button"
-        id="topnav-hamburger-icon"
-        class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn shadow-none">
+{% block body %}
 
-<span class="hamburger-icon"><i class="fa-solid fa-bars"></i></span>
-</button>
-<form class="app-search d-none d-md-inline-flex ng-untouched ng-pristine ng-valid">
-<div class="position-relative">
-    <input type="text" placeholder="Search..." autocomplete="off" id="search-options" value="" class="form-control">
-    <span class="mdi mdi-magnify search-widget-icon"></span>
+    {% include 'user/partials/navbar.html.twig' %}
 
-    </span>
-</div>
-</form>
+    {# Profile banner #}
+    <section class="pt-0">
+        <div class="container-fluid px-0">
+            <div class="bg-blue h-100px h-md-200px rounded-0"
+                 style="background:url({{ asset('assets/images/pattern/04.png') }}) no-repeat center center; background-size:cover;">
             </div>
-            <div class="d-flex align-items-center">
-                <div class="dropdown topbar-head-dropdown ms-1 header-item">
-                    <button class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle"><i class="bi bi-grid fs-2xl"></i></button>
-                        <div class="dropdown ms-1 topbar-head-dropdown header-item">
-                             <div class="language">
-                                       <ul class="dropdown">
-                            <li class="dropdown">
-
-                                <a class="dropdown-toggle"
-                                   href="#"
-                                   data-bs-toggle="dropdown"
-                                   role="button"
-                                   aria-expanded="false"
-                                   style="display:flex;align-items:center;gap:5px;">
-
-                                    {% if app.request.locale == 'fr' %}
-                                        <img src="{{ asset('assets/images/flag-2.png') }}" width="20" alt="FR">
-                                        
-                                    {% else %}
-                                        <img src="{{ asset('assets/images/flag-1.png') }}" width="20" alt="EN">
-                                        
-                                    {% endif %}
-
-                                </a>
-
-                                <ul class="dropdown-menu dropdown-menu-end">
-
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('home', {'_locale': 'fr'}) }}">
-                                            <div style="display:flex;align-items:center;gap:8px;">
-                                                <img src="{{ asset('assets/images/flag-2.png') }}" width="20" alt="FR">
-                                                FRENCH
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('home', {'_locale': 'en'}) }}">
-                                            <div style="display:flex;align-items:center;gap:8px;">
-                                                <img src="{{ asset('assets/images/flag-1.png') }}" width="20" alt="EN">
-                                                ENGLISH
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                             </div>
-                    </div>
-                        </div>
-                        <div class="dropdown topbar-head-dropdown ms-1 header-item">
-                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="bi bi-bag fs-2xl"></i>
-                            <span class="position-absolute topbar-badge cartitem-badge fs-3xs translate-middle badge rounded-pill bg-info">
-                                5
-
-                            </span>
-                            </button>
-                        </div>
-                        <div class="ms-1 header-item d-none d-sm-flex">
-                            <button type="button" id="full-screen-btn" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle" data-toggle="fullscreen">
-<i class="bi bi-arrows-fullscreen fs-lg" id="fullscreenIcon"></i>
-                            </button>
-                        </div>
-                                  <div class="ms-1 header-item d-none d-sm-flex">
-                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle" data-toggle="fullscreen">
-<i class="bi bi-sun align-middle fs-3xl"></i>
-                            </button>
-                        </div>
-                        <div class="dropdown topbar-head-dropdown ms-1 header-item open show">
-                                    <button class="btn btn-icon btn-topbar btn-ghost-dark rounded-circle" data-bs-toggle="dropdown">
-                                              <i class="bi bi-bell fs-2xl"></i>
-                                              <span id="notifCount" class="position-absolute topbar-badge fs-3xs translate-middle badge rounded-pill bg-danger">
-                                                        0
-                                              </span>
-                                    </button>
-                           <ul class="dropdown-menu dropdown-menu-end p-0 shadow"
-    style="width: 318px;">
-
-    <!-- HEADER -->
-    <li class="p-3 border-bottom border-bottom-dashed">
-
-        <div class="row align-items-center">
-
-            <!-- TITLE -->
-            <div class="col">
-
-                <h6 class="mb-0 fs-lg fw-semibold">
-                    Notifications
-
-                    <span id="notifBadge"
-                          class="badge bg-danger-subtle text-danger fs-sm ms-1">
-                        0
-                    </span>
-                </h6>
-
-                <p class="fs-md text-muted mt-1 mb-0"
-                   style="font-size:14px;">
-                    You have unread notifications
-                </p>
-
-            </div>
-
-            <!-- OPTIONS -->
-            <div class="col-auto dropdown">
-
-                <i class="bi bi-three-dots-vertical"></i>
-
-            </div>
-
         </div>
-
-    </li>
-
-    <!-- SECTION TITLE -->
-    <li class="px-3 pt-2">
-        <h6 class="text-uppercase text-muted fs-sm mb-2" style="font-size: 13px;font-weight: 600;line-height: 1.2;">
-            New
-        </h6>
-        <div class="text-reset notification-item d-block dropdown-item position-relative unread-message ng-star-inserted">
-           <div class="d-flex">
-                <div class="avatar-xs me-3 flex-shrink-0 ng-star-inserted">
-                    <div class="avatar-title bg-info-subtle fs-lg rounded-circle text-info" style="width: 32px;height: 32px;display: flex;justify-content: center;">
-                         <i class="mdi mdi-office-building text-primary me-2" style="margin-top: 4px;margin-left: 7px;"></i>
-
+        <div class="container mt-n4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card bg-transparent card-body p-0">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-auto mt-4 mt-md-0">
+                                <div class="avatar avatar-xxl mt-n3">
+                                    <img class="avatar-img rounded-circle border border-white border-3 shadow"
+                                         src="{{ current_avatar_url() }}" alt="">
+                                </div>
+                            </div>
+                            <div class="col d-md-flex justify-content-between align-items-center mt-4">
+                                <div>
+                                    <h1 class="my-1 fs-4">
+                                        {{ app.user.firstName }} {{ app.user.lastName }}
+                                    </h1>
+                                    <ul class="list-inline mb-0">
+                                        <li class="list-inline-item h6 fw-light me-3">
+                                            <i class="bi bi-envelope text-primary me-2"></i>{{ app.user.email }}
+                                        </li>
+                                        {% if app.user.company %}
+                                        <li class="list-inline-item h6 fw-light me-3">
+                                            <i class="bi bi-building text-orange me-2"></i>{{ app.user.company.companyName }}
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                     <div id="newCompany">
-                              <h6 class="mt-0 fs-md mb-2 lh-base ng-star-inserted">Chargement...</h6>
-                     </div>
-           </div>
- 
+            </div>
         </div>
-    </li>
-        <li class="px-3 pt-2">
-    
-        <div class="text-reset notification-item d-block dropdown-item position-relative unread-message ng-star-inserted">
-           <div class="d-flex">
-                <div class="avatar-xs me-3 flex-shrink-0 ng-star-inserted">
-                    <div class="avatar-title bg-info-subtle fs-lg rounded-circle text-info" style="width: 32px;height: 32px;display: flex;justify-content: center;">
-                         <i class="mdi mdi-earth text-success me-2" style="margin-top: 4px;margin-left: 7px;"></i>
+    </section>
 
+    {# Main content with sidebar #}
+    <section class="pt-0">
+        <div class="container">
+            <div class="row">
+
+                {# Left sidebar #}
+                <div class="col-xl-3">
+                    <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar">
+                        <div class="offcanvas-header bg-light">
+                            <h5 class="offcanvas-title">My Profile</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar"></button>
+                        </div>
+                        <div class="offcanvas-body p-3 p-xl-0">
+                            <div class="bg-dark border rounded-3 pb-0 p-3 w-100">
+                                <div class="list-group list-group-dark list-group-borderless">
+                                    <a class="list-group-item {% if app.request.get('_route') == 'app_dashboard' %}active{% endif %}"
+                                       href="{{ path('app_dashboard') }}">
+                                        <i class="bi bi-ui-checks-grid fa-fw me-2"></i>Dashboard
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_products' %}active{% endif %}"
+                                       href="{{ path('app_user_products') }}">
+                                        <i class="bi bi-box-seam fa-fw me-2"></i>My Products
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_certificates' %}active{% endif %}"
+                                       href="{{ path('app_user_certificates') }}">
+                                        <i class="bi bi-patch-check fa-fw me-2"></i>My Certificates
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_markets' %}active{% endif %}"
+                                        href="{{ path('app_user_markets') }}">
+                                        <i class="bi bi-globe fa-fw me-2"></i>Export Markets
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') starts with 'app_user_partnership' %}active{% endif %}"
+                                        href="{{ path('app_user_partnership') }}">
+                                        <i class="bi bi-handshake fa-fw me-2"></i>My Partnership
+                                    </a>
+                                    <a class="list-group-item {% if app.request.get('_route') == 'app_user_profile' %}active{% endif %}"
+                                        href="{{ path('app_user_profile') }}">
+                                        <i class="bi bi-person fa-fw me-2"></i>My Profile
+                                    </a>
+                                    <a class="list-group-item text-danger bg-danger-soft-hover"
+                                       href="{{ path('app_logout') }}">
+                                        <i class="fas fa-sign-out-alt fa-fw me-2"></i>Sign Out
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                     <div id="newMarket">
-                              <h6 class="mt-0 fs-md mb-2 lh-base ng-star-inserted">Chargement...</h6>
-                     </div>
-           </div>
- 
-        </div>
-    </li>
+                {# Left sidebar END #}
 
-
-
-                             </ul>
-                        </div>
-                        <div class="dropdown ms-sm-3 header-item topbar-user">
-                            <button>
-                                <span style="display: inline-flex;align-items: center;">
-
- <img id="sikipon-avatar"
-       src=""
-       alt="Avatar Généré"
-       data-seed="houssem" style="width: 40px;height: 40px;border-radius: 50%;">
-
-
-
-                                <span class="text-start ">
-                                        <span class="d-none d-xl-inline-block " style="color: #1f242e;font-weight: 500;font-size: 14px;">{{ app.user ? app.user.firstName : 'Guest' }} </span>
-                                        <span class="d-none d-xl-block   user-name-sub-text" style="font-size: 13px;">
-                                 {{ app.user ? app.user.firstName : 'Guest' }}
-  
-                                        </span>
-                                     </span>
-                                </span>
-                            </button>
-
-                        </div>
+                {# Main content #}
+                <div class="col-xl-9">
+                    {% block user_content %}
+                        {% if app.request.get('_route') == 'app_dashboard' %}
+                            {% include 'user/dashboard/_content.html.twig' %}
+                        {% endif %}
+                    {% endblock %}
                 </div>
 
             </div>
-    </div>
- </div>
-
-
-
-
-
-</header>
-
-
-    <main>
-        <div class="app-menu navbar-menu">
-              <ul class="navbar-nav" style="position:relative; top: 71px;">
-                    <li class="menu-title ">
-                        <span >MENU</span>
-                    </li>
-                    <li class="nav-item ">
-                        <a href="#" class="nav-link menu-link ng-star-inserted ">
-                            <i class="ph ph-gauge" ></i><span style="font-size: 13px;"> Dashboards</span></a>
-              
-                    </li>
-                        <li class="menu-title ">
-                        <span >Company</span>
-                    </li>
-                    <li class="nav-item ">
-         <a href="{{ path('app_company_new') }}" class="nav-link menu-link ng-star-inserted">
-    <i class="ph ph-trend-up"></i>
-    <span style="font-size: 13px;">New Company</span>
-</a></li>
-
-                 <li class="nav-item ">
-         <a href="{{ path('app_company_list') }}" class="nav-link menu-link ng-star-inserted">
-<i class="fas fa-building"></i>
-    <span style="font-size: 13px;">List Companies</span>
-</a></li>
-   <li class="menu-title ">
-                        <span >Markets</span>
-                    </li>
-                                     <li class="nav-item ">
-         <a href="{{ path('app_market_create') }}" class="nav-link menu-link ng-star-inserted">
-<i class="fas fa-store"></i>
-    <span style="font-size: 13px;">Add Market</span>
-</a></li>
-                                     <li class="nav-item ">
-         <a href="{{ path('app_market_list') }}" class="nav-link menu-link ng-star-inserted">
-   <i class="fas fa-list-alt"></i>
-
-   
-    <span style="font-size: 13px;">List Markets</span>
-</a></li>
-
-                                <li class="nav-item ">
-        <a class="h5 mb-0 text-body" href="{{ path('app_logout') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Sign out">
-                        <i class="bi bi-power"></i>
-                    </a></li>
-
-
-              </ul>
         </div>
-        {% block body %}{% endblock %}
-    </main>
+    </section>
 
-    {# ================= FOOTER ================= #}
-    {% block footer %}{% endblock %}
-
-    {# ================= JS ================= #}
-       {% block javascripts %}
-      <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-      <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
-      <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-      <script src="{{ asset('assets/js/functions.js') }}"></script>
-      <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Dark.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-      {{ encore_entry_script_tags('app') }}
-
-    
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-
-                if (typeof AOS !== 'undefined') {
-                    AOS.init({
-                        duration: 800,
-                        once: true
-                    });
-                }
-
-            });
-
-               
-document.addEventListener("DOMContentLoaded", function () {
-    let oldTotal = 0;
-    const audio = document.getElementById("notifSound");
-
-    function loadUpdates() {
-        fetch("http://127.0.0.1:3000/api/latest-updates")
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) return;
-
-            const total = data.total;
-            
-            // Mise à jour des éléments HTML
-            if(document.getElementById("notifCount")) document.getElementById("notifCount").textContent = total;
-            if(document.getElementById("notifBadge")) document.getElementById("notifBadge").textContent = total;
-            if(document.getElementById("newCompany")) document.getElementById("newCompany").textContent = data.last_company?.company_name || "---";
-            if(document.getElementById("newMarket")) document.getElementById("newMarket").textContent = data.last_market?.name || "---";
-            if(document.getElementById("notifTime")) document.getElementById("notifTime").textContent = data.time;
-
-            // Alerte si nouveau contenu
-            if (oldTotal !== 0 && total > oldTotal) {
-                if(audio) audio.play();
-                showNotification(`🔔 Nouveau contenu disponible !<br>Total : ${total}`);
-            }
-            oldTotal = total;
-        })
-        .catch(err => console.error("Erreur Fetch:", err));
-    }
-
-    function showNotification(message) {
-        let box = document.createElement("div");
-        box.innerHTML = message;
-        Object.assign(box.style, {
-            position: "fixed", top: "20px", right: "20px",
-            background: "#111", color: "#fff", padding: "15px",
-            borderRadius: "10px", zIndex: "9999", boxShadow: "0 10px 25px rgba(0,0,0,.2)"
-        });
-        document.body.appendChild(box);
-        setTimeout(() => box.remove(), 5000);
-    }
-
-    loadUpdates();
-    setInterval(loadUpdates, 10000); // 10 secondes pour ne pas surcharger le serveur
-});
-document.addEventListener("DOMContentLoaded", function() {
-    const fullScreenBtn = document.getElementById('full-screen-btn');
-    const icon = fullScreenBtn.querySelector('i');
-
-    fullScreenBtn.addEventListener('click', function() {
-        if (!document.fullscreenElement) {
-            // Entrer en mode plein écran
-            document.documentElement.requestFullscreen().catch(err => {
-                console.error(`Erreur : ${err.message}`);
-            });
-            icon.classList.replace('ph-corners-out', 'ph-corners-in');
-        } else {
-            // Quitter le mode plein écran
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-                icon.classList.replace('ph-corners-in', 'ph-corners-out');
-            }
-        }
-    });
-
-    // Gérer le changement via la touche Echap (Esc)
-    document.addEventListener('fullscreenchange', function() {
-        if (!document.fullscreenElement) {
-            icon.classList.replace('ph-corners-in', 'ph-corners-out');
-        }
-    });
-});
-
-  document.addEventListener("DOMContentLoaded", function () {
-      const avatarImg = document.getElementById("sikipon-avatar");
-      const loader    = document.getElementById("loader");
-      const seed      = avatarImg.dataset.seed;
-
-      async function loadAvatar() {
-        try {
-          // ✅ Lance automatiquement la requête au chargement
-          const response = await fetch(
-            `http://127.0.0.1:3000/api/generate-avatar?seed=${encodeURIComponent(seed)}`
-          );
-
-          if (response.ok) {
-            const blob     = await response.blob();
-            const imageUrl = URL.createObjectURL(blob);
-
-            avatarImg.src          = imageUrl;
-            avatarImg.style.display = "block";   // ✅ Affiche l'image
-            loader.style.display   = "none";      // ✅ Cache le loader
-          } else {
-            const err = await response.json().catch(() => ({}));
-            loader.innerHTML = `❌ ${err.error || "Sikipon est occupé..."}`;
-          }
-
-        } catch (error) {
-          console.error(error);
-          loader.innerHTML = "❌ Erreur de connexion à l'IA";
-        }
-      }
-
-      loadAvatar(); // ✅ Déclenchement automatique
-    });
-</script>
-    {% endblock %}
-
-  </body>
-</html>
+{% endblock %}

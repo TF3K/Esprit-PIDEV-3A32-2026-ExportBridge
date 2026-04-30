@@ -42,6 +42,22 @@ class CertificateRequirementRepository extends ServiceEntityRepository
         return $counts;
     }
 
+    /**
+     * @return list<CertificateRequirement>
+     */
+    public function findForMarketId(int $marketId): array
+    {
+        /** @var list<CertificateRequirement> $requirements */
+        $requirements = $this->createQueryBuilder('c')
+            ->where('c.market_id = :marketId')
+            ->setParameter('marketId', $marketId)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $requirements;
+    }
+
     //    /**
     //     * @return CertificateRequirement[] Returns an array of CertificateRequirement objects
     //     */

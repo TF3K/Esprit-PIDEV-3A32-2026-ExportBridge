@@ -18,8 +18,6 @@
         <div class="col-12 d-flex justify-content-between align-items-center px-4 pt-2">
             <h6 class="mb-0 text-muted">Manager Details</h6>
             <div class="d-flex align-items-center gap-2">
-                <input type="hidden" name="role" id="roleInput"
-                    value="{{ old.role ?? ('ROLE_ADMIN' in manager.roles ? 'ROLE_ADMIN' : 'ROLE_USER') }}">
                 <small id="roleStatus" class="text-muted"></small>
                 <button type="button" id="elevateBtn" class="btn btn-outline-warning btn-sm">
                     <i class="bi bi-shield-lock me-1"></i>
@@ -29,6 +27,8 @@
         </div>
         <div class="card-body">
             <form action="{{ mode == 'edit' ? path('app_admin_managers_edit', {id: manager.id}) : path('app_admin_managers_add') }}" method="post" class="row g-4" > 
+                <input type="hidden" name="role" id="roleInput"
+                    value="{{ old.role ?? ('ROLE_ADMIN' in manager.roles ? 'ROLE_ADMIN' : 'ROLE_USER') }}">
                 {# First Name #}
                 <div class="col-lg-6">
                     <label class="form-label">First Name *</label>
