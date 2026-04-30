@@ -1,114 +1,98 @@
 {% extends 'admin/base_admin.html.twig' %}
-{% block title %}Company - Admin{% endblock %}
+{% block title %}Add Company - ExportBridge Admin{% endblock %}
 
-{% block body %}
+{% block admin_content %}
 
-<section style="    position: relative;
-    left: 249px;
-    background-color: #f7f7f7;
-    padding: 20px;
-    width: 82%;">
-    <div class="container">
-
-        <div class="card-body border rounded-3 mb-5" style="padding: 1rem 16px;">
-            <div class="bs-stepper-content">
-
-                <form action="{{ path('app_company_new') }}" method="POST">
-
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi {{ label == 'error' ? 'bi-exclamation-octagon-fill' : 'bi-check-circle-fill' }} me-2"></i>
-                                    {{ message }}
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-
-                    <div id="step-1" role="tabpanel" class="content fade" style="opacity:1">
-                        <h4>Add company</h4>
-                        <hr>
-
-                        <div class="row g-4">
-
-                            <!-- Company Name -->
-                            <div class="col-12">
-                                <label class="form-label">Company name</label>
-                                <input class="form-control"
-                                       type="text"
-                                       name="company_name"
-                                       placeholder="Enter company name"
-                                       required>
-                            </div>
-
-                            <!-- Market -->
-                            <div class="col-md-6">
-                                <label class="form-label">Market</label>
-                                <select class="form-select js-choice" name="market_name" required>
-                                    <option value="">Select market</option>
-                                    {% for market in markets %}
-                                        <option value="{{ market.name }}">{{ market.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <!-- Domain -->
-                            <div class="col-md-6">
-                                <label class="form-label">Domain</label>
-                                <input class="form-control"
-                                       type="text"
-                                       name="domain"
-                                       placeholder="Enter domain">
-                            </div>
-
-                            <!-- Email -->
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
-                                <input class="form-control"
-                                       type="email"
-                                       name="email"
-                                       placeholder="Enter email"
-                                       required>
-                            </div>
-
-                            <!-- Country -->
-                            <div class="col-md-6">
-                                <label class="form-label">Country</label>
-                                <input class="form-control"
-                                       type="text"
-                                       name="country"
-                                       placeholder="Enter country"
-                                       required>
-                            </div>
-
-                            <!-- Address -->
-                            <div class="col-12">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control"
-                                          rows="2"
-                                          name="address"
-                                          placeholder="Enter address"
-                                          required></textarea>
-                            </div>
-
-                        </div>
-
-                        <div class="d-flex justify-content-end mt-3">
-                            <button type="submit" class="btn btn-primary mb-0">
-                                Submit
-                            </button>
-                        </div>
-
-                    </div>
-
-                </form>
-
-            </div>
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Add Company</h1>
+            <a href="{{ path('app_admin_companies') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
         </div>
-
     </div>
-</section>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi {{ label == 'error' ? 'bi-exclamation-octagon-fill' : 'bi-check-circle-fill' }} me-2"></i>
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title mb-0">Company Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ path('app_company_new') }}" method="POST" class="row g-4">
+
+                <div class="col-12">
+                    <label class="form-label">Company name</label>
+                    <input class="form-control"
+                           type="text"
+                           name="company_name"
+                           placeholder="Enter company name"
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Market</label>
+                    <select class="form-select js-choice" name="market_name" required>
+                        <option value="">Select market</option>
+                        {% for market in markets %}
+                            <option value="{{ market.name }}">{{ market.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Domain</label>
+                    <input class="form-control"
+                           type="text"
+                           name="domain"
+                           placeholder="Enter domain">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input class="form-control"
+                           type="email"
+                           name="email"
+                           placeholder="Enter email"
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Country</label>
+                    <input class="form-control"
+                           type="text"
+                           name="country"
+                           placeholder="Enter country"
+                           required>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control"
+                              rows="3"
+                              name="address"
+                              placeholder="Enter address"
+                              required></textarea>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        Submit
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 
 {% endblock %}

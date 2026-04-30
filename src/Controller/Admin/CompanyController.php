@@ -13,24 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompanyController extends AbstractController
 {
     #[Route('', name: 'app_admin_companies')]
-    public function list(Request $request, CompanyRepository $repo): Response
+    public function list(CompanyRepository $repo): Response
     {
-        $limit        = 5;
-        $page         = max(1, (int) $request->query->get('page', 1));
-        $totalEntries = $repo->countAll();
-        $companies    = $repo->findPaginated($page, $limit);
+        $companies = $repo->findAll();
 
-        $from       = $totalEntries > 0 ? ($page - 1) * $limit + 1 : 0;
-        $to         = min($page * $limit, $totalEntries);
-        $totalPages = (int) ceil($totalEntries / $limit);
-
-        return $this->render('admin/companies/listCompany.html.twig', [
-            'companies'    => $companies,
-            'totalEntries' => $totalEntries,
-            'from'         => $from,
-            'to'           => $to,
-            'currentPage'  => $page,
-            'totalPages'   => $totalPages,
+        return $this->render('admin/companies/index.html.twig', [
+            'companies' => $companies,
         ]);
     }
 
