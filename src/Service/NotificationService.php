@@ -4,13 +4,11 @@ namespace App\Service;
 
 use App\Entity\Manager;
 use App\Entity\Notification;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\NotificationRepository;
 
 class NotificationService
 {
-    public function __construct(private EntityManagerInterface $em)
-    {
-    }
+    public function __construct(private NotificationRepository $notificationRepository) {}
 
     public function createForManager(Manager $manager, string $type, string $message): void
     {
@@ -21,7 +19,6 @@ class NotificationService
         $notification->setIsRead(false);
         $notification->setCreatedAt(new \DateTime());
 
-        $this->em->persist($notification);
-        $this->em->flush();
+        $this->notificationRepository->save($notification, true);
     }
 }

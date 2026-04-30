@@ -4,7 +4,9 @@ namespace App\Twig;
 
 use App\Service\OAuthStorageService;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -14,8 +16,8 @@ class CurrentUserAvatarExtension extends AbstractExtension
         private Security $security,
         private OAuthStorageService $oauthStorage,
         private Packages $assets,
-    ) {
-    }
+        private RequestStack $requestStack,
+    ) {}
 
     public function getFunctions(): array
     {
@@ -28,8 +30,8 @@ class CurrentUserAvatarExtension extends AbstractExtension
     {
         $user = $this->security->getUser();
 
-        if ($user && method_exists($user, 'getEmail')) {
-            $email = (string) $user->getEmail();
+        if ($user instanceof UserInterface) {
+            $email = (string) $user->getUserIdentifier();
             if ($email !== '') {
                 $oauthData = $this->oauthStorage->get($email);
                 $imageUrl = $oauthData['image_url'] ?? null;
@@ -37,6 +39,9 @@ class CurrentUserAvatarExtension extends AbstractExtension
                 if (is_string($imageUrl) && trim($imageUrl) !== '') {
                     return $imageUrl;
                 }
+
+                // Use AI-generated avatar (Python server on port 3000)
+                return 'http://172.22.224.1:3000/api/generate-avatar?seed=' . urlencode($email);
             }
         }
 

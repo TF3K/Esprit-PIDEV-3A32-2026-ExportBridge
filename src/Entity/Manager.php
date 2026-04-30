@@ -6,6 +6,7 @@ use App\Repository\ManagerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -28,6 +29,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: 'string')]
+    #[Ignore]
     private ?string $password = null;
 
     #[ORM\Column(type: 'json')]
@@ -115,7 +117,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password ?? '';
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(#[\SensitiveParameter] string $password): self
     {
         $this->password = $password;
         return $this;

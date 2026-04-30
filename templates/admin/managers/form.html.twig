@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="card-body">
-            <form action="{{ mode == 'edit' ? path('app_admin_managers_edit', {id: manager.id}) : path('app_admin_managers_add') }}" method="post" class="row g-4" > 
+            <form action="{{ mode == 'edit' ? path('app_admin_managers_edit', {id: manager.id}) : path('app_admin_managers_add') }}" method="post" class="row g-4" >
                 <input type="hidden" name="role" id="roleInput"
                     value="{{ old.role ?? ('ROLE_ADMIN' in manager.roles ? 'ROLE_ADMIN' : 'ROLE_USER') }}">
                 {# First Name #}
