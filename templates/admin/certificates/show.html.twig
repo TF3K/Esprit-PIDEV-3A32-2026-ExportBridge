@@ -1,0 +1,254 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Certificate {{ certificate.certificateNumber }} - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                Certificate <code>{{ certificate.certificateNumber }}</code>
+            </h1>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ path('app_admin_certificates_edit', {id: certificate.id}) }}"
+                   class="btn btn-sm btn-primary mb-0">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+                <a href="{{ path('app_admin_certificates_pdf', {id: certificate.id}) }}" class="btn btn-sm btn-outline-dark mb-0">
+                    <i class="bi bi-download me-1"></i>PDF
+                </a>
+                {% if certificate.documentFile %}
+                    <a href="{{ path('app_admin_certificate_open_uploaded_pdf', {id: certificate.id}) }}" target="_blank" class="btn btn-sm btn-outline-secondary mb-0">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>Open PDF
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_admin_certificates') }}"
+                   class="btn btn-sm btn-secondary mb-0">
+                    <i class="bi bi-arrow-left me-1"></i>Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        {# Certificate details card #}
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">Certificate Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-borderless">
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Type</span>
+                            <div>{{ certificate.type }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Company</span>
+                            <div>{{ certificate.company ? certificate.company.companyName : '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Status</span>
+                            <div>
+                                {% if certificate.status == 'active' %}
+                                    <span class="badge text-bg-success">Active</span>
+                                {% elseif certificate.status == 'pending' %}
+                                    <span class="badge text-bg-warning">Pending</span>
+                                {% elseif certificate.status == 'expired' %}
+                                    <span class="badge text-bg-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">{{ certificate.status }}</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Issuing Authority</span>
+                            <div>{{ certificate.issuingAuthority ?? '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Country of Origin</span>
+                            <div>{{ certificate.countryOfOrigin ?? '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Issue Date</span>
+                            <div>{{ certificate.issueDate ? certificate.issueDate|date('d/m/Y') : '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Expiry Date</span>
+                            <div>{{ certificate.expiryDate ? certificate.expiryDate|date('d/m/Y') : '—' }}</div>
+                        </li>
+                        <li class="list-group-item px-0">
+                            <span class="text-muted small">Created At</span>
+                            <div>{{ certificate.createdAt ? certificate.createdAt|date('d/m/Y') : '—' }}</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {# Signatures panel #}
+        <div class="col-lg-8">
+
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">APIs for this certificate</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <form action="{{ path('app_admin_certificates_send_expiry_email', {id: certificate.id}) }}" method="post">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-envelope me-1"></i>Send status email
+                            </button>
+                        </form>
+                        <a href="{{ path('app_admin_certificates_pdf', {id: certificate.id}) }}" class="btn btn-outline-dark">
+                            <i class="bi bi-download me-1"></i>Download generated certificate PDF
+                        </a>
+                        <a href="{{ path('app_admin_certificates_open_generated_pdf', {id: certificate.id}) }}" target="_blank" class="btn btn-outline-info">
+                            <i class="bi bi-eye me-1"></i>Preview generated PDF
+                        </a>
+                        {% if certificate.documentFile %}
+                            <a href="{{ path('app_admin_certificate_open_uploaded_pdf', {id: certificate.id}) }}" target="_blank" class="btn btn-outline-secondary">
+                                <i class="bi bi-filetype-pdf me-1"></i>Open uploaded PDF
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary" disabled>
+                                <i class="bi bi-filetype-pdf me-1"></i>Open uploaded PDF
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Existing signatures #}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="card-header-title mb-0">
+                        Signatures
+                        <span class="badge text-bg-primary ms-2">
+                            {{ certificate.signatures|length }}
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if certificate.signatures|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Signatory</th>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th>Signed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for signature in certificate.signatures %}
+                                    <tr>
+                                        <td><h6 class="mb-0">{{ signature.signatoryName }}</h6></td>
+                                        <td>{{ signature.signatoryTitle ?? '—' }}</td>
+                                        <td>
+                                            <span class="badge text-bg-info">{{ signature.type }}</span>
+                                        </td>
+                                        <td>{{ signature.signedDate|date('d/m/Y') }}</td>
+                                        <td>
+                                            <form action="{{ path('app_admin_certificates_signature_delete', {
+                                                id: certificate.id,
+                                                signatureId: signature.id
+                                            }) }}" method="post" class="d-inline"
+                                                onsubmit="return confirm('Remove this signature?')">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('delete-sig-' ~ signature.id) }}">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3 mb-0">No signatures yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Add signature form #}
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom">
+                    <h5 class="card-header-title mb-0">Add Signature</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ path('app_admin_certificates_signature_add', {id: certificate.id}) }}"
+                          method="post" class="row g-3">
+
+                        <div class="col-lg-6">
+                            <label class="form-label">Signatory Name *</label>
+                            <input type="text" name="signatory_name"
+                                   class="form-control" required>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="form-label">Signatory Title</label>
+                            <input type="text" name="signatory_title"
+                                   class="form-control"
+                                   placeholder="e.g. Director General">
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="form-label">Signature Type *</label>
+                            <select name="type" class="form-select" required>
+                                <option value="">— Select Type —</option>
+                                {% for type in ['Issuer', 'Approver', 'Witness', 'Co-signer'] %}
+                                    <option value="{{ type }}">{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="form-label">Signed Date *</label>
+                            <input type="date" name="signed_date"
+                                   class="form-control"
+                                   value="{{ 'now'|date('Y-m-d') }}"
+                                   required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Digital Signature / Notes</label>
+                            <textarea name="digital_signature"
+                                      class="form-control" rows="2"
+                                      placeholder="Optional digital signature hash or notes"></textarea>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary mb-0">
+                                <i class="bi bi-pen me-1"></i>Add Signature
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

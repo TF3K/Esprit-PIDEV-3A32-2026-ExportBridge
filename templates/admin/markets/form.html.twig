@@ -1,0 +1,106 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Market - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Market' : 'Add New Market' }}
+            </h1>
+            <a href="{{ path('app_admin_markets') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Market Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+
+                {# Country Name #}
+                <div class="col-lg-6">
+                    <label class="form-label">Country Name *</label>
+                    <input type="text" name="name"
+                           class="form-control {{ errors.name is defined ? 'is-invalid' : '' }}"
+                           value="{{ old.name ?? market.name ?? '' }}" required>
+                    {% if errors.name is defined %}
+                        <div class="invalid-feedback">{{ errors.name }}</div>
+                    {% endif %}
+                </div>
+
+                {# Country Code #}
+                <div class="col-lg-6">
+                    <label class="form-label">Country Code *</label>
+                    <input type="text" name="country_code" maxlength="5"
+                           class="form-control {{ errors.country_code is defined ? 'is-invalid' : '' }}"
+                           placeholder="e.g. FR, DE, IT"
+                           value="{{ old.countryCode ?? market.countryCode ?? '' }}" required>
+                    {% if errors.country_code is defined %}
+                        <div class="invalid-feedback">{{ errors.country_code }}</div>
+                    {% else %}
+                        <div class="form-text">ISO 3166-1 alpha-2 code</div>
+                    {% endif %}
+                </div>
+
+                {# Region #}
+                <div class="col-lg-6">
+                    <label class="form-label">Region</label>
+                    <select name="region" class="form-select">
+                        <option value="">— Select Region —</option>
+                        {% for region in ['Western Europe', 'Eastern Europe', 'Northern Europe',
+                                          'Southern Europe', 'Middle East', 'North Africa',
+                                          'Sub-Saharan Africa', 'North America', 'Asia Pacific'] %}
+                            <option value="{{ region }}"
+                                {{ (old.region ?? market.region ?? '') == region ? 'selected' : '' }}>
+                                {{ region }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {# Trade Agreement #}
+                <div class="col-lg-6">
+                    <label class="form-label">Trade Agreement</label>
+                    <input type="text" name="trade_agreement"
+                           class="form-control {{ errors.trade_agreement is defined ? 'is-invalid' : '' }}"
+                           placeholder="e.g. EU-Tunisia Association Agreement"
+                           value="{{ old.tradeAgreement ?? market.tradeAgreement ?? '' }}">
+                    {% if errors.trade_agreement is defined %}
+                        <div class="invalid-feedback">{{ errors.trade_agreement }}</div>
+                    {% endif %}
+                </div>
+
+                {# Description #}
+                <div class="col-12">
+                    <label class="form-label">Description *</label>
+                    <textarea name="description" rows="3"
+                              class="form-control {{ errors.description is defined ? 'is-invalid' : '' }}">{{ old.description ?? market.description ?? '' }}</textarea>
+                    {% if errors.description is defined %}
+                        <div class="invalid-feedback">{{ errors.description }}</div>
+                    {% endif %}
+                </div>
+
+                {# EU Market toggle #}
+                <div class="col-12">
+                    <div class="form-check form-switch form-check-lg">
+                        <input class="form-check-input" type="checkbox"
+                               name="is_eu" id="isEu"
+                               {{ market.isEu ? 'checked' : '' }}>
+                        <label class="form-check-label" for="isEu">EU Market</label>
+                    </div>
+                </div>
+
+                {# Submit #}
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Market' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

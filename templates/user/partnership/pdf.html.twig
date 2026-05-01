@@ -1,0 +1,10 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}Partnership {{ partnership.id }}{% endblock %}
+{% block user_content %}
+<div class="d-flex justify-content-end gap-2 mb-3"><button onclick="window.print()" class="btn btn-primary">Download / Print</button><a href="{{ path('app_user_partnership_show', {'id': partnership.id}) }}" class="btn btn-secondary">Back</a></div>
+<div class="bg-white shadow rounded-4 p-5" style="max-width:1100px;margin:0 auto;border:14px solid #203d63;">
+  <div class="text-center mb-4"><h1 style="font-size:62px;font-weight:700;">Partnership</h1><div class="text-muted fs-4">Official partnership summary</div></div>
+  <div class="row g-4"><div class="col-md-6"><div class="border rounded-4 p-4 h-100"><div><strong>Company</strong><div>{{ partnership.company ? partnership.company.companyName : 'N/A' }}</div></div><div class="mt-3"><strong>Type</strong><div>{{ partnership.type ?? '—' }}</div></div><div class="mt-3"><strong>Status</strong><div>{{ partnership.status|capitalize }}</div></div></div></div><div class="col-md-6"><div class="border rounded-4 p-4 h-100"><div><strong>Established</strong><div>{{ partnership.establishedDate ? partnership.establishedDate|date('d/m/Y') : '—' }}</div></div><div class="mt-3"><strong>Terminated</strong><div>{{ partnership.terminatedDate ? partnership.terminatedDate|date('d/m/Y') : '—' }}</div></div><div class="mt-3"><strong>Created</strong><div>{{ partnership.createdAt ? partnership.createdAt|date('d/m/Y') : '—' }}</div></div></div></div></div>
+  <div class="border rounded-4 p-4 mt-4"><strong>Notes</strong><div class="mt-2">{{ partnership.notes ?: '—' }}</div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Certificate PDF{% endblock %}
+{% block admin_content %}
+  {% include 'certificates/_certificate_design.html.twig' with {certificate: certificate} %}
+{% endblock %}

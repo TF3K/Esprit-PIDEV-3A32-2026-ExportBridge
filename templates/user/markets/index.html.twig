@@ -1,0 +1,104 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}Export Markets - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="mb-0">Export Markets</h3>
+            <p class="text-muted mt-1">Browse available export markets and their certificate requirements</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input class="form-control" type="search" id="marketSearch" placeholder="Search markets...">
+        </div>
+        <div class="col-md-3 ms-auto">
+            <select class="form-select" id="euFilter">
+                <option value="">All Markets</option>
+                <option value="eu">EU Only</option>
+                <option value="non-eu">Non-EU Only</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4" id="marketsGrid">
+        {% for market in markets %}
+        <div class="col-md-6 col-xl-4 market-card"
+            data-eu="{{ market.isEu ? 'eu' : 'non-eu' }}"
+            data-name="{{ (market.name ~ ' ' ~ market.countryCode ~ ' ' ~ market.region)|lower }}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">{{ market.name }}</h5>
+                            <code class="text-muted">{{ market.countryCode }}</code>
+                        </div>
+                        <div>
+                            {% if market.isEu %}
+                                <span class="badge text-bg-success">EU</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">Non-EU</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if market.region %}
+                        <p class="small text-muted mb-1">
+                            <i class="bi bi-geo-alt me-1"></i>{{ market.region }}
+                        </p>
+                    {% endif %}
+
+                    {% if market.tradeAgreement %}
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-file-earmark-text me-1"></i>{{ market.tradeAgreement }}
+                        </p>
+                    {% endif %}
+
+                    {% if market.description %}
+                        <p class="small mb-3">{{ market.description|slice(0, 100) }}{% if market.description|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="badge text-bg-primary">
+                            {{ market.certificateRequirements|length }} requirements
+                        </span>
+                        <a href="{{ path('app_user_markets_show', {id: market.id}) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center text-muted py-5">
+            No markets available yet.
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const searchInput = document.getElementById('marketSearch');
+        const euFilter = document.getElementById('euFilter');
+
+        function filterMarkets() {
+            const search = searchInput.value.toLowerCase();
+            const eu = euFilter.value;
+
+            document.querySelectorAll('.market-card').forEach(card => {
+                const nameMatch = card.dataset.name.includes(search);
+                const euMatch = eu === '' || card.dataset.eu === eu;
+                card.style.display = nameMatch && euMatch ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('keyup', filterMarkets);
+        euFilter.addEventListener('change', filterMarkets);
+    </script>
+{% endblock %}

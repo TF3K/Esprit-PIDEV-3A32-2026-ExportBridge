@@ -1,0 +1,94 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}Partnership Details{% endblock %}
+{% block user_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0">Partnership Details</h3>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-primary" href="{{ path('app_user_partnership_edit', {'id': partnership.id}) }}">Edit</a>
+    <a class="btn btn-outline-info" href="{{ path('app_user_partnership_qr', {'id': partnership.id}) }}" target="_blank">QR</a>
+    <a class="btn btn-outline-secondary" href="{{ path('app_user_partnership_pdf', {'id': partnership.id}) }}">Download detailed PDF</a>
+    {% if partnership.documentUrl %}
+      <a class="btn btn-outline-success" href="{{ path('app_user_partnership_open_uploaded_pdf', {'id': partnership.id}) }}" target="_blank">Open uploaded PDF</a>
+    {% endif %}
+    <a class="btn btn-outline-dark" href="{{ path('app_user_partnership') }}">Back</a>
+  </div>
+</div>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mb-3">{{ message }}</div>
+  {% endfor %}
+{% endfor %}
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Partnership Information</h5>
+        <span class="badge text-bg-{{ partnership.status == 'active' ? 'success' : (partnership.status == 'pending' ? 'warning' : 'secondary') }}">{{ partnership.status|capitalize }}</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-4">
+          <div class="col-md-6"><strong>Company:</strong> {{ partnership.company ? partnership.company.companyName : 'N/A' }}</div>
+          <div class="col-md-6"><strong>Type:</strong> {{ partnership.type ?? '—' }}</div>
+          <div class="col-md-6"><strong>Established Date:</strong> {{ partnership.establishedDate ? partnership.establishedDate|date('d/m/Y') : '—' }}</div>
+          <div class="col-md-6"><strong>Terminated Date:</strong> {{ partnership.terminatedDate ? partnership.terminatedDate|date('d/m/Y') : '—' }}</div>
+          <div class="col-md-6"><strong>Location:</strong> {{ partnership.locationName ?: 'No location saved' }}</div>
+          <div class="col-md-3"><strong>Latitude:</strong> {{ partnership.locationLatitude is not null ? partnership.locationLatitude : '—' }}</div>
+          <div class="col-md-3"><strong>Longitude:</strong> {{ partnership.locationLongitude is not null ? partnership.locationLongitude : '—' }}</div>
+          <div class="col-md-12"><strong>Notes:</strong><div class="mt-2">{{ partnership.notes ?? '—' }}</div></div>
+          <div class="col-md-12"><strong>Uploaded PDF:</strong> {% if partnership.documentUrl %}<a href="{{ path('app_user_partnership_open_uploaded_pdf', {'id': partnership.id}) }}" target="_blank">Open PDF</a><div class="small text-muted mt-1">{{ partnership.documentUrl }}</div>{% else %}<span class="text-muted">No uploaded PDF</span>{% endif %}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Linked Certificates</h5>
+        <span class="badge text-bg-primary">{{ partnership.certificates|length }}</span>
+      </div>
+      <div class="card-body">
+        {% if partnership.certificates|length > 0 %}
+          <ul class="mb-0">
+            {% for cert in partnership.certificates %}
+              <li><a href="{{ path('app_user_certificate_show', {'id': cert.id}) }}">{{ cert.certificateNumber }}</a> — {{ cert.status|capitalize }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted mb-0">No certificates linked to this partnership yet.</p>
+        {% endif %}
+
+        <div class="mt-3">
+          {% if partnership.status == 'active' %}
+            <a class="btn btn-success" href="{{ path('app_user_certificate_new', {'partnershipId': partnership.id}) }}">Add Certificate</a>
+          {% else %}
+            <button class="btn btn-outline-success" disabled>Admin must approve this partnership before adding certificates</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header"><h5 class="mb-0">Partnership Localisation</h5></div>
+      <div class="card-body">
+        <p class="mb-2"><strong>Saved location:</strong> {{ partnership.locationName ?: 'No saved location.' }}</p>
+        {% if partnership.locationLatitude is not null and partnership.locationLongitude is not null %}
+          <div class="ratio ratio-16x9 border rounded overflow-hidden mb-3">
+            <iframe src="https://maps.google.com/maps?q={{ partnership.locationLatitude }},{{ partnership.locationLongitude }}&t=&z=13&ie=UTF8&iwloc=&output=embed" style="border:0;" loading="lazy"></iframe>
+          </div>
+          <a class="btn btn-outline-primary btn-sm" target="_blank" href="https://maps.google.com/?q={{ partnership.locationLatitude }},{{ partnership.locationLongitude }}">Open localisation map</a>
+        {% elseif partnership.locationName %}
+          <div class="ratio ratio-16x9 border rounded overflow-hidden mb-3">
+            <iframe src="https://maps.google.com/maps?q={{ partnership.locationName|url_encode }}&t=&z=13&ie=UTF8&iwloc=&output=embed" style="border:0;" loading="lazy"></iframe>
+          </div>
+          <a class="btn btn-outline-primary btn-sm" target="_blank" href="https://maps.google.com/?q={{ partnership.locationName|url_encode }}">Open localisation map</a>
+        {% else %}
+          <p class="text-muted mb-0">No partnership location saved yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

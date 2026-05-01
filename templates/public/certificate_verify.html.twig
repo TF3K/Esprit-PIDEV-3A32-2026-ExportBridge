@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Certificate verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="card shadow-sm mx-auto" style="max-width:720px">
+        <div class="card-header bg-primary text-white"><h4 class="mb-0">Certificate Verification</h4></div>
+        <div class="card-body">
+            <h2 class="mb-3">Certificate {{ certificate.certificateNumber }}</h2>
+            <p><strong>Company:</strong> {{ certificate.company ? certificate.company.companyName : 'N/A' }}</p>
+            <p><strong>Status:</strong> <span class="badge bg-info text-dark">{{ certificate.status|capitalize }}</span></p>
+            <p><strong>Type:</strong> {{ certificate.type ?: 'N/A' }}</p>
+            <p><strong>Issuing Authority:</strong> {{ certificate.issuingAuthority ?: 'N/A' }}</p>
+            <p><strong>Country of Origin:</strong> {{ certificate.countryOfOrigin ?: 'N/A' }}</p>
+            <p><strong>Issue Date:</strong> {{ certificate.issueDate ? certificate.issueDate|date('d/m/Y') : 'N/A' }}</p>
+            <p><strong>Expiry Date:</strong> {{ certificate.expiryDate ? certificate.expiryDate|date('d/m/Y') : 'N/A' }}</p>
+            <a class="btn btn-primary" href="{{ path('app_public_certificate_pdf', {'id': certificate.id}) }}">Download certificate PDF</a>
+            <div class="alert alert-success mt-4 mb-0">This public page confirms that the certificate exists in ExportBridge.</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

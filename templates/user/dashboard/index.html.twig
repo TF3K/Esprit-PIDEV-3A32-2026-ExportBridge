@@ -1,0 +1,140 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Dashboard - ExportBridge{% endblock %}
+
+{% block user_content %}
+
+    {# Stats #}
+    <div class="row g-4">
+        <div class="col-sm-6 col-lg-4">
+            <div class="d-flex justify-content-center align-items-center p-4 bg-warning bg-opacity-15 rounded-3">
+                <span class="display-6 text-warning mb-0"><i class="bi bi-box-seam fa-fw"></i></span>
+                <div class="ms-4">
+                    <h5 class="mb-0 fw-bold">{{ stats.products }}</h5>
+                    <span class="mb-0 h6 fw-light">My Products</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="d-flex justify-content-center align-items-center p-4 bg-success bg-opacity-10 rounded-3">
+                <span class="display-6 text-success mb-0"><i class="bi bi-patch-check fa-fw"></i></span>
+                <div class="ms-4">
+                    <h5 class="mb-0 fw-bold">{{ stats.certificates }}</h5>
+                    <span class="mb-0 h6 fw-light">Certificates</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="d-flex justify-content-center align-items-center p-4 bg-info bg-opacity-10 rounded-3">
+                <span class="display-6 text-info mb-0"><i class="bi bi-patch-check fa-fw"></i></span>
+                <div class="ms-4">
+                    <h5 class="mb-0 fw-bold">{{ stats.activeCertificates }}</h5>
+                    <span class="mb-0 h6 fw-light">Active Certificates</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Recent products #}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border bg-transparent rounded-3">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-sm-flex justify-content-sm-between align-items-center">
+                        <h3 class="mb-2 mb-sm-0">My Recent Products</h3>
+                        <a href="{{ path('app_user_products') }}" class="btn btn-sm btn-primary-soft mb-0">View all</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>HS Code</th>
+                                    <th>Unit Price</th>
+                                    <th>Currency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in recentProducts %}
+                                <tr>
+                                    <td><h6 class="mb-0">{{ product.name }}</h6></td>
+                                    <td>
+                                        {% if product.productCategory %}
+                                            <span class="badge text-bg-info">{{ product.productCategory.name }}</span>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td><code>{{ product.hsCode ?? '—' }}</code></td>
+                                    <td>{{ product.unitPrice ?? '—' }}</td>
+                                    <td>{{ product.currency ?? '—' }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No products yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Recent certificates #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border bg-transparent rounded-3">
+                <div class="card-header bg-transparent border-bottom">
+                    <div class="d-sm-flex justify-content-sm-between align-items-center">
+                        <h3 class="mb-2 mb-sm-0">My Recent Certificates</h3>
+                        <a href="{{ path('app_user_certificates') }}" class="btn btn-sm btn-primary-soft mb-0">View all</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Certificate #</th>
+                                    <th>Type</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cert in recentCertificates %}
+                                <tr>
+                                    <td><code>{{ cert.certificateNumber }}</code></td>
+                                    <td>{{ cert.type }}</td>
+                                    <td>{{ cert.expiryDate ? cert.expiryDate|date('d/m/Y') : '—' }}</td>
+                                    <td>
+                                        {% if cert.status == 'active' %}
+                                            <span class="badge text-bg-success">Active</span>
+                                        {% elseif cert.status == 'pending' %}
+                                            <span class="badge text-bg-warning">Pending</span>
+                                        {% elseif cert.status == 'expired' %}
+                                            <span class="badge text-bg-danger">Expired</span>
+                                        {% else %}
+                                            <span class="badge text-bg-secondary">{{ cert.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">No certificates yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

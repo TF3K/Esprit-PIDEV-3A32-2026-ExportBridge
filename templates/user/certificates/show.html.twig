@@ -1,0 +1,57 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}Certificate {{ certificate.certificateNumber }}{% endblock %}
+{% block user_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0">Certificate {{ certificate.certificateNumber }}</h3>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-primary" href="{{ path('app_user_certificate_edit', {'id': certificate.id}) }}">Edit</a>
+    {% if certificate.documentFile %}
+      <a class="btn btn-outline-secondary" href="{{ path('app_user_certificate_open_uploaded_pdf', {'id': certificate.id}) }}" target="_blank">Open uploaded PDF</a>
+    {% endif %}
+    <a class="btn btn-outline-success" href="{{ path('app_user_certificate_pdf', {'id': certificate.id}) }}">Download certificate PDF</a>
+    <a class="btn btn-outline-info" href="{{ path('app_user_certificate_qr', {'id': certificate.id}) }}">QR</a>
+    <a class="btn btn-outline-dark" href="{{ path('app_user_certificates') }}">Back</a>
+  </div>
+</div>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mb-3">{{ message }}</div>
+  {% endfor %}
+{% endfor %}
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header"><h5 class="mb-0">Certificate Details</h5></div>
+      <div class="card-body">
+        <p><strong>Number:</strong> {{ certificate.certificateNumber }}</p>
+        <p><strong>Type:</strong> {{ certificate.type }}</p>
+        <p><strong>Company:</strong> {{ certificate.company ? certificate.company.companyName : 'N/A' }}</p>
+        <p><strong>Status:</strong> <span class="badge bg-info text-dark">{{ certificate.status|capitalize }}</span></p>
+        <p><strong>Issuing Authority:</strong> {{ certificate.issuingAuthority ?: 'N/A' }}</p>
+        <p><strong>Country of Origin:</strong> {{ certificate.countryOfOrigin ?: 'N/A' }}</p>
+        <p><strong>Issue Date:</strong> {{ certificate.issueDate ? certificate.issueDate|date('d/m/Y') : 'N/A' }}</p>
+        <p><strong>Expiry Date:</strong> {{ certificate.expiryDate ? certificate.expiryDate|date('d/m/Y') : 'N/A' }}</p>
+        {% if certificate.partnership %}<p><strong>Linked Partnership:</strong> {{ certificate.partnership.type ?? ('#' ~ certificate.partnership.id) }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header"><h5 class="mb-0">PDF Files</h5></div>
+      <div class="card-body d-grid gap-2">
+        <a class="btn btn-primary" href="{{ path('app_user_certificate_open_generated_pdf', {'id': certificate.id}) }}" target="_blank">Open generated certificate PDF</a>
+        <a class="btn btn-success" href="{{ path('app_user_certificate_pdf', {'id': certificate.id}) }}">Download generated certificate PDF</a>
+        {% if certificate.documentFile %}
+          <a class="btn btn-outline-secondary" href="{{ path('app_user_certificate_open_uploaded_pdf', {'id': certificate.id}) }}" target="_blank">Open uploaded PDF</a>
+          <div class="form-text mt-2">{{ certificate.documentFile }}</div>
+        {% else %}
+          <span class="text-muted">No uploaded PDF.</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

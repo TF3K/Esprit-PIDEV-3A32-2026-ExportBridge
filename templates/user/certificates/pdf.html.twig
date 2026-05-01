@@ -1,0 +1,5 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}Certificate PDF{% endblock %}
+{% block user_content %}
+  {% include 'certificates/_certificate_design.html.twig' with {certificate: certificate} %}
+{% endblock %}

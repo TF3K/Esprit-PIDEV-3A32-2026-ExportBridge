@@ -1,0 +1,164 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}{{ mode == 'edit' ? 'Edit Partnership' : 'Add Partnership' }}{% endblock %}
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+  <style>
+    #partnershipMap{height:320px;border-radius:14px;overflow:hidden;}
+    .location-pill{background:#eef4ff;border:1px solid #d8e5ff;border-radius:12px;padding:12px 14px;}
+  </style>
+{% endblock %}
+{% block user_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="mb-0">{{ mode == 'edit' ? 'Edit Partnership' : 'Add Partnership' }}</h3>
+    <p class="text-muted mb-0">Company: {{ company ? company.companyName : 'N/A' }}</p>
+  </div>
+  <a href="{{ path('app_user_partnership') }}" class="btn btn-outline-secondary">Back</a>
+</div>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mb-3">{{ message }}</div>
+  {% endfor %}
+{% endfor %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-end mb-3">
+      <div style="max-width:260px;width:100%">
+        <label class="form-label small text-muted">Form language</label>
+        <select id="partnershipFormLang" class="form-select">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="ar">العربية</option>
+        </select>
+      </div>
+    </div>
+
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" data-i18n="type">Type *</label>
+          <input class="form-control" name="type" value="{{ partnership.type }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" data-i18n="established">Established Date</label>
+          <input type="date" class="form-control" name="established_date" value="{{ partnership.establishedDate ? partnership.establishedDate|date('Y-m-d') : '' }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" data-i18n="terminated">Terminated Date</label>
+          <input type="date" class="form-control" name="terminated_date" value="{{ partnership.terminatedDate ? partnership.terminatedDate|date('Y-m-d') : '' }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label" data-i18n="notes">Notes *</label>
+          <textarea class="form-control" rows="5" name="notes" required>{{ partnership.notes }}</textarea>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+            <label class="form-label mb-0" data-i18n="location">Partnership localisation *</label>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="detectLocationBtn">Detect my location</button>
+          </div>
+          <div class="location-pill mb-3">
+            <div class="fw-semibold" id="locationDisplayText">{{ partnership.locationName ?: 'Location not detected yet.' }}</div>
+            <div class="small text-muted mt-1" id="locationHelpText">Allow location access. Example: if you are in Ariana, Ariana will be saved with this partnership.</div>
+          </div>
+          <input type="hidden" name="location_name" id="locationNameInput" value="{{ partnership.locationName }}">
+          <input type="hidden" name="location_latitude" id="locationLatitudeInput" value="{{ partnership.locationLatitude is not null ? partnership.locationLatitude : '' }}">
+          <input type="hidden" name="location_longitude" id="locationLongitudeInput" value="{{ partnership.locationLongitude is not null ? partnership.locationLongitude : '' }}">
+          <div id="partnershipMap"></div>
+          <div class="form-text mt-2">No PDF file is required for partnership. The map location is saved automatically.</div>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex gap-2 flex-wrap">
+        <button class="btn btn-primary">{{ mode == 'edit' ? 'Update' : 'Add' }}</button>
+        {% if mode == 'edit' %}
+          <a class="btn btn-outline-success" href="{{ path('app_user_partnership_pdf', {'id': partnership.id}) }}">Download detailed PDF</a>
+        {% endif %}
+        <a href="{{ path('app_user_partnership') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    const pdict={
+      en:{type:'Type *',established:'Established Date',terminated:'Terminated Date',notes:'Notes *',location:'Partnership localisation *'},
+      fr:{type:'Type *',established:'Date d\'établissement',terminated:'Date de fin',notes:'Notes *',location:'Localisation du partenariat *'},
+      ar:{type:'النوع *',established:'تاريخ البداية',terminated:'تاريخ الانتهاء',notes:'ملاحظات *',location:'موقع الشراكة *'}
+    };
+    document.getElementById('partnershipFormLang')?.addEventListener('change',function(){const lang=pdict[this.value]||pdict.en;document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=lang[el.dataset.i18n]||el.textContent;});document.documentElement.dir=this.value==='ar'?'rtl':'ltr';});
+
+    const latInput=document.getElementById('locationLatitudeInput');
+    const lngInput=document.getElementById('locationLongitudeInput');
+    const nameInput=document.getElementById('locationNameInput');
+    const displayText=document.getElementById('locationDisplayText');
+    const helpText=document.getElementById('locationHelpText');
+    let lat=parseFloat(latInput.value || '36.8065');
+    let lng=parseFloat(lngInput.value || '10.1815');
+    const map=L.map('partnershipMap').setView([lat,lng], latInput.value && lngInput.value ? 13 : 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+    let marker=L.marker([lat,lng]).addTo(map);
+
+    function updateMap(newLat,newLng){
+      marker.setLatLng([newLat,newLng]);
+      map.setView([newLat,newLng],13);
+      setTimeout(()=>map.invalidateSize(),50);
+    }
+
+    function bestName(data){
+      const a=(data && data.address) || {};
+      return a.city || a.town || a.village || a.municipality || a.county || a.state_district || a.state || data.display_name || 'Detected location';
+    }
+
+    async function reverseGeocode(newLat,newLng){
+      try{
+        const response=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${newLat}&lon=${newLng}`);
+        const data=await response.json();
+        const locationName=bestName(data);
+        nameInput.value=locationName;
+        displayText.textContent=locationName;
+        helpText.textContent=data.display_name || `Latitude ${newLat.toFixed(5)}, longitude ${newLng.toFixed(5)}`;
+      }catch(e){
+        nameInput.value=`Latitude ${newLat.toFixed(5)}, longitude ${newLng.toFixed(5)}`;
+        displayText.textContent='Location detected';
+        helpText.textContent=nameInput.value;
+      }
+    }
+
+    function saveLocation(newLat,newLng){
+      latInput.value=newLat;
+      lngInput.value=newLng;
+      updateMap(newLat,newLng);
+      reverseGeocode(newLat,newLng);
+    }
+
+    function detectLocation(){
+      if(!navigator.geolocation){
+        displayText.textContent='Geolocation is not supported by this browser.';
+        return;
+      }
+      displayText.textContent='Detecting your current location...';
+      navigator.geolocation.getCurrentPosition(
+        pos=>saveLocation(pos.coords.latitude,pos.coords.longitude),
+        err=>{
+          displayText.textContent=nameInput.value || 'Location not detected yet.';
+          helpText.textContent='Please allow browser location permission, then click Detect my location again.';
+        },
+        {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+      );
+    }
+
+    document.getElementById('detectLocationBtn')?.addEventListener('click',detectLocation);
+    if(latInput.value && lngInput.value){
+      updateMap(lat,lng);
+    }else{
+      detectLocation();
+    }
+  </script>
+{% endblock %}

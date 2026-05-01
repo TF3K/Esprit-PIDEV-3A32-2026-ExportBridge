@@ -1,0 +1,25 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+# Environment files - ignore all .env files
+.env
+.env.*
+!.env.example
+!.env.dist
+/node_modules/
+/var/cache/
+/var/log/
+/public/uploads/
+/.vscode/
+/3

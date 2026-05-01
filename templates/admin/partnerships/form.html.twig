@@ -1,0 +1,103 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Partnership - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Partnership' : 'Add New Partnership' }}
+            </h1>
+            <a href="{{ path('app_admin_partnerships') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Partnership Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+
+                <div class="col-lg-6">
+                    <label class="form-label">Company *</label>
+                    <select name="company_id" class="form-select {{ errors.company_id is defined ? 'is-invalid' : '' }}" required>
+                        <option value="">— Select Company —</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}" {{ (old.companyId ?? partnership.company.id ?? '') == company.id ? 'selected' : '' }}>
+                                {{ company.companyName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.company_id is defined %}
+                        <div class="invalid-feedback">{{ errors.company_id }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select {{ errors.type is defined ? 'is-invalid' : '' }}">
+                        <option value="">— Select Type —</option>
+                        {% for type in types %}
+                            <option value="{{ type }}" {{ (old.type ?? partnership.type ?? '') == type ? 'selected' : '' }}>
+                                {{ type }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.type is defined %}
+                        <div class="invalid-feedback">{{ errors.type }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Status *</label>
+                    <select name="status" class="form-select {{ errors.status is defined ? 'is-invalid' : '' }}" required>
+                        <option value="">— Select Status —</option>
+                        {% for status in statuses %}
+                            <option value="{{ status }}" {{ (old.status ?? partnership.status ?? '') == status ? 'selected' : '' }}>
+                                {{ status|capitalize }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.status is defined %}
+                        <div class="invalid-feedback">{{ errors.status }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Established Date</label>
+                    <input type="date" name="established_date" class="form-control {{ errors.established_date is defined ? 'is-invalid' : '' }}" value="{{ old.establishedDate ?? (partnership.establishedDate ? partnership.establishedDate|date('Y-m-d') : '') }}">
+                    {% if errors.established_date is defined %}
+                        <div class="invalid-feedback">{{ errors.established_date }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Terminated Date</label>
+                    <input type="date" name="terminated_date" class="form-control {{ errors.terminated_date is defined ? 'is-invalid' : '' }}" value="{{ old.terminatedDate ?? (partnership.terminatedDate ? partnership.terminatedDate|date('Y-m-d') : '') }}">
+                    {% if errors.terminated_date is defined %}
+                        <div class="invalid-feedback">{{ errors.terminated_date }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Notes *</label>
+                    <textarea name="notes" rows="3" class="form-control {{ errors.notes is defined ? 'is-invalid' : '' }}">{{ old.notes ?? partnership.notes ?? '' }}</textarea>
+                    {% if errors.notes is defined %}
+                        <div class="invalid-feedback">{{ errors.notes }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-sm-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary mb-0">
+                        {{ mode == 'edit' ? 'Save Changes' : 'Add Partnership' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

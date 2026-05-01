@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}ExportBridge{% endblock %}</title>
+
+    {# Dark mode script - must be before CSS to avoid flash #}
+    <script>
+        const storedTheme = localStorage.getItem('theme')
+        const getPreferredTheme = () => {
+            if (storedTheme) return storedTheme
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
+        }
+        const setTheme = function (theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme)
+            }
+        }
+        setTheme(getPreferredTheme())
+    </script>
+
+    {% block stylesheets %}
+        {# Favicon #}
+        <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+
+        {# Google Fonts #}
+        <link rel="preconnect" href="https://fonts.googleapis.com/">
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+        {# Plugins CSS #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/font-awesome/css/all.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/tiny-slider/tiny-slider.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/aos/aos.css') }}">
+
+        {# Theme CSS #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+        
+        {# Custom validation styles #}
+        <style>
+            .is-invalid {
+                border-color: #dc3545 !important;
+            }
+            .is-invalid:focus {
+                border-color: #dc3545 !important;
+                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+            }
+            .is-valid {
+                border-color: #198754 !important;
+            }
+            .is-valid:focus {
+                border-color: #198754 !important;
+                box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25) !important;
+            }
+            .invalid-feedback {
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+            .password-toggle {
+                border-left: none !important;
+            }
+            .password-toggle:focus {
+                box-shadow: none !important;
+            }
+            .input-group .password-toggle {
+                border-top-right-radius: 0.375rem !important;
+                border-bottom-right-radius: 0.375rem !important;
+            }
+        </style>
+    {% endblock %}
+
+    {# FrankenPHP hot reload - keep for dev #}
+    {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+    {% if frankenphpHotReload %}
+        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+    {% endif %}
+</head>
+<body>
+
+    {% block body %}{% endblock %}
+
+    {% block javascripts %}
+        {# Bootstrap JS #}
+        <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+        {# Tiny Slider #}
+        <script src="{{ asset('assets/vendor/tiny-slider/tiny-slider.js') }}"></script>
+
+        {# AOS #}
+        <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
+
+        {# Template functions #}
+        <script src="{{ asset('assets/js/functions.js') }}"></script>
+    {% endblock %}
+
+</body>
+</html>

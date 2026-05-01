@@ -1,0 +1,233 @@
+{% extends 'user/base_user.html.twig' %}
+
+{% block title %}My Partnerships - ExportBridge{% endblock %}
+
+{% block user_content %}
+<div class="row mb-4">
+  <div class="col-12 d-sm-flex justify-content-between align-items-center gap-3">
+    <div>
+      <h3 class="mb-0">All Partnerships</h3>
+      <p class="text-muted mt-1 mb-0">You can create, view, edit and delete as many partnerships as you need.</p>
+    </div>
+    <a class="btn btn-primary" href="{{ path('app_user_partnership_new') }}">
+      <i class="bi bi-plus-circle me-2"></i>Add Partnership
+    </a>
+  </div>
+</div>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} mb-3">{{ message }}</div>
+  {% endfor %}
+{% endfor %}
+
+{% set activeCount = 0 %}
+{% set pendingCount = 0 %}
+{% set collaborationCount = 0 %}
+{% for p in partnerships %}
+  {% if p.status == 'active' %}{% set activeCount = activeCount + 1 %}{% endif %}
+  {% if p.status == 'pending' %}{% set pendingCount = pendingCount + 1 %}{% endif %}
+  {% set collaborationCount = collaborationCount + (p.collaborations|length) %}
+{% endfor %}
+
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-lg-3"><div class="text-center p-3 bg-primary bg-opacity-10 border border-primary rounded-3"><h6>Partnerships</h6><h3 class="mb-0 text-primary">{{ partnerships|length }}</h3></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="text-center p-3 bg-success bg-opacity-10 border border-success rounded-3"><h6>Active</h6><h3 class="mb-0 text-success">{{ activeCount }}</h3></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="text-center p-3 bg-warning bg-opacity-10 border border-warning rounded-3"><h6>Pending</h6><h3 class="mb-0 text-warning">{{ pendingCount }}</h3></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="text-center p-3 bg-info bg-opacity-10 border border-info rounded-3"><h6>Collaborations</h6><h3 class="mb-0 text-info">{{ collaborationCount }}</h3></div></div>
+</div>
+
+{% if company and company.address %}
+<div class="card shadow-sm mb-4">
+  <div class="card-header border-bottom"><h5 class="mb-0">Localisation</h5></div>
+  <div class="card-body">
+    <p class="mb-2"><strong>Company:</strong> {{ company.companyName }}</p>
+    <p class="mb-3"><strong>Address:</strong> {{ company.address }}</p>
+    <div class="ratio ratio-16x9 border rounded overflow-hidden mb-3">
+      <iframe src="https://maps.google.com/maps?q={{ company.address|url_encode }}&t=&z=13&ie=UTF8&iwloc=&output=embed" style="border:0;" loading="lazy"></iframe>
+    </div>
+    <a class="btn btn-outline-primary btn-sm" target="_blank" href="https://maps.google.com/?q={{ company.address|url_encode }}">Open localisation map</a>
+  </div>
+</div>
+{% endif %}
+
+{% if partnerships|length > 0 %}
+  <div class="card border bg-transparent rounded-3 mb-4">
+    <div class="card-header bg-transparent border-bottom">
+      <div class="row g-3">
+        <div class="col-12 col-md-5">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input class="form-control" type="search" id="partnershipSearch" placeholder="Search partnerships...">
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <select class="form-select" id="partnershipStatusFilter">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="terminated">Terminated</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-2">
+          <select class="form-select" id="partnershipSort">
+            <option value="type-asc">Type A-Z</option>
+            <option value="company-asc">Company A-Z</option>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-2 d-flex align-items-center">
+          <small class="text-muted" id="partnershipResultCount"></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4" id="partnershipList">
+    {% for partnership in partnerships %}
+      {% set companyName = partnership.company ? partnership.company.companyName : 'N/A' %}
+      {% set searchText = (partnership.type ~ ' ' ~ companyName ~ ' ' ~ partnership.status ~ ' ' ~ partnership.notes ~ ' ' ~ partnership.locationName)|lower %}
+      <div class="col-12 partnership-card"
+           data-search="{{ searchText|e('html_attr') }}"
+           data-status="{{ partnership.status|lower }}"
+           data-type="{{ (partnership.type ?? '')|lower|e('html_attr') }}"
+           data-company="{{ companyName|lower|e('html_attr') }}"
+           data-date="{{ partnership.establishedDate ? partnership.establishedDate|date('Y-m-d') : '' }}">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+              <div>
+                <h4 class="mb-1">{{ partnership.type ?: 'Partnership #' ~ partnership.id }}</h4>
+                <p class="text-muted mb-0">{{ companyName }}</p>
+              </div>
+              <span class="badge text-bg-{{ partnership.status == 'active' ? 'success' : (partnership.status == 'pending' ? 'warning' : 'secondary') }} fs-6">{{ partnership.status|capitalize }}</span>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block">Established</small>{{ partnership.establishedDate ? partnership.establishedDate|date('d/m/Y') : '-' }}</div></div>
+              <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block">Terminated</small>{{ partnership.terminatedDate ? partnership.terminatedDate|date('d/m/Y') : '-' }}</div></div>
+              <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block">Collaborations</small><strong>{{ partnership.collaborations|length }}</strong></div></div>
+              <div class="col-md-3"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block">Certificates</small><strong>{{ partnership.certificates|length }}</strong></div></div>
+              <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block mb-2">Saved Location</small>{{ partnership.locationName ?: 'No location saved' }}</div></div>
+              <div class="col-md-6"><div class="border rounded-3 p-3 h-100"><small class="text-muted d-block mb-2">Notes</small>{{ partnership.notes ?: '-' }}</div></div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <a class="btn btn-outline-dark" href="{{ path('app_user_partnership_show', {'id': partnership.id}) }}">View</a>
+              <a class="btn btn-outline-primary" href="{{ path('app_user_partnership_edit', {'id': partnership.id}) }}">Edit</a>
+              <a class="btn btn-outline-info" href="{{ path('app_user_partnership_qr', {'id': partnership.id}) }}" target="_blank">QR</a>
+              <a class="btn btn-outline-secondary" href="{{ path('app_user_partnership_pdf', {'id': partnership.id}) }}">Download detailed PDF</a>
+              {% if partnership.documentUrl %}
+                <a class="btn btn-outline-success" href="{{ path('app_user_partnership_open_uploaded_pdf', {'id': partnership.id}) }}" target="_blank">Open uploaded PDF</a>
+              {% endif %}
+              {% if partnership.locationLatitude is not null and partnership.locationLongitude is not null %}
+                <a class="btn btn-outline-primary" target="_blank" href="https://maps.google.com/?q={{ partnership.locationLatitude }},{{ partnership.locationLongitude }}">Map</a>
+              {% elseif partnership.locationName %}
+                <a class="btn btn-outline-primary" target="_blank" href="https://maps.google.com/?q={{ partnership.locationName|url_encode }}">Map</a>
+              {% endif %}
+              {% if partnership.status == 'active' %}
+                <a class="btn btn-success" href="{{ path('app_user_certificate_new', {'partnershipId': partnership.id}) }}">Add Certificate</a>
+              {% else %}
+                <button class="btn btn-outline-success" disabled title="Admin must approve this partnership before adding certificates">Add Certificate</button>
+              {% endif %}
+              {% if partnership.certificates|length > 0 %}
+                <a class="btn btn-outline-success" href="{{ path('app_user_certificates') }}">Certificates</a>
+              {% endif %}
+              <form method="post" action="{{ path('app_user_partnership_delete', {'id': partnership.id}) }}" onsubmit="return confirm('Delete this partnership?');">
+                <button class="btn btn-outline-danger">Delete</button>
+              </form>
+            </div>
+
+            {% if partnership.certificates|length > 0 %}
+              <div class="mt-4">
+                <h5>Linked Certificates</h5>
+                <ul class="mb-0">
+                  {% for cert in partnership.certificates %}
+                    <li><a href="{{ path('app_user_certificate_show', {'id': cert.id}) }}">{{ cert.certificateNumber }}</a> - {{ cert.status }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card shadow-sm">
+    <div class="card-body text-center py-5">
+      <i class="bi bi-handshake display-4 text-muted mb-3"></i>
+      <h5>No Partnership Found</h5>
+      <p class="text-muted mb-3">Your company doesn't have a partnership set up yet.</p>
+      <a class="btn btn-primary" href="{{ path('app_user_partnership_new') }}">Create your first partnership</a>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+(function () {
+  const list = document.getElementById('partnershipList');
+  const searchInput = document.getElementById('partnershipSearch');
+  const statusFilter = document.getElementById('partnershipStatusFilter');
+  const sortSelect = document.getElementById('partnershipSort');
+  const countEl = document.getElementById('partnershipResultCount');
+
+  if (!list || !searchInput || !statusFilter || !sortSelect || !countEl) {
+    return;
+  }
+
+  const cards = () => [...list.querySelectorAll('.partnership-card')];
+
+  function normalize(value) {
+    return (value || '').toLowerCase().trim();
+  }
+
+  function applyPartnershipList() {
+    const query = normalize(searchInput.value);
+    const status = normalize(statusFilter.value);
+    const sort = sortSelect.value;
+
+    const visible = cards().filter(card => {
+      const matchSearch = !query || normalize(card.dataset.search).includes(query);
+      const matchStatus = !status || normalize(card.dataset.status) === status;
+      card.style.display = (matchSearch && matchStatus) ? '' : 'none';
+      return matchSearch && matchStatus;
+    });
+
+    visible.sort((a, b) => {
+      let va = '';
+      let vb = '';
+      let dir = 'asc';
+
+      if (sort === 'company-asc') {
+        va = normalize(a.dataset.company);
+        vb = normalize(b.dataset.company);
+      } else if (sort === 'newest' || sort === 'oldest') {
+        va = normalize(a.dataset.date);
+        vb = normalize(b.dataset.date);
+        dir = sort === 'newest' ? 'desc' : 'asc';
+      } else {
+        va = normalize(a.dataset.type);
+        vb = normalize(b.dataset.type);
+      }
+
+      if (va < vb) return dir === 'asc' ? -1 : 1;
+      if (va > vb) return dir === 'asc' ? 1 : -1;
+      return 0;
+    }).forEach(card => list.appendChild(card));
+
+    countEl.textContent = `${visible.length} result${visible.length !== 1 ? 's' : ''}`;
+  }
+
+  searchInput.addEventListener('input', applyPartnershipList);
+  statusFilter.addEventListener('change', applyPartnershipList);
+  sortSelect.addEventListener('change', applyPartnershipList);
+  applyPartnershipList();
+})();
+</script>
+{% endblock %}

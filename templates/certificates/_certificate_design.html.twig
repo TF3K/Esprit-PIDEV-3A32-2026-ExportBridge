@@ -1,0 +1,49 @@
+<div class="d-flex justify-content-end gap-2 mb-3 no-print">
+  <button onclick="window.print()" class="btn btn-primary">Download / Print</button>
+  <button onclick="history.back()" class="btn btn-secondary">Back</button>
+</div>
+<style>
+  .cert-page{background:#eaf4ff;padding:34px 26px;border-radius:22px;max-width:1120px;margin:0 auto;}
+  .cert-frame{background:#fff;border:26px solid #27356f;padding:24px;box-shadow:0 18px 38px rgba(0,0,0,.12);}
+  .cert-inner{border:3px solid #d9ad55;min-height:640px;padding:45px 55px;text-align:center;position:relative;}
+  .cert-dot{position:absolute;width:22px;height:22px;background:#d9ad55;border-radius:50%;}
+  .cert-dot.tl{top:-12px;left:-12px}.cert-dot.tr{top:-12px;right:-12px}.cert-dot.bl{bottom:-12px;left:-12px}.cert-dot.br{bottom:-12px;right:-12px}
+  .cert-brand{font-size:32px;font-weight:800;text-align:left;color:#111;margin-bottom:30px;}
+  .cert-small{font-size:18px;text-transform:uppercase;letter-spacing:2px;color:#a98743;margin-top:18px;}
+  .cert-title{font-family:Georgia,serif;font-size:66px;line-height:1.05;color:#151b56;margin:26px 0 18px;}
+  .cert-name{font-size:38px;font-weight:800;color:#0f2c66;margin:25px 0;}
+  .cert-line{height:2px;background:#d9ad55;max-width:620px;margin:22px auto;}
+  .cert-text{font-size:22px;line-height:1.45;color:#1d2440;max-width:820px;margin:0 auto;}
+  .cert-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:65px;text-align:center;}
+  .sign-line{width:230px;border-top:3px solid #d9ad55;margin-bottom:8px;}
+  .seal{width:130px;height:130px;border:3px dashed #d9ad55;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#b79242;font-size:34px;font-weight:800;margin:0 auto;}
+  .cert-meta{display:flex;justify-content:space-between;font-size:16px;color:#1d2440;margin-top:32px;}
+  @media print{.no-print,.sidebar,.navbar,.user-sidebar{display:none!important} body{background:white!important}.cert-page{padding:0;background:white}.cert-frame{box-shadow:none}.container,.content{max-width:100%!important;width:100%!important}}
+</style>
+<div class="cert-page">
+  <div class="cert-brand">⌾ Certifier</div>
+  <div class="cert-frame">
+    <div class="cert-inner">
+      <span class="cert-dot tl"></span><span class="cert-dot tr"></span><span class="cert-dot bl"></span><span class="cert-dot br"></span>
+      <div style="font-size:28px;color:#151b56;margin-top:5px;">ExportBridge</div>
+      <div class="cert-title">Certificat de<br>participation</div>
+      <div class="cert-small">Nous certifions par la présente que</div>
+      <div class="cert-name">{{ certificate.issuingAuthority ?: (certificate.company ? certificate.company.companyName : 'Participant') }}</div>
+      <div class="cert-line"></div>
+      <p class="cert-text">
+        a fait preuve d'un engagement et d'une implication exceptionnels dans le certificat
+        <strong>{{ certificate.type ?: 'Certificate' }}</strong>, numéro <strong>{{ certificate.certificateNumber }}</strong>,
+        délivré par <strong>{{ certificate.company ? certificate.company.companyName : 'ExportBridge' }}</strong>.
+      </p>
+      <div class="cert-footer">
+        <div><div class="sign-line"></div><strong>Dr. Julie Dubois</strong><br><span>Directrice</span></div>
+        <div><div class="seal">{{ certificate.issueDate ? certificate.issueDate|date('Y') : '2026' }}</div></div>
+        <div><div class="sign-line"></div><strong>Jacques Bernard</strong><br><span>Directeur</span></div>
+      </div>
+      <div class="cert-meta">
+        <div>Identifiant : {{ certificate.id }}</div>
+        <div>Date de délivrance : {{ certificate.issueDate ? certificate.issueDate|date('d/m/Y') : '—' }}</div>
+      </div>
+    </div>
+  </div>
+</div>

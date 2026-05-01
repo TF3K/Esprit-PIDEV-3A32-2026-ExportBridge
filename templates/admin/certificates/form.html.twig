@@ -1,0 +1,121 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}{{ mode == 'edit' ? 'Edit' : 'Add' }} Certificate - ExportBridge Admin{% endblock %}
+
+{% block admin_content %}
+
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">
+                {{ mode == 'edit' ? 'Edit Certificate' : 'Add New Certificate' }}
+            </h1>
+            <a href="{{ path('app_admin_certificates') }}" class="btn btn-sm btn-secondary mb-0">
+                <i class="bi bi-arrow-left me-1"></i>Back to list
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header border-bottom">
+            <h5 class="card-header-title">Certificate Information</h5>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" class="row g-4">
+                <div class="col-lg-6">
+                    <label class="form-label">Certificate Number *</label>
+                    <input type="text" name="certificate_number" class="form-control {{ errors.certificate_number is defined ? 'is-invalid' : '' }}" value="{{ old.certificateNumber ?? certificate.certificateNumber ?? '' }}" required>
+                    {% if errors.certificate_number is defined %}<div class="invalid-feedback">{{ errors.certificate_number }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Type *</label>
+                    <select name="type" class="form-select {{ errors.type is defined ? 'is-invalid' : '' }}" required>
+                        <option value="">- Select Type -</option>
+                        {% for type in ['EUR.1', 'EUR-MED', 'Form A', 'Certificate of Origin', 'Phytosanitary', 'Health Certificate', 'ISO', 'CE Marking'] %}
+                            <option value="{{ type }}" {{ (old.type ?? certificate.type ?? '') == type ? 'selected' : '' }}>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.type is defined %}<div class="invalid-feedback">{{ errors.type }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Company *</label>
+                    <select name="company_id" class="form-select {{ errors.company_id is defined ? 'is-invalid' : '' }}" required>
+                        <option value="">- Select Company -</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}" {{ (old.companyId ?? certificate.company.id ?? '') == company.id ? 'selected' : '' }}>{{ company.companyName }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.company_id is defined %}<div class="invalid-feedback">{{ errors.company_id }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Partnership</label>
+                    <select name="partnership_id" class="form-select">
+                        <option value="">- No linked partnership -</option>
+                        {% for partnership in partnerships %}
+                            {% set partnershipLabel = (partnership.company ? partnership.company.companyName ~ ' - ' : '') ~ (partnership.type ?? ('Partnership #' ~ partnership.id)) %}
+                            <option value="{{ partnership.id }}" {{ (old.partnershipId ?? certificate.partnership.id ?? '') == partnership.id ? 'selected' : '' }}>
+                                {{ partnershipLabel }} ({{ partnership.status|capitalize }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">Selecting a partnership links the certificate and uses that partnership company.</div>
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Status *</label>
+                    <select name="status" class="form-select {{ errors.status is defined ? 'is-invalid' : '' }}" required>
+                        <option value="">- Select Status -</option>
+                        {% for status in ['active', 'pending', 'expired', 'revoked'] %}
+                            <option value="{{ status }}" {{ (old.status ?? certificate.status ?? '') == status ? 'selected' : '' }}>{{ status|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.status is defined %}<div class="invalid-feedback">{{ errors.status }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Issue Date</label>
+                    <input type="date" name="issue_date" class="form-control {{ errors.issue_date is defined ? 'is-invalid' : '' }}" value="{{ old.issueDate ?? (certificate.issueDate ? certificate.issueDate|date('Y-m-d') : '') }}">
+                    {% if errors.issue_date is defined %}<div class="invalid-feedback">{{ errors.issue_date }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="date" name="expiry_date" class="form-control {{ errors.expiry_date is defined ? 'is-invalid' : '' }}" value="{{ old.expiryDate ?? (certificate.expiryDate ? certificate.expiryDate|date('Y-m-d') : '') }}">
+                    {% if errors.expiry_date is defined %}<div class="invalid-feedback">{{ errors.expiry_date }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Country of Origin</label>
+                    <input type="text" name="country_of_origin" class="form-control {{ errors.country_of_origin is defined ? 'is-invalid' : '' }}" value="{{ old.countryOfOrigin ?? certificate.countryOfOrigin ?? '' }}">
+                    {% if errors.country_of_origin is defined %}<div class="invalid-feedback">{{ errors.country_of_origin }}</div>{% endif %}
+                </div>
+
+                <div class="col-lg-6">
+                    <label class="form-label">Issuing Authority</label>
+                    <input type="text" name="issuing_authority" class="form-control {{ errors.issuing_authority is defined ? 'is-invalid' : '' }}" placeholder="e.g. Tunisia Chamber of Commerce" value="{{ old.issuingAuthority ?? certificate.issuingAuthority ?? '' }}">
+                    {% if errors.issuing_authority is defined %}<div class="invalid-feedback">{{ errors.issuing_authority }}</div>{% endif %}
+                </div>
+
+                {% if mode == 'edit' %}
+                    <div class="col-12">
+                        <label class="form-label">Current PDF</label><br>
+                        {% if certificate.documentFile %}
+                            <a href="{{ path('app_admin_certificate_open_uploaded_pdf', {id: certificate.id}) }}" target="_blank" class="btn btn-outline-primary">Open PDF</a>
+                            <small class="text-muted ms-2">{{ certificate.documentFile }}</small>
+                        {% else %}
+                            <span class="text-muted">No uploaded PDF</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">{{ mode == 'edit' ? 'Update Certificate' : 'Add Certificate' }}</button>
+                    <a href="{{ path('app_admin_certificates') }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
