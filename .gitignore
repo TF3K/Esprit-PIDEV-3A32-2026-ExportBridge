@@ -18,6 +18,8 @@
 !.env.example
 !.env.dist
 .history/
+/public/uploads/
+/3
 
 ###> phpstan/phpstan ###
 phpstan.neon

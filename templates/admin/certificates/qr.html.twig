@@ -1,0 +1,20 @@
+{% extends 'admin/base_admin.html.twig' %}
+{% block title %}Certificate QR - {{ certificate.certificateNumber }}{% endblock %}
+{% block admin_content %}
+<div class="row">
+  <div class="col-lg-8 mx-auto">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">QR certificate image for {{ certificate.certificateNumber }}</h5>
+        <a href="{{ path('app_admin_certificates_show', {id: certificate.id}) }}" class="btn btn-sm btn-secondary">Back</a>
+      </div>
+      <div class="card-body text-center">
+        <img src="{{ qr_image }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 250px;">
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+          <a class="btn btn-outline-secondary" href="{{ path('app_admin_certificates_show', {id: certificate.id}) }}">Back to certificate</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

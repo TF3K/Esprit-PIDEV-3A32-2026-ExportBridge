@@ -60,6 +60,7 @@
                             <th>Issue Date</th>
                             <th>Expiry Date</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,10 +82,13 @@
                                     <span class="badge text-bg-secondary">{{ cert.status }}</span>
                                 {% endif %}
                             </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-info" href="{{ path('app_user_certificate_qr', {'id': cert.id}) }}" target="_blank">QR</a>
+                            </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 No certificates found for your company.
                             </td>
                         </tr>

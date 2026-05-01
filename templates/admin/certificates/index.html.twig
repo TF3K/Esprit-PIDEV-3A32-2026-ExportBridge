@@ -143,6 +143,10 @@
                                     class="btn btn-sm btn-info me-1">
                                         <i class="bi bi-eye"></i> View
                                 </a>
+                                <a href="{{ path('app_admin_certificates_qr', {id: cert.id}) }}"
+                                   class="btn btn-sm btn-outline-info me-1" target="_blank">
+                                    <i class="bi bi-qr-code"></i> QR
+                                </a>
                                 <form action="{{ path('app_admin_certificates_delete', {id: cert.id}) }}"
                                       method="post" class="d-inline"
                                       onsubmit="return confirm('Delete this certificate?')">

@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Certificate;
 use App\Repository\CertificateRepository;
 use App\Repository\CompanyRepository;
+use App\Service\PublicQrUrlFactory;
+use App\Service\QrCodeSvgGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,6 +83,24 @@ class CertificateController extends AbstractController
 
         $this->addFlash('success', 'Certificate deleted.');
         return $this->redirectToRoute('app_admin_certificates');
+    }
+
+    #[Route('/{id}/qr', name: 'app_admin_certificates_qr', methods: ['GET'])]
+    public function qr(
+        Certificate $certificate,
+        Request $request,
+        QrCodeSvgGenerator $qrCodeSvgGenerator,
+        PublicQrUrlFactory $publicQrUrlFactory
+    ): Response {
+        $certificateImageUrl = $publicQrUrlFactory->absoluteUrl(
+            $request,
+            $this->generateUrl('app_public_certificate_image', ['id' => $certificate->getId()])
+        );
+
+        return $this->render('admin/certificates/qr.html.twig', [
+            'certificate' => $certificate,
+            'qr_image' => $qrCodeSvgGenerator->dataUri($certificateImageUrl),
+        ]);
     }
 
     #[Route('/{id}', name: 'app_admin_certificates_show')]

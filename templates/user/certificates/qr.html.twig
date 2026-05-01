@@ -1,0 +1,13 @@
+{% extends 'user/base_user.html.twig' %}
+{% block title %}Certificate QR{% endblock %}
+{% block user_content %}
+<div class="card shadow-sm" style="max-width:760px;margin:0 auto;">
+  <div class="card-body text-center py-5">
+    <h3 class="mb-4">QR certificate image {{ certificate.certificateNumber }}</h3>
+    <img src="{{ qr_image }}" alt="QR Code" class="img-fluid mb-4" style="max-width:260px">
+    <div class="d-flex justify-content-center gap-2 flex-wrap">
+      <a class="btn btn-outline-secondary" href="{{ path('app_user_certificates') }}">Back to certificates</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
