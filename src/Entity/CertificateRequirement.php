@@ -24,12 +24,6 @@ class CertificateRequirement
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
     /**
      * Relation to Market (replaces primitive market_id).
      *

@@ -27,10 +27,11 @@ class CertificateRequirementRepository extends ServiceEntityRepository
         }
 
         $rows = $this->createQueryBuilder('c')
-            ->select('c.market_id AS marketId, COUNT(c.id) AS total')
-            ->where('c.market_id IN (:marketIds)')
+            ->select('m.id AS marketId, COUNT(c.id) AS total')
+            ->join('c.market', 'm')
+            ->where('m.id IN (:marketIds)')
             ->setParameter('marketIds', $marketIds)
-            ->groupBy('c.market_id')
+            ->groupBy('m.id')
             ->getQuery()
             ->getArrayResult();
 
@@ -49,7 +50,8 @@ class CertificateRequirementRepository extends ServiceEntityRepository
     {
         /** @var list<CertificateRequirement> $requirements */
         $requirements = $this->createQueryBuilder('c')
-            ->where('c.market_id = :marketId')
+            ->join('c.market', 'm')
+            ->where('m.id = :marketId')
             ->setParameter('marketId', $marketId)
             ->orderBy('c.id', 'ASC')
             ->setFirstResult(($page - 1) * $pageSize)

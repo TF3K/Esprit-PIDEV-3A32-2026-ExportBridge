@@ -19,7 +19,7 @@ class Company
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     /** @phpstan-ignore property.unusedType */
-    private ?int $id = null;
+    protected ?int $id = null;
 
     public function getId(): ?int
     {
@@ -31,7 +31,7 @@ class Company
     // ---------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', nullable: false)]
-    private string $company_name = '';
+    protected string $company_name = '';
 
     public function getCompanyName(): string
     {
@@ -44,7 +44,7 @@ class Company
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $domain = null;
+    protected ?string $domain = null;
 
     public function getDomain(): ?string
     {
@@ -57,7 +57,7 @@ class Company
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $tax_number = null;
+    protected ?string $tax_number = null;
 
     public function getTaxNumber(): ?string
     {
@@ -70,7 +70,7 @@ class Company
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $registration_number = null;
+    protected ?string $registration_number = null;
 
     public function getRegistrationNumber(): ?string
     {
@@ -83,7 +83,7 @@ class Company
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $country = null;
+    protected ?string $country = null;
 
     public function getCountry(): ?string
     {
@@ -96,7 +96,7 @@ class Company
     }
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $address = null;
+    protected ?string $address = null;
 
     public function getAddress(): ?string
     {
@@ -113,7 +113,7 @@ class Company
     // ---------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $contact_email = null;
+    protected ?string $contact_email = null;
 
     public function getContactEmail(): ?string
     {
@@ -126,7 +126,7 @@ class Company
     }
 
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $contact_phone = null;
+    protected ?string $contact_phone = null;
 
     public function getContactPhone(): ?string
     {
@@ -143,7 +143,7 @@ class Company
     // ---------------------------------------------------------------------
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $rating = null;
+    protected ?int $rating = null;
 
     public function getRating(): ?int
     {
@@ -156,7 +156,7 @@ class Company
     }
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $warnings = null;
+    protected ?int $warnings = null;
 
     public function getWarnings(): ?int
     {
@@ -169,7 +169,7 @@ class Company
     }
 
     #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $is_banned = null;
+    protected ?bool $is_banned = null;
 
     public function isBanned(): ?bool
     {
@@ -186,7 +186,7 @@ class Company
     // ---------------------------------------------------------------------
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $contractHash = null;
+    protected ?string $contractHash = null;
 
     public function getContractHash(): ?string
     {
@@ -203,10 +203,10 @@ class Company
     // ---------------------------------------------------------------------
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $created_at;
+    protected \DateTimeInterface $created_at;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $last_updated;
+    protected \DateTimeInterface $last_updated;
 
     public function getCreatedAt(): \DateTimeInterface
     {
@@ -236,26 +236,26 @@ class Company
      * @var Collection<int, Product>
      */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'company')]
-    private Collection $products;
+    protected Collection $products;
 
     #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
     #[ORM\JoinColumn(name: 'market_id', referencedColumnName: 'id', nullable: true)]
-    private ?Market $market = null;
+    protected ?Market $market = null;
 
     /**
      * @var Collection<int, ContactHistory>
      */
     #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'company')]
-    private Collection $contactHistory;
+    protected Collection $contactHistory;
 
     #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'companies')]
-    private ?Manager $companyManager = null;
+    protected ?Manager $companyManager = null;
 
     /**
      * @var Collection<int, Manager>
      */
     #[ORM\OneToMany(targetEntity: Manager::class, mappedBy: 'company')]
-    private Collection $managers;
+    protected Collection $managers;
 
     public function getCompanyManager(): ?Manager
     {
@@ -294,7 +294,7 @@ class Company
      * @var Collection<int, Certificate>
      */
     #[ORM\OneToMany(targetEntity: Certificate::class, mappedBy: 'company')]
-    private Collection $certificates;
+    protected Collection $certificates;
 
     /**
      * @return Collection<int, Certificate>
@@ -324,7 +324,7 @@ class Company
      * Partnership (OneToOne)
      */
     #[ORM\OneToOne(targetEntity: Partnership::class, mappedBy: 'company', cascade: ['persist', 'remove'])]
-    private ?Partnership $partnership = null;
+    protected ?Partnership $partnership = null;
 
     public function __construct()
     {

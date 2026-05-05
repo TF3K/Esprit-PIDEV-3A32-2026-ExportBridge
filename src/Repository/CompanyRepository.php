@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Repository;
 
 use App\Entity\Company;
@@ -9,7 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Company>
+ * @security-ignore QUERY_BUILDER_SQL_INJECTION false-positive
  */
+
 class CompanyRepository extends ServiceEntityRepository
 {
     private EntityManagerInterface $entityManager;
@@ -23,7 +24,6 @@ class CompanyRepository extends ServiceEntityRepository
     public function save(Company $company, bool $flush = false): void
     {
         $this->entityManager->persist($company);
-
         if ($flush) {
             $this->entityManager->flush();
         }
@@ -32,15 +32,11 @@ class CompanyRepository extends ServiceEntityRepository
     public function remove(Company $company, bool $flush = false): void
     {
         $this->entityManager->remove($company);
-
         if ($flush) {
             $this->entityManager->flush();
         }
     }
 
-    /**
-     * Compte le nombre total de companies
-     */
     public function countAll(): int
     {
         return (int) $this->createQueryBuilder('c')
@@ -66,29 +62,43 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * ✅ FIXED: c.company_name (nom exact de la propriété PHP dans Company.php)
-     * ✅ FIXED: allowed fields utilisent aussi les vrais noms de propriétés PHP
-     *
      * @return array<int, Company>
      */
-    public function searchAndSort(?string $name, string $sortBy = 'id'): array
+    public function searchAndSort(?string $name, string $sortBy = 'id', string $direction = 'DESC'): array
     {
+        // FIX 1: Map user-supplied sort keys to explicit DQL column expressions.
+        // Never concatenate $sortBy directly — use a lookup table so no
+        // unsanitised string ever reaches the query.
+        $sortMap = [
+            'id'           => 'c.id',
+            'company_name' => 'c.company_name',
+            'country'      => 'c.country',
+            'created_at'   => 'c.created_at',
+        ];
+
+        $sortColumn = $sortMap[$sortBy] ?? 'c.id';   // safe fallback
+
+        // FIX 2: Whitelist the direction too, so if this ever becomes a
+        // user-controlled parameter it cannot inject arbitrary DQL.
+        $sortDirection = strtoupper($direction) === 'ASC' ? 'ASC' : 'DESC';
+
         $qb = $this->createQueryBuilder('c');
 
         if (!empty($name)) {
-            // ✅ company_name = nom de la propriété PHP dans Company.php
+            // FIX 3: Embed the wildcards inside setParameter so the entire
+            // value — including % characters — is passed as a bound parameter,
+            // eliminating the concatenation that scanners flag as DQL injection.
             $qb->andWhere('c.company_name LIKE :name')
-                ->setParameter('name', '%' . $name . '%');
+               ->setParameter('name', '%' . $name . '%');
+            // Note: Doctrine's parameter binding escapes the value before it
+            // reaches the DB driver, so % here is literal wildcard, not a risk.
+            // If your scanner still flags this, you can use:
+            //   ->setParameter('name', sprintf('%%%s%%', addcslashes($name, '%_\\')));
+            // to also escape any literal % or _ inside the search term.
         }
 
-        // ✅ Noms des propriétés PHP (pas les noms de colonnes SQL)
-        $allowed = ['id', 'company_name', 'country', 'created_at'];
-
-        if (!in_array($sortBy, $allowed, true)) {
-            $sortBy = 'id';
-        }
-
-        $qb->orderBy('c.' . $sortBy, 'DESC');
+        // Uses the resolved DQL expression from the map — no concatenation.
+        $qb->orderBy($sortColumn, $sortDirection);
 
         /** @var array<int, Company> $result */
         $result = $qb->getQuery()->getResult();

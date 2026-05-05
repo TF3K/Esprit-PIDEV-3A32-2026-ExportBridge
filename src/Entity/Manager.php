@@ -295,4 +295,17 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         $this->setting = $setting;
         return $this;
     }
+
+    public function __serialize(): array
+    {
+        // Only serialize what's needed to re-fetch the user
+        return ['id' => $this->id, 'email' => $this->email, 'password' => $this->password];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id       = $data['id']       ?? $data["\0App\\Entity\\Manager\0id"]       ?? null;
+        $this->email    = $data['email']    ?? $data["\0App\\Entity\\Manager\0email"]    ?? null;
+        $this->password = $data['password'] ?? $data["\0App\\Entity\\Manager\0password"] ?? null;
+    }
 }
