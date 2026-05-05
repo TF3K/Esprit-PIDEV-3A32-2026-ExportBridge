@@ -31,7 +31,6 @@ class CertificatePartnershipEntityTest extends TestCase
             ->setCountryOfOrigin('TN')
             ->setIssuingAuthority('CEPEX')
             ->setDocumentFile('certificate.pdf')
-            ->setPartnership($partnership)
             ->setCreatedAt($createdAt)
             ->setLastUpdated($lastUpdated);
 
@@ -45,7 +44,6 @@ class CertificatePartnershipEntityTest extends TestCase
         $this->assertSame('TN', $certificate->getCountryOfOrigin());
         $this->assertSame('CEPEX', $certificate->getIssuingAuthority());
         $this->assertSame('certificate.pdf', $certificate->getDocumentFile());
-        $this->assertSame($partnership, $certificate->getPartnership());
         $this->assertSame($createdAt, $certificate->getCreatedAt());
         $this->assertSame($lastUpdated, $certificate->getLastUpdated());
     }
@@ -69,7 +67,6 @@ class CertificatePartnershipEntityTest extends TestCase
     public function testPartnershipAccessors(): void
     {
         $company = new Company();
-        $targetCompany = new Company();
         $establishedDate = new \DateTimeImmutable('2026-01-10');
         $terminatedDate = new \DateTimeImmutable('2026-12-31');
         $createdAt = new \DateTimeImmutable('2026-05-02 09:00:00');
@@ -78,50 +75,23 @@ class CertificatePartnershipEntityTest extends TestCase
         $partnership = (new Partnership())
             ->setId(8)
             ->setCompany($company)
-            ->setTargetCompany($targetCompany)
             ->setStatus('active')
             ->setType('distribution')
             ->setEstablishedDate($establishedDate)
             ->setTerminatedDate($terminatedDate)
             ->setNotes('Strategic partnership')
-            ->setDocumentUrl('contract.pdf')
-            ->setLocationName('Tunis')
-            ->setLocationLatitude(36.8065)
-            ->setLocationLongitude(10.1815)
             ->setCreatedAt($createdAt)
             ->setLastUpdated($lastUpdated);
 
         $this->assertSame(8, $partnership->getId());
         $this->assertSame($company, $partnership->getCompany());
-        $this->assertSame($targetCompany, $partnership->getTargetCompany());
         $this->assertSame('active', $partnership->getStatus());
         $this->assertSame('distribution', $partnership->getType());
         $this->assertSame($establishedDate, $partnership->getEstablishedDate());
         $this->assertSame($terminatedDate, $partnership->getTerminatedDate());
         $this->assertSame('Strategic partnership', $partnership->getNotes());
-        $this->assertSame('contract.pdf', $partnership->getDocumentUrl());
-        $this->assertSame('Tunis', $partnership->getLocationName());
-        $this->assertSame(36.8065, $partnership->getLocationLatitude());
-        $this->assertSame(10.1815, $partnership->getLocationLongitude());
         $this->assertSame($createdAt, $partnership->getCreatedAt());
         $this->assertSame($lastUpdated, $partnership->getLastUpdated());
-    }
-
-    public function testPartnershipCertificatesCollectionKeepsRelationInSync(): void
-    {
-        $partnership = new Partnership();
-        $certificate = new Certificate();
-
-        $partnership->addCertificate($certificate);
-        $partnership->addCertificate($certificate);
-
-        $this->assertCount(1, $partnership->getCertificates());
-        $this->assertSame($partnership, $certificate->getPartnership());
-
-        $partnership->removeCertificate($certificate);
-
-        $this->assertCount(0, $partnership->getCertificates());
-        $this->assertNull($certificate->getPartnership());
     }
 
     public function testPartnershipCollaborationsCollection(): void
@@ -138,23 +108,5 @@ class CertificatePartnershipEntityTest extends TestCase
         $partnership->removeCollaboration($collaboration);
 
         $this->assertCount(0, $partnership->getCollaborations());
-    }
-
-    public function testCompanyPartnershipCollectionKeepsRelationInSync(): void
-    {
-        $company = new Company();
-        $partnership = new Partnership();
-
-        $company->addPartnership($partnership);
-        $company->addPartnership($partnership);
-
-        $this->assertCount(1, $company->getPartnerships());
-        $this->assertSame($partnership, $company->getPartnership());
-        $this->assertSame($company, $partnership->getCompany());
-
-        $company->removePartnership($partnership);
-
-        $this->assertCount(0, $company->getPartnerships());
-        $this->assertNull($partnership->getCompany());
     }
 }

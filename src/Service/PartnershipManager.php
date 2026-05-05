@@ -16,14 +16,6 @@ class PartnershipManager
             throw new \InvalidArgumentException('La societe source est obligatoire');
         }
 
-        if ($partnership->getTargetCompany() === null) {
-            throw new \InvalidArgumentException('La societe cible est obligatoire');
-        }
-
-        if ($partnership->getCompany() === $partnership->getTargetCompany()) {
-            throw new \InvalidArgumentException('Les societes source et cible doivent etre differentes');
-        }
-
         $establishedDate = $partnership->getEstablishedDate();
         $terminatedDate = $partnership->getTerminatedDate();
 

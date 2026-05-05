@@ -45,7 +45,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', nullable: true)]
     private ?Company $company = null;
 
-    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'manager')]
+    #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'companyManager')]
     private Collection $companies;
 
     #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'manager')]

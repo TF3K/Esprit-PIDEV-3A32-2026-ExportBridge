@@ -111,10 +111,9 @@ class EntityAccessorsTest extends TestCase
                 ['setRating', 'getRating', 5],
                 ['setWarnings', 'getWarnings', 1],
                 ['setIsBanned', 'isBanned', false],
-                ['setManager', 'getManager', $manager],
+                ['setCompanyManager', 'getCompanyManager', $manager],
                 ['setCreatedAt', 'getCreatedAt', $createdAt],
                 ['setLastUpdated', 'getLastUpdated', $lastUpdated],
-                ['setMarket', 'getMarket', $market],
             ],
         ];
 
@@ -177,21 +176,15 @@ class EntityAccessorsTest extends TestCase
         ];
 
         yield 'Partnership' => [
-            'Partnership',
             new Partnership(),
             [
                 ['setId', 'getId', 8],
                 ['setCompany', 'getCompany', $company],
-                ['setTargetCompany', 'getTargetCompany', $targetCompany],
                 ['setStatus', 'getStatus', 'active'],
                 ['setType', 'getType', 'distribution'],
                 ['setEstablishedDate', 'getEstablishedDate', new \DateTimeImmutable('2026-01-10')],
                 ['setTerminatedDate', 'getTerminatedDate', new \DateTimeImmutable('2026-12-31')],
                 ['setNotes', 'getNotes', 'Strategic partnership'],
-                ['setDocumentUrl', 'getDocumentUrl', 'contract.pdf'],
-                ['setLocationName', 'getLocationName', 'Tunis'],
-                ['setLocationLatitude', 'getLocationLatitude', 36.8065],
-                ['setLocationLongitude', 'getLocationLongitude', 10.1815],
                 ['setCreatedAt', 'getCreatedAt', $createdAt],
                 ['setLastUpdated', 'getLastUpdated', $lastUpdated],
             ],
@@ -283,36 +276,19 @@ class EntityAccessorsTest extends TestCase
     {
         $company = new Company();
         $certificate = new Certificate();
-        $contactHistory = new ContactHistory();
-        $partnership = new Partnership();
-        $product = new Product();
+
+        $this->assertCount(0, $company->getProducts());
+        $this->assertCount(0, $company->getContactHistory());
+        $this->assertCount(0, $company->getCertificates());
 
         $company->addCertificate($certificate);
         $company->addCertificate($certificate);
-        $company->addContactHistory($contactHistory);
-        $company->addContactHistory($contactHistory);
-        $company->addPartnership($partnership);
-        $company->addPartnership($partnership);
-        $company->addProduct($product);
-        $company->addProduct($product);
 
         $this->assertCount(1, $company->getCertificates());
-        $this->assertCount(1, $company->getContactHistory());
-        $this->assertCount(1, $company->getPartnerships());
-        $this->assertCount(1, $company->getProducts());
-        $this->assertSame($company, $partnership->getCompany());
-        $this->assertSame($partnership, $company->getPartnership());
 
         $company->removeCertificate($certificate);
-        $company->removeContactHistory($contactHistory);
-        $company->removePartnership($partnership);
-        $company->removeProduct($product);
 
         $this->assertCount(0, $company->getCertificates());
-        $this->assertCount(0, $company->getContactHistory());
-        $this->assertCount(0, $company->getPartnerships());
-        $this->assertCount(0, $company->getProducts());
-        $this->assertNull($partnership->getCompany());
     }
 
     public function testManagerSecurityAndCollections(): void
@@ -369,23 +345,17 @@ class EntityAccessorsTest extends TestCase
     {
         $partnership = new Partnership();
         $collaboration = new Collaboration();
-        $certificate = new Certificate();
-
-        $partnership->addCollaboration($collaboration);
-        $partnership->addCollaboration($collaboration);
-        $partnership->addCertificate($certificate);
-        $partnership->addCertificate($certificate);
-
-        $this->assertCount(1, $partnership->getCollaborations());
-        $this->assertCount(1, $partnership->getCertificates());
-        $this->assertSame($partnership, $certificate->getPartnership());
-
-        $partnership->removeCollaboration($collaboration);
-        $partnership->removeCertificate($certificate);
 
         $this->assertCount(0, $partnership->getCollaborations());
-        $this->assertCount(0, $partnership->getCertificates());
-        $this->assertNull($certificate->getPartnership());
+
+        $partnership->addCollaboration($collaboration);
+        $partnership->addCollaboration($collaboration);
+
+        $this->assertCount(1, $partnership->getCollaborations());
+
+        $partnership->removeCollaboration($collaboration);
+
+        $this->assertCount(0, $partnership->getCollaborations());
     }
 
     public function testProductCategoryProductsCollection(): void

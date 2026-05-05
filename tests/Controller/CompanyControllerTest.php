@@ -77,7 +77,6 @@ class CompanyControllerTest extends WebTestCase
         $company->setContractHash('hash-setup-123');
         $company->setCreatedAt(new \DateTime());
         $company->setLastUpdated(new \DateTime());
-        $company->setMarket($market);
         $em->persist($company);
         $em->flush();
 

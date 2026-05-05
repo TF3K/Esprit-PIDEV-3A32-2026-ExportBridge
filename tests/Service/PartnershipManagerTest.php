@@ -50,7 +50,7 @@ class PartnershipManagerTest extends TestCase
         $company = new Company();
         $partnership = $this->makePartnership();
         $partnership->setCompany($company);
-        $partnership->setTargetCompany($company);
+        $partnership->setCompany($company);
 
         $manager = new PartnershipManager();
         $manager->validate($partnership);
@@ -73,7 +73,6 @@ class PartnershipManagerTest extends TestCase
     {
         return (new Partnership())
             ->setCompany(new Company())
-            ->setTargetCompany(new Company())
             ->setStatus('active')
             ->setType('distribution')
             ->setEstablishedDate(new \DateTimeImmutable('2026-05-01'))

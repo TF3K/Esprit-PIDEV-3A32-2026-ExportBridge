@@ -247,6 +247,12 @@ class Company
     #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'companies')]
     private ?Manager $companyManager = null;
 
+    /**
+     * @var Collection<int, Manager>
+     */
+    #[ORM\OneToMany(targetEntity: Manager::class, mappedBy: 'company')]
+    private Collection $managers;
+
     public function getCompanyManager(): ?Manager
     {
         return $this->companyManager;
@@ -254,6 +260,29 @@ class Company
     public function setCompanyManager(?Manager $companyManager): self
     {
         $this->companyManager = $companyManager;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Manager>
+     */
+    public function getManagers(): Collection
+    {
+        return $this->managers;
+    }
+
+    public function addManager(Manager $manager): self
+    {
+        if (!$this->managers->contains($manager)) {
+            $this->managers->add($manager);
+        }
+
+        return $this;
+    }
+
+    public function removeManager(Manager $manager): self
+    {
+        $this->managers->removeElement($manager);
         return $this;
     }
 
@@ -298,6 +327,7 @@ class Company
         $this->products = new ArrayCollection();
         $this->contactHistory = new ArrayCollection();
         $this->certificates = new ArrayCollection();
+        $this->managers = new ArrayCollection();
         $this->created_at = new \DateTime();
         $this->last_updated = new \DateTime();
     }
