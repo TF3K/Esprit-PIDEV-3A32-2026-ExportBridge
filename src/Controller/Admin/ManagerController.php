@@ -43,12 +43,12 @@ class ManagerController extends AbstractController
 
         if ($request->isMethod('POST')) {
             // dump('entered POST block');
-            $firstName = trim($request->request->get('first_name') ?? '');
-            $lastName  = trim($request->request->get('last_name') ?? '');
-            $email     = trim($request->request->get('email') ?? '');
-            $password  = $request->request->get('password') ?? '';
+            $firstName = trim((string) $request->request->get('first_name', ''));
+            $lastName  = trim((string) $request->request->get('last_name', ''));
+            $email     = trim((string) $request->request->get('email', ''));
+            $password  = (string) $request->request->get('password', '');
             $companyId = $request->request->get('company_id');
-            $role      = $request->request->get('role');
+            $role      = (string) $request->request->get('role', 'ROLE_USER');
 
             $old = [
                 'first_name' => $firstName,
@@ -133,12 +133,12 @@ class ManagerController extends AbstractController
         // dd('EDIT', $request->getMethod(), $manager->getId());
 
         if ($request->isMethod('POST')) {
-            $firstName = trim($request->request->get('first_name') ?? '');
-            $lastName  = trim($request->request->get('last_name') ?? '');
-            $email     = trim($request->request->get('email') ?? '');
-            $password  = $request->request->get('password') ?? '';
+            $firstName = trim((string) $request->request->get('first_name', ''));
+            $lastName  = trim((string) $request->request->get('last_name', ''));
+            $email     = trim((string) $request->request->get('email', ''));
+            $password  = (string) $request->request->get('password', '');
             $companyId = $request->request->get('company_id');
-            $role      = $request->request->get('role');
+            $role      = (string) $request->request->get('role', 'ROLE_USER');
 
             $old = [
                 'first_name' => $firstName,

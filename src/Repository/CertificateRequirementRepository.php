@@ -45,17 +45,44 @@ class CertificateRequirementRepository extends ServiceEntityRepository
     /**
      * @return list<CertificateRequirement>
      */
-    public function findForMarketId(int $marketId): array
+    public function findForMarketId(int $marketId, int $page = 1, int $pageSize = 50): array
     {
         /** @var list<CertificateRequirement> $requirements */
         $requirements = $this->createQueryBuilder('c')
             ->where('c.market_id = :marketId')
             ->setParameter('marketId', $marketId)
             ->orderBy('c.id', 'ASC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
             ->getQuery()
             ->getResult();
 
         return $requirements;
+    }
+
+    /**
+     * Get paginated certificate requirements
+     * @return array<int, CertificateRequirement>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all certificate requirements
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     //    /**

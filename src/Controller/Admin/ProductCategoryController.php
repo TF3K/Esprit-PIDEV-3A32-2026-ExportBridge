@@ -32,9 +32,9 @@ class ProductCategoryController extends AbstractController
         $old      = [];
 
         if ($request->isMethod('POST')) {
-            $name        = trim($request->request->get('name') ?? '');
-            $slug        = trim($request->request->get('slug') ?? '');
-            $description = trim($request->request->get('description') ?? '');
+            $name        = trim((string) $request->request->get('name', ''));
+            $slug        = trim((string) $request->request->get('slug', ''));
+            $description = trim((string) $request->request->get('description', ''));
 
             $old = compact('name', 'slug', 'description');
 
@@ -84,12 +84,12 @@ class ProductCategoryController extends AbstractController
     {
         $errors = [];
         $old    = [];
-        
+
 
         if ($request->isMethod('POST')) {
-            $name        = trim($request->request->get('name') ?? '');
-            $slug        = trim($request->request->get('slug') ?? '');
-            $description = trim($request->request->get('description') ?? '');
+            $name        = trim((string) $request->request->get('name', ''));
+            $slug        = trim((string) $request->request->get('slug', ''));
+            $description = trim((string) $request->request->get('description', ''));
 
             $old = compact('name', 'slug', 'description');
 

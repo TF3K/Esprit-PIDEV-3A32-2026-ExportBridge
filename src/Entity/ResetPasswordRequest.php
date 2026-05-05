@@ -15,9 +15,11 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 20)]
+    /** @phpstan-ignore property.onlyWritten */
     private string $selector;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
@@ -75,7 +77,7 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
         return $this->id;
     }
 
-    public function getUser(): Manager
+    public function getUser(): object
     {
         return $this->user;
     }

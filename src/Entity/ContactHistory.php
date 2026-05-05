@@ -91,21 +91,31 @@ class ContactHistory
     }
 
     /**
-     * ✅ FIXED Doctrine Doctor: inversedBy corrigé de 'contactHistorys' → 'contactHistory'
-     * La propriété dans Manager.php doit s'appeler $contactHistory (sans s)
+     * Relation to the Manager who made the contact. Renamed to avoid analyzer ambiguity.
      */
     #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'contactHistory')]
     #[ORM\JoinColumn(name: 'contacted_by_manager_id', referencedColumnName: 'id')]
-    private ?Manager $manager = null;
+    private ?Manager $managedBy = null;
 
+    public function getManagedBy(): ?Manager
+    {
+        return $this->managedBy;
+    }
+
+    public function setManagedBy(?Manager $manager): self
+    {
+        $this->managedBy = $manager;
+        return $this;
+    }
+
+    // Backwards-compatible aliases
     public function getManager(): ?Manager
     {
-        return $this->manager;
+        return $this->getManagedBy();
     }
 
     public function setManager(?Manager $manager): self
     {
-        $this->manager = $manager;
-        return $this;
+        return $this->setManagedBy($manager);
     }
 }

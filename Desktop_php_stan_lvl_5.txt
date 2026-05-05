@@ -1,0 +1,225 @@
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/ProductController.php                                 
+ ------ ----------------------------------------------------------------------- 
+  100    Parameter #1 $quantity of method App\Entity\Product::setQuantity()     
+         expects string|null, float|null given.                                 
+         🪪  argument.type                                                      
+  102    Parameter #1 $unit_price of method App\Entity\Product::setUnitPrice()  
+         expects string|null, float|null given.                                 
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Controller/Admin/ProfileController.php                               
+ ------ --------------------------------------------------------------------- 
+  49     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().      
+         🪪  method.notFound                                                  
+  51     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::getId().         
+         🪪  method.notFound                                                  
+  57     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setFirstName().  
+         🪪  method.notFound                                                  
+  58     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setLastName().   
+         🪪  method.notFound                                                  
+  59     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setEmail().      
+         🪪  method.notFound                                                  
+ ------ --------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/AuthController.php                                 
+ ------ -------------------------------------------------------------- 
+  24     Call to an undefined method                                   
+         Symfony\Component\Security\Core\User\UserInterface::getId().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/CompanyController.php                              
+ ------ -------------------------------------------------------------- 
+  96     Call to an undefined method App\Entity\Company::setMarket().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/MarketController.php                               
+ ------ -------------------------------------------------------------- 
+  125    Call to an undefined method App\Entity\Company::setMarket().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Controller/User/UserCertificateController.php                      
+ ------ ------------------------------------------------------------------- 
+  16     Call to an undefined method                                        
+         Symfony\Component\Security\Core\User\UserInterface::getCompany().  
+         🪪  method.notFound                                                
+ ------ ------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Controller/User/UserPartnershipController.php                      
+ ------ ------------------------------------------------------------------- 
+  16     Call to an undefined method                                        
+         Symfony\Component\Security\Core\User\UserInterface::getCompany().  
+         🪪  method.notFound                                                
+ ------ ------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------- 
+  Line   Controller/User/UserProductController.php                          
+ ------ ------------------------------------------------------------------- 
+  16     Call to an undefined method                                        
+         Symfony\Component\Security\Core\User\UserInterface::getCompany().  
+         🪪  method.notFound                                                
+ ------ ------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Controller/User/UserProfileController.php                            
+ ------ --------------------------------------------------------------------- 
+  22     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().      
+         🪪  method.notFound                                                  
+  39     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().      
+         🪪  method.notFound                                                  
+  42     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::getId().         
+         🪪  method.notFound                                                  
+  50     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setFirstName().  
+         🪪  method.notFound                                                  
+  51     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setLastName().   
+         🪪  method.notFound                                                  
+  52     Call to an undefined method                                          
+         Symfony\Component\Security\Core\User\UserInterface::setEmail().      
+         🪪  method.notFound                                                  
+ ------ --------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   DataFixtures/AppFixtures.php                                          
+ ------ ---------------------------------------------------------------------- 
+  10     Class App\DataFixtures\AppFixtures extends unknown class              
+         Doctrine\Bundle\FixturesBundle\Fixture.                               
+         🪪  class.notFound (non-ignorable)                                    
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  188    Call to an undefined method App\Entity\Company::setMarket().          
+         🪪  method.notFound                                                   
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Certificate.php                                                
+ ------ ---------------------------------------------------------------------- 
+  199    Instanceof between Doctrine\Common\Collections\Collection and         
+         Doctrine\Common\Collections\Collection will always evaluate to true.  
+         🪪  instanceof.alwaysTrue                                             
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Company.php                                                     
+ ------ ----------------------------------------------------------------------- 
+  294    Property App\Entity\Company::$partnership                              
+         (App\Entity\Partnership|null) is never assigned                        
+         App\Entity\Partnership so it can be removed from the property type.    
+         🪪  property.unusedType                                                
+  294    Property App\Entity\Company::$partnership is never read, only          
+         written.                                                               
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Manager.php                                                    
+ ------ ---------------------------------------------------------------------- 
+  20     Property App\Entity\Manager::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                             
+         🪪  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Partnership.php                                                
+ ------ ---------------------------------------------------------------------- 
+  158    Instanceof between Doctrine\Common\Collections\Collection and         
+         Doctrine\Common\Collections\Collection will always evaluate to true.  
+         🪪  instanceof.alwaysTrue                                             
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/ProductCategory.php                                            
+ ------ ---------------------------------------------------------------------- 
+  86     Instanceof between Doctrine\Common\Collections\Collection and         
+         Doctrine\Common\Collections\Collection will always evaluate to true.  
+         🪪  instanceof.alwaysTrue                                             
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/ResetPasswordRequest.php                                        
+ ------ ----------------------------------------------------------------------- 
+  18     Property App\Entity\ResetPasswordRequest::$id (int|null) is never      
+         assigned int so it can be removed from the property type.              
+         🪪  property.unusedType                                                
+  21     Property App\Entity\ResetPasswordRequest::$selector is never read,     
+         only written.                                                          
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Security/GoogleOAuthUserProvider.php                                   
+ ------ ----------------------------------------------------------------------- 
+  62     Cannot instantiate interface                                           
+         HWI\Bundle\OAuthBundle\Security\Core\Exception\OAuthAwareExceptionInt  
+         erface.                                                                
+         🪪  new.interface                                                      
+  62     Invalid type                                                           
+         HWI\Bundle\OAuthBundle\Security\Core\Exception\OAuthAwareExceptionInt  
+         erface to throw.                                                       
+         🪪  throw.notThrowable                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/MarketManager.php                                              
+ ------ ----------------------------------------------------------------------- 
+  30     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.dis  
+         t.neon.                                                                
+         💡  If App\Entity\Market::getName() is impure, add @phpstan-impure PHP  
+         Doc tag above its declaration. Learn more: https://phpstan.org/blog/r  
+         emembering-and-forgetting-returned-values                              
+         💡  If App\Entity\Market::getCountryCode() is impure, add @phpstan-imp  
+         ure PHPDoc tag above its declaration. Learn more: https://phpstan.org  
+         /blog/remembering-and-forgetting-returned-values                       
+  30     Result of && is always false.                                          
+         🪪  booleanAnd.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.dis  
+         t.neon.                                                                
+         💡  If App\Entity\Market::getName() is impure, add @phpstan-impure PHP  
+         Doc tag above its declaration. Learn more: https://phpstan.org/blog/r  
+         emembering-and-forgetting-returned-values                              
+         💡  If App\Entity\Market::getCountryCode() is impure, add @phpstan-imp  
+         ure PHPDoc tag above its declaration. Learn more: https://phpstan.org  
+         /blog/remembering-and-forgetting-returned-values                       
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/CurrentUserAvatarExtension.php                                    
+ ------ ----------------------------------------------------------------------- 
+  19     Property App\Twig\CurrentUserAvatarExtension::$requestStack is never   
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 34 errors                                                        
+

@@ -109,9 +109,9 @@ class Product
         return $this->quantity;
     }
 
-    public function setQuantity(?string $quantity): self
+    public function setQuantity(string|int|float|null $quantity): self
     {
-        $this->quantity = $quantity;
+        $this->quantity = $quantity !== null ? (string) $quantity : null;
         return $this;
     }
 
@@ -137,9 +137,9 @@ class Product
         return $this->unit_price;
     }
 
-    public function setUnitPrice(?string $unit_price): self
+    public function setUnitPrice(string|int|float|null $unit_price): self
     {
-        $this->unit_price = $unit_price;
+        $this->unit_price = $unit_price !== null ? (string) $unit_price : null;
         return $this;
     }
 
@@ -168,6 +168,20 @@ class Product
     public function setOriginCriteria(?string $origin_criteria): self
     {
         $this->origin_criteria = $origin_criteria;
+        return $this;
+    }
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $imagePath = null;
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(?string $imagePath): self
+    {
+        $this->imagePath = $imagePath;
         return $this;
     }
 

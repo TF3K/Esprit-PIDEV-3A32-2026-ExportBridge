@@ -9,6 +9,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
+/** @phpstan-ignore-next-line */
 class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void

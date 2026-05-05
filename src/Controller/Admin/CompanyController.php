@@ -28,14 +28,14 @@ class CompanyController extends AbstractController
         $company = new Company();
 
         if ($request->isMethod('POST')) {
-            $company->setCompanyName($request->request->get('company_name'));
-            $company->setDomain($request->request->get('domain'));
-            $company->setTaxNumber($request->request->get('tax_number'));
-            $company->setRegistrationNumber($request->request->get('registration_number'));
-            $company->setCountry($request->request->get('country'));
-            $company->setAddress($request->request->get('address'));
-            $company->setContactEmail($request->request->get('contact_email'));
-            $company->setContactPhone($request->request->get('contact_phone'));
+            $company->setCompanyName((string) $request->request->get('company_name', ''));
+            $company->setDomain($request->request->get('domain') !== null ? (string) $request->request->get('domain') : null);
+            $company->setTaxNumber($request->request->get('tax_number') !== null ? (string) $request->request->get('tax_number') : null);
+            $company->setRegistrationNumber($request->request->get('registration_number') !== null ? (string) $request->request->get('registration_number') : null);
+            $company->setCountry($request->request->get('country') !== null ? (string) $request->request->get('country') : null);
+            $company->setAddress($request->request->get('address') !== null ? (string) $request->request->get('address') : null);
+            $company->setContactEmail($request->request->get('contact_email') !== null ? (string) $request->request->get('contact_email') : null);
+            $company->setContactPhone($request->request->get('contact_phone') !== null ? (string) $request->request->get('contact_phone') : null);
             $company->setRating($request->request->get('rating') ? (int) $request->request->get('rating') : null);
             $company->setWarnings(0);
             $company->setIsBanned(false);
@@ -58,14 +58,14 @@ class CompanyController extends AbstractController
     public function edit(Company $company, Request $request, CompanyRepository $companyRepository): Response
     {
         if ($request->isMethod('POST')) {
-            $company->setCompanyName($request->request->get('company_name'));
-            $company->setDomain($request->request->get('domain'));
-            $company->setTaxNumber($request->request->get('tax_number'));
-            $company->setRegistrationNumber($request->request->get('registration_number'));
-            $company->setCountry($request->request->get('country'));
-            $company->setAddress($request->request->get('address'));
-            $company->setContactEmail($request->request->get('contact_email'));
-            $company->setContactPhone($request->request->get('contact_phone'));
+            $company->setCompanyName((string) $request->request->get('company_name', ''));
+            $company->setDomain($request->request->get('domain') !== null ? (string) $request->request->get('domain') : null);
+            $company->setTaxNumber($request->request->get('tax_number') !== null ? (string) $request->request->get('tax_number') : null);
+            $company->setRegistrationNumber($request->request->get('registration_number') !== null ? (string) $request->request->get('registration_number') : null);
+            $company->setCountry($request->request->get('country') !== null ? (string) $request->request->get('country') : null);
+            $company->setAddress($request->request->get('address') !== null ? (string) $request->request->get('address') : null);
+            $company->setContactEmail($request->request->get('contact_email') !== null ? (string) $request->request->get('contact_email') : null);
+            $company->setContactPhone($request->request->get('contact_phone') !== null ? (string) $request->request->get('contact_phone') : null);
             $company->setRating($request->request->get('rating') ? (int) $request->request->get('rating') : null);
             $company->setIsBanned((bool) $request->request->get('is_banned'));
             $company->setLastUpdated(new \DateTime());

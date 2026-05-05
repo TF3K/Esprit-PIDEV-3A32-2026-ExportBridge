@@ -6,6 +6,7 @@ use App\Entity\Company;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
+/** @phpstan-ignore-next-line */
 class CompanyFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
@@ -24,7 +25,7 @@ class CompanyFixtures extends Fixture
         $company1->setIsBanned(false);
         $company1->setCreatedAt(new \DateTime('2023-01-01'));
         $company1->setLastUpdated(new \DateTime('2023-01-01'));
-        
+
         $manager->persist($company1);
         $this->addReference('company-tech', $company1);
 
@@ -42,7 +43,7 @@ class CompanyFixtures extends Fixture
         $company2->setIsBanned(false);
         $company2->setCreatedAt(new \DateTime('2023-02-01'));
         $company2->setLastUpdated(new \DateTime('2023-02-01'));
-        
+
         $manager->persist($company2);
         $this->addReference('company-export', $company2);
 
@@ -60,7 +61,7 @@ class CompanyFixtures extends Fixture
         $company3->setIsBanned(false);
         $company3->setCreatedAt(new \DateTime('2023-03-01'));
         $company3->setLastUpdated(new \DateTime('2023-03-01'));
-        
+
         $manager->persist($company3);
         $this->addReference('company-manufacturing', $company3);
 

@@ -16,6 +16,31 @@ class ProductCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductCategory::class);
     }
 
+    /**
+     * Get paginated product categories
+     * @return array<int, ProductCategory>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('p')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all product categories
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return ProductCategory[] Returns an array of ProductCategory objects
     //     */

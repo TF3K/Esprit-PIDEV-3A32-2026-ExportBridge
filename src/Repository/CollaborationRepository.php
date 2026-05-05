@@ -16,6 +16,31 @@ class CollaborationRepository extends ServiceEntityRepository
         parent::__construct($registry, Collaboration::class);
     }
 
+    /**
+     * Get paginated collaborations
+     * @return array<int, Collaboration>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all collaborations
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Collaboration[] Returns an array of Collaboration objects
     //     */

@@ -12,12 +12,15 @@ trait FormValidationTrait
     /**
      * Validation errors array
      */
+    /**
+     * @var list<string>
+     */
     protected array $validationErrors = [];
 
     /**
      * Validate a name field (letters, spaces, hyphens, apostrophes only)
      */
-    protected function validateName(?string $value, string $fieldName, bool $required = false): bool
+    protected function validateName(mixed $value, string $fieldName, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -27,8 +30,8 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
-        
+        $value = trim((string) $value);
+
         if (!preg_match('/^[a-zA-Z\s\'-]+$/', $value)) {
             $this->validationErrors[] = ucfirst($fieldName) . ' must contain only letters, spaces, hyphens, and apostrophes.';
             return false;
@@ -45,7 +48,7 @@ trait FormValidationTrait
     /**
      * Validate an email address
      */
-    protected function validateEmail(?string $value, string $fieldName = 'Email', bool $required = false): bool
+    protected function validateEmail(mixed $value, string $fieldName = 'Email', bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -55,7 +58,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
             $this->validationErrors[] = 'Please enter a valid ' . strtolower($fieldName) . ' address.';
@@ -68,7 +71,7 @@ trait FormValidationTrait
     /**
      * Validate a password
      */
-    protected function validatePassword(?string $value, bool $required = false, int $minLength = 8): bool
+    protected function validatePassword(mixed $value, bool $required = false, int $minLength = 8): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -89,7 +92,7 @@ trait FormValidationTrait
     /**
      * Validate password confirmation matches
      */
-    protected function validatePasswordMatch(?string $password, ?string $confirmPassword): bool
+    protected function validatePasswordMatch(mixed $password, mixed $confirmPassword): bool
     {
         if (empty($password) && empty($confirmPassword)) {
             return true;
@@ -106,7 +109,7 @@ trait FormValidationTrait
     /**
      * Validate a country code (2-5 uppercase letters)
      */
-    protected function validateCountryCode(?string $value, bool $required = false): bool
+    protected function validateCountryCode(mixed $value, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -116,7 +119,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = strtoupper(trim($value));
+        $value = strtoupper(trim((string) $value));
 
         if (!preg_match('/^[A-Z]{2,5}$/', $value)) {
             $this->validationErrors[] = 'Country code must be 2-5 uppercase letters (e.g., FR, DE, IT).';
@@ -129,7 +132,7 @@ trait FormValidationTrait
     /**
      * Validate an HS Code (Harmonized System code)
      */
-    protected function validateHsCode(?string $value, bool $required = false): bool
+    protected function validateHsCode(mixed $value, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -139,7 +142,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (!preg_match('/^[\d\.]{4,10}$/', $value)) {
             $this->validationErrors[] = 'HS Code must be 4-10 digits (e.g., 6109.10).';
@@ -152,7 +155,7 @@ trait FormValidationTrait
     /**
      * Validate a phone number
      */
-    protected function validatePhone(?string $value, bool $required = false): bool
+    protected function validatePhone(mixed $value, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -162,7 +165,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (!preg_match('/^[\d\s\+\-\(\)]+$/', $value)) {
             $this->validationErrors[] = 'Please enter a valid phone number.';
@@ -180,7 +183,7 @@ trait FormValidationTrait
     /**
      * Validate a URL
      */
-    protected function validateUrl(?string $value, bool $required = false): bool
+    protected function validateUrl(mixed $value, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -190,7 +193,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (!preg_match('/^https?:\/\//', $value)) {
             $this->validationErrors[] = 'URL must start with http:// or https://.';
@@ -208,7 +211,7 @@ trait FormValidationTrait
     /**
      * Validate alphanumeric input
      */
-    protected function validateAlphanumeric(?string $value, string $fieldName, bool $required = false): bool
+    protected function validateAlphanumeric(mixed $value, string $fieldName, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -218,7 +221,7 @@ trait FormValidationTrait
             return true;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (!preg_match('/^[a-zA-Z0-9\s]+$/', $value)) {
             $this->validationErrors[] = ucfirst($fieldName) . ' must contain only letters and numbers.';
@@ -231,7 +234,7 @@ trait FormValidationTrait
     /**
      * Validate a number
      */
-    protected function validateNumber($value, string $fieldName, bool $required = false, ?float $min = null, ?float $max = null): bool
+    protected function validateNumber(mixed $value, string $fieldName, bool $required = false, ?float $min = null, ?float $max = null): bool
     {
         if ($value === null || $value === '') {
             if ($required) {
@@ -264,14 +267,14 @@ trait FormValidationTrait
     /**
      * Validate a required field (generic string)
      */
-    protected function validateRequired(?string $value, string $fieldName, int $minLength = 1, ?int $maxLength = null): bool
+    protected function validateRequired(mixed $value, string $fieldName, int $minLength = 1, ?int $maxLength = null): bool
     {
         if (empty($value)) {
             $this->validationErrors[] = ucfirst($fieldName) . ' is required.';
             return false;
         }
 
-        $value = trim($value);
+        $value = trim((string) $value);
 
         if (strlen($value) < $minLength) {
             $this->validationErrors[] = ucfirst($fieldName) . ' must be at least ' . $minLength . ' characters long.';
@@ -289,7 +292,7 @@ trait FormValidationTrait
     /**
      * Validate a date
      */
-    protected function validateDate(?string $value, string $fieldName, bool $required = false): bool
+    protected function validateDate(mixed $value, string $fieldName, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -299,9 +302,10 @@ trait FormValidationTrait
             return true;
         }
 
-        $date = \DateTime::createFromFormat('Y-m-d', $value);
+        $dateValue = (string) $value;
+        $date = \DateTime::createFromFormat('Y-m-d', $dateValue);
 
-        if (!$date || $date->format('Y-m-d') !== $value) {
+        if (!$date || $date->format('Y-m-d') !== $dateValue) {
             $this->validationErrors[] = ucfirst($fieldName) . ' must be a valid date (YYYY-MM-DD).';
             return false;
         }
@@ -312,14 +316,14 @@ trait FormValidationTrait
     /**
      * Validate that end date is after start date
      */
-    protected function validateDateRange(?string $startDate, ?string $endDate): bool
+    protected function validateDateRange(mixed $startDate, mixed $endDate): bool
     {
         if (empty($startDate) || empty($endDate)) {
             return true;
         }
 
-        $start = new \DateTime($startDate);
-        $end = new \DateTime($endDate);
+        $start = new \DateTime((string) $startDate);
+        $end = new \DateTime((string) $endDate);
 
         if ($end < $start) {
             $this->validationErrors[] = 'End date must be after start date.';
@@ -332,7 +336,10 @@ trait FormValidationTrait
     /**
      * Validate a selection (dropdown/radio)
      */
-    protected function validateSelection(?string $value, array $allowedOptions, string $fieldName, bool $required = false): bool
+    /**
+     * @param list<string> $allowedOptions
+     */
+    protected function validateSelection(mixed $value, array $allowedOptions, string $fieldName, bool $required = false): bool
     {
         if (empty($value)) {
             if ($required) {
@@ -342,7 +349,7 @@ trait FormValidationTrait
             return true;
         }
 
-        if (!in_array($value, $allowedOptions)) {
+        if (!in_array((string) $value, $allowedOptions, true)) {
             $this->validationErrors[] = 'Please select a valid ' . strtolower($fieldName) . '.';
             return false;
         }
@@ -352,6 +359,9 @@ trait FormValidationTrait
 
     /**
      * Get all validation errors
+     */
+    /**
+     * @return list<string>
      */
     protected function getValidationErrors(): array
     {

@@ -6,6 +6,7 @@ use App\Repository\ManagerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Setting;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -17,6 +18,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -33,6 +35,7 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: 'json')]
+    /** @var list<string> */
     private array $roles = [];
 
     #[ORM\Column(type: 'datetime')]
@@ -45,16 +48,25 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', nullable: true)]
     private ?Company $company = null;
 
+    /**
+     * @var Collection<int, \App\Entity\Company>
+     */
     #[ORM\OneToMany(targetEntity: Company::class, mappedBy: 'companyManager')]
     private Collection $companies;
 
-    #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'manager')]
+    /**
+     * @var Collection<int, \App\Entity\ContactHistory>
+     */
+    #[ORM\OneToMany(targetEntity: ContactHistory::class, mappedBy: 'managedBy')]
     private Collection $contactHistory;
 
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'manager')]
+    /**
+     * @var Collection<int, \App\Entity\Notification>
+     */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'managedBy')]
     private Collection $notifications;
 
-    #[ORM\OneToOne(targetEntity: Setting::class, mappedBy: 'manager')]
+    #[ORM\OneToOne(targetEntity: Setting::class, mappedBy: 'managedBy')]
     private ?Setting $setting = null;
 
     public function __construct()
@@ -136,6 +148,9 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param list<string> $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -195,6 +210,9 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
 
     /* ===================== COMPANIES ===================== */
 
+    /**
+     * @return Collection<int, Company>
+     */
     public function getCompanies(): Collection
     {
         return $this->companies;
@@ -217,6 +235,9 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
 
     /* ===================== CONTACT HISTORY ===================== */
 
+    /**
+     * @return Collection<int, ContactHistory>
+     */
     public function getContactHistory(): Collection
     {
         return $this->contactHistory;
@@ -239,6 +260,9 @@ class Manager implements UserInterface, PasswordAuthenticatedUserInterface
 
     /* ===================== NOTIFICATIONS ===================== */
 
+    /**
+     * @return Collection<int, Notification>
+     */
     public function getNotifications(): Collection
     {
         return $this->notifications;

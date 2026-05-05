@@ -16,6 +16,31 @@ class CertificateRepository extends ServiceEntityRepository
         parent::__construct($registry, Certificate::class);
     }
 
+    /**
+     * Get paginated certificates
+     * @return array<int, Certificate>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all certificates
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Certificate[] Returns an array of Certificate objects
     //     */

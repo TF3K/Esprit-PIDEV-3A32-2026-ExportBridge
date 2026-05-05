@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use App\Repository\CertificateRequirementRepository;
+use App\Entity\Market;
 
 #[ORM\Entity(repositoryClass: CertificateRequirementRepository::class)]
 #[ORM\Table(name: 'certificate_requirements')]
@@ -29,17 +30,31 @@ class CertificateRequirement
         return $this;
     }
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $market_id = null;
+    /**
+     * Relation to Market (replaces primitive market_id).
+     *
+     * @var Market|null
+     */
+    #[ORM\ManyToOne(targetEntity: Market::class)]
+    #[ORM\JoinColumn(name: 'market_id', referencedColumnName: 'id', nullable: false)]
+    private ?Market $market = null;
 
+    /**
+     * Helper returning the foreign key value (for BC).
+     */
     public function getMarketId(): ?int
     {
-        return $this->market_id;
+        return $this->market?->getId();
     }
 
-    public function setMarketId(int $market_id): self
+    public function getMarket(): ?Market
     {
-        $this->market_id = $market_id;
+        return $this->market;
+    }
+
+    public function setMarket(?Market $market): self
+    {
+        $this->market = $market;
         return $this;
     }
 

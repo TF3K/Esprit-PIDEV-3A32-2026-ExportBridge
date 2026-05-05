@@ -1,0 +1,817 @@
+ ------ ---------------------------------------------------------------------- 
+  Line   Controller/Admin/CertificateController.php                            
+ ------ ---------------------------------------------------------------------- 
+  102    Parameter #1 $signatory_name of method                                
+         App\Entity\Signature::setSignatoryName() expects string,              
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  103    Parameter #1 $signatory_title of method                               
+         App\Entity\Signature::setSignatoryTitle() expects string|null,        
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  104    Parameter #1 $type of method App\Entity\Signature::setType() expects  
+         string, bool|float|int|string|null given.                             
+         🪪  argument.type                                                     
+  105    Parameter #1 $digital_signature of method                             
+         App\Entity\Signature::setDigitalSignature() expects string|null,      
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  106    Parameter #1 $datetime of class DateTime constructor expects string,  
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  123    Cannot call method getId() on App\Entity\Certificate|null.            
+         🪪  method.nonObject                                                  
+  137    Parameter #1 $type of method App\Entity\Certificate::setType()        
+         expects string, bool|float|int|string|null given.                     
+         🪪  argument.type                                                     
+  138    Parameter #1 $certificate_number of method                            
+         App\Entity\Certificate::setCertificateNumber() expects string,        
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  139    Parameter #1 $status of method App\Entity\Certificate::setStatus()    
+         expects string, bool|float|int|string|null given.                     
+         🪪  argument.type                                                     
+  140    Parameter #1 $country_of_origin of method                             
+         App\Entity\Certificate::setCountryOfOrigin() expects string|null,     
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  141    Parameter #1 $issuing_authority of method                             
+         App\Entity\Certificate::setIssuingAuthority() expects string|null,    
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  142    Parameter #1 $document_file of method                                 
+         App\Entity\Certificate::setDocumentFile() expects string|null,        
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  145    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+  148    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/CompanyController.php                                 
+ ------ ----------------------------------------------------------------------- 
+  31     Parameter #1 $company_name of method                                   
+         App\Entity\Company::setCompanyName() expects string,                   
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  32     Parameter #1 $domain of method App\Entity\Company::setDomain()         
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  33     Parameter #1 $tax_number of method App\Entity\Company::setTaxNumber()  
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  34     Parameter #1 $registration_number of method                            
+         App\Entity\Company::setRegistrationNumber() expects string|null,       
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  35     Parameter #1 $country of method App\Entity\Company::setCountry()       
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  36     Parameter #1 $address of method App\Entity\Company::setAddress()       
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  37     Parameter #1 $contact_email of method                                  
+         App\Entity\Company::setContactEmail() expects string|null,             
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  38     Parameter #1 $contact_phone of method                                  
+         App\Entity\Company::setContactPhone() expects string|null,             
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  61     Parameter #1 $company_name of method                                   
+         App\Entity\Company::setCompanyName() expects string,                   
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  62     Parameter #1 $domain of method App\Entity\Company::setDomain()         
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  63     Parameter #1 $tax_number of method App\Entity\Company::setTaxNumber()  
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  64     Parameter #1 $registration_number of method                            
+         App\Entity\Company::setRegistrationNumber() expects string|null,       
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  65     Parameter #1 $country of method App\Entity\Company::setCountry()       
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  66     Parameter #1 $address of method App\Entity\Company::setAddress()       
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  67     Parameter #1 $contact_email of method                                  
+         App\Entity\Company::setContactEmail() expects string|null,             
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  68     Parameter #1 $contact_phone of method                                  
+         App\Entity\Company::setContactPhone() expects string|null,             
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/ManagerController.php                                 
+ ------ ----------------------------------------------------------------------- 
+  46     Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  47     Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  48     Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  90     Parameter #1 $value of method                                          
+         App\Controller\Admin\ManagerController::validatePassword() expects     
+         string|null, bool|float|int|string given.                              
+         🪪  argument.type                                                      
+  101    Parameter #2 $plainPassword of method                                  
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::  
+         hashPassword() expects string, bool|float|int|string given.            
+         🪪  argument.type                                                      
+  136    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  137    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  138    Parameter #1 $string of function trim expects string,                  
+         bool|float|int|string given.                                           
+         🪪  argument.type                                                      
+  181    Parameter #1 $value of method                                          
+         App\Controller\Admin\ManagerController::validatePassword() expects     
+         string|null, bool|float|int|string given.                              
+         🪪  argument.type                                                      
+  196    Parameter #2 $plainPassword of method                                  
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::  
+         hashPassword() expects string, bool|float|int|string given.            
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------- 
+  Line   Controller/Admin/MarketController.php                  
+ ------ ------------------------------------------------------- 
+  43     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  44     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  45     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  46     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  47     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  104    Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  105    Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  106    Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  107    Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  108    Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+ ------ ------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Controller/Admin/PartnershipController.php                            
+ ------ ---------------------------------------------------------------------- 
+  103    Parameter #1 $title of method App\Entity\Collaboration::setTitle()    
+         expects string, bool|float|int|string|null given.                     
+         🪪  argument.type                                                     
+  104    Parameter #1 $description of method                                   
+         App\Entity\Collaboration::setDescription() expects string|null,       
+         bool|float|int|string|null given.                                     
+         🪪  argument.type                                                     
+  105    Parameter #1 $status of method App\Entity\Collaboration::setStatus()  
+         expects string, bool|float|int|string|null given.                     
+         🪪  argument.type                                                     
+  110    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+  113    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+  130    Cannot call method getId() on App\Entity\Partnership|null.            
+         🪪  method.nonObject                                                  
+  144    Parameter #1 $status of method App\Entity\Partnership::setStatus()    
+         expects string, bool|float|int|string|null given.                     
+         🪪  argument.type                                                     
+  145    Parameter #1 $type of method App\Entity\Partnership::setType()        
+         expects string|null, bool|float|int|string|null given.                
+         🪪  argument.type                                                     
+  146    Parameter #1 $notes of method App\Entity\Partnership::setNotes()      
+         expects string|null, bool|float|int|string|null given.                
+         🪪  argument.type                                                     
+  149    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+  152    Parameter #1 $datetime of class DateTime constructor expects string,  
+         float|int<min, -1>|int<1, max>|string|true given.                     
+         🪪  argument.type                                                     
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------- 
+  Line   Controller/Admin/ProductCategoryController.php         
+ ------ ------------------------------------------------------- 
+  35     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  36     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  37     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  90     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  91     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+  92     Parameter #1 $string of function trim expects string,  
+         bool|float|int|string given.                           
+         🪪  argument.type                                      
+ ------ ------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/Admin/ProductController.php                                 
+ ------ ----------------------------------------------------------------------- 
+  97     Parameter #1 $name of method App\Entity\Product::setName() expects     
+         string, bool|float|int|string|null given.                              
+         🪪  argument.type                                                      
+  98     Parameter #1 $description of method                                    
+         App\Entity\Product::setDescription() expects string|null,              
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  99     Parameter #1 $hs_code of method App\Entity\Product::setHsCode()        
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  100    Parameter #1 $quantity of method App\Entity\Product::setQuantity()     
+         expects string|null, float|null given.                                 
+         🪪  argument.type                                                      
+  101    Parameter #1 $unit of method App\Entity\Product::setUnit() expects     
+         string|null, bool|float|int|string|null given.                         
+         🪪  argument.type                                                      
+  102    Parameter #1 $unit_price of method App\Entity\Product::setUnitPrice()  
+         expects string|null, float|null given.                                 
+         🪪  argument.type                                                      
+  103    Parameter #1 $currency of method App\Entity\Product::setCurrency()     
+         expects string|null, bool|float|int|string|null given.                 
+         🪪  argument.type                                                      
+  104    Parameter #1 $origin_criteria of method                                
+         App\Entity\Product::setOriginCriteria() expects string|null,           
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------- 
+  Line   Controller/Admin/ProfileController.php                    
+ ------ ---------------------------------------------------------- 
+  25     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  26     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  27     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  49     Cannot call method getEmail() on                          
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  51     Cannot call method getId() on                             
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  57     Cannot call method setFirstName() on                      
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  58     Cannot call method setLastName() on                       
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  59     Cannot call method setEmail() on                          
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+ ------ ---------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller/AuthController.php                                          
+ ------ ----------------------------------------------------------------------- 
+  24     Call to an undefined method                                            
+         Symfony\Component\Security\Core\User\UserInterface::getId().           
+         🪪  method.notFound                                                    
+  68     Parameter #1 $string of function strlen expects string,                
+         bool|float|int|string|null given.                                      
+         🪪  argument.type                                                      
+  72     Parameter #1 $first_name of method App\Entity\Manager::setFirstName()  
+         expects string, bool|float|int|string|null given.                      
+         🪪  argument.type                                                      
+  73     Parameter #1 $last_name of method App\Entity\Manager::setLastName()    
+         expects string, bool|float|int|string|null given.                      
+         🪪  argument.type                                                      
+  74     Parameter #1 $email of method App\Entity\Manager::setEmail() expects   
+         string, bool|float|int|string|null given.                              
+         🪪  argument.type                                                      
+  76     Parameter #2 $plainPassword of method                                  
+         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface::  
+         hashPassword() expects string, bool|float|int|string|null given.       
+         🪪  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/CompanyController.php                              
+ ------ -------------------------------------------------------------- 
+  96     Call to an undefined method App\Entity\Company::setMarket().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------- 
+  Line   Controller/MarketController.php                               
+ ------ -------------------------------------------------------------- 
+  125    Call to an undefined method App\Entity\Company::setMarket().  
+         🪪  method.notFound                                           
+ ------ -------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------- 
+  Line   Controller/User/UserCertificateController.php             
+ ------ ---------------------------------------------------------- 
+  16     Cannot call method getCompany() on                        
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+ ------ ---------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------- 
+  Line   Controller/User/UserPartnershipController.php             
+ ------ ---------------------------------------------------------- 
+  16     Cannot call method getCompany() on                        
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+ ------ ---------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------- 
+  Line   Controller/User/UserProductController.php                 
+ ------ ---------------------------------------------------------- 
+  16     Cannot call method getCompany() on                        
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+ ------ ---------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------- 
+  Line   Controller/User/UserProfileController.php                 
+ ------ ---------------------------------------------------------- 
+  22     Cannot call method getEmail() on                          
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  29     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  30     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  31     Parameter #1 $string of function trim expects string,     
+         bool|float|int|string given.                              
+         🪪  argument.type                                         
+  39     Cannot call method getEmail() on                          
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  42     Cannot call method getId() on                             
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  50     Cannot call method setFirstName() on                      
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  51     Cannot call method setLastName() on                       
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+  52     Cannot call method setEmail() on                          
+         Symfony\Component\Security\Core\User\UserInterface|null.  
+         🪪  method.nonObject                                      
+ ------ ---------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   DataFixtures/AppFixtures.php                                          
+ ------ ---------------------------------------------------------------------- 
+  10     Class App\DataFixtures\AppFixtures extends unknown class              
+         Doctrine\Bundle\FixturesBundle\Fixture.                               
+         🪪  class.notFound (non-ignorable)                                    
+         💡  Learn more at https://phpstan.org/user-guide/discovering-symbols  
+  188    Call to an undefined method App\Entity\Company::setMarket().          
+         🪪  method.notFound                                                   
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity/Certificate.php                                                
+ ------ ---------------------------------------------------------------------- 
+  187    Property App\Entity\Certificate::$signatures with generic interface   
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         🪪  missingType.generics                                              
+  199    Instanceof between Doctrine\Common\Collections\Collection and         
+         Doctrine\Common\Collections\Collection will always evaluate to true.  
+         🪪  instanceof.alwaysTrue                                             
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Company.php                                                     
+ ------ ----------------------------------------------------------------------- 
+  294    Property App\Entity\Company::$partnership                              
+         (App\Entity\Partnership|null) is never assigned                        
+         App\Entity\Partnership so it can be removed from the property type.    
+         🪪  property.unusedType                                                
+  294    Property App\Entity\Company::$partnership is never read, only          
+         written.                                                               
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Manager.php                                                     
+ ------ ----------------------------------------------------------------------- 
+  20     Property App\Entity\Manager::$id (int|null) is never assigned int so   
+         it can be removed from the property type.                              
+         🪪  property.unusedType                                                
+  36     Property App\Entity\Manager::$roles type has no value type specified   
+         in iterable type array.                                                
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  49     Property App\Entity\Manager::$companies with generic interface         
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  52     Property App\Entity\Manager::$contactHistory with generic interface    
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  55     Property App\Entity\Manager::$notifications with generic interface     
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  139    Method App\Entity\Manager::setRoles() has parameter $roles with no     
+         value type specified in iterable type array.                           
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  198    Method App\Entity\Manager::getCompanies() return type with generic     
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         🪪  missingType.generics                                               
+  220    Method App\Entity\Manager::getContactHistory() return type with        
+         generic interface Doctrine\Common\Collections\Collection does not      
+         specify its types: TKey, T                                             
+         🪪  missingType.generics                                               
+  242    Method App\Entity\Manager::getNotifications() return type with         
+         generic interface Doctrine\Common\Collections\Collection does not      
+         specify its types: TKey, T                                             
+         🪪  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/Partnership.php                                                 
+ ------ ----------------------------------------------------------------------- 
+  146    Property App\Entity\Partnership::$collaborations with generic          
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         🪪  missingType.generics                                               
+  158    Instanceof between Doctrine\Common\Collections\Collection and          
+         Doctrine\Common\Collections\Collection will always evaluate to true.   
+         🪪  instanceof.alwaysTrue                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/ProductCategory.php                                             
+ ------ ----------------------------------------------------------------------- 
+  74     Property App\Entity\ProductCategory::$products with generic interface  
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         🪪  missingType.generics                                               
+  86     Instanceof between Doctrine\Common\Collections\Collection and          
+         Doctrine\Common\Collections\Collection will always evaluate to true.   
+         🪪  instanceof.alwaysTrue                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity/ResetPasswordRequest.php                                        
+ ------ ----------------------------------------------------------------------- 
+  18     Property App\Entity\ResetPasswordRequest::$id (int|null) is never      
+         assigned int so it can be removed from the property type.              
+         🪪  property.unusedType                                                
+  21     Property App\Entity\ResetPasswordRequest::$selector is never read,     
+         only written.                                                          
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  80     Method App\Entity\ResetPasswordRequest::getUser() should return        
+         App\Entity\Manager but returns App\Entity\Manager|null.                
+         🪪  return.type                                                        
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/ManagerRepository.php                                       
+ ------ ----------------------------------------------------------------------- 
+  54     Method App\Repository\ManagerRepository::getCountByDay() return type   
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/PartnershipRepository.php                                   
+ ------ ----------------------------------------------------------------------- 
+  43     Method App\Repository\PartnershipRepository::getCountByDay() return    
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository/ProductRepository.php                                       
+ ------ ----------------------------------------------------------------------- 
+  43     Method App\Repository\ProductRepository::getCountByDay() return type   
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Security/GoogleOAuthUserProvider.php                                   
+ ------ ----------------------------------------------------------------------- 
+  13     Class App\Security\GoogleOAuthUserProvider implements generic          
+         interface Symfony\Component\Security\Core\User\UserProviderInterface   
+         but does not specify its types: TUser                                  
+         🪪  missingType.generics                                               
+  28     Parameter #1 $email of method App\Service\OAuthStorageService::save()  
+         expects string, string|null given.                                     
+         🪪  argument.type                                                      
+  42     Parameter #1 $email of method App\Entity\Manager::setEmail() expects   
+         string, string|null given.                                             
+         🪪  argument.type                                                      
+  62     Cannot instantiate interface                                           
+         HWI\Bundle\OAuthBundle\Security\Core\Exception\OAuthAwareExceptionInt  
+         erface.                                                                
+         🪪  new.interface                                                      
+  62     Invalid type                                                           
+         HWI\Bundle\OAuthBundle\Security\Core\Exception\OAuthAwareExceptionInt  
+         erface to throw.                                                       
+         🪪  throw.notThrowable                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/MarketManager.php                                              
+ ------ ----------------------------------------------------------------------- 
+  30     Negated boolean expression is always false.                            
+         🪪  booleanNot.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.dis  
+         t.neon.                                                                
+         💡  If App\Entity\Market::getName() is impure, add @phpstan-impure PHP  
+         Doc tag above its declaration. Learn more: https://phpstan.org/blog/r  
+         emembering-and-forgetting-returned-values                              
+         💡  If App\Entity\Market::getCountryCode() is impure, add @phpstan-imp  
+         ure PHPDoc tag above its declaration. Learn more: https://phpstan.org  
+         /blog/remembering-and-forgetting-returned-values                       
+  30     Result of && is always false.                                          
+         🪪  booleanAnd.alwaysFalse                                             
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.dis  
+         t.neon.                                                                
+         💡  If App\Entity\Market::getName() is impure, add @phpstan-impure PHP  
+         Doc tag above its declaration. Learn more: https://phpstan.org/blog/r  
+         emembering-and-forgetting-returned-values                              
+         💡  If App\Entity\Market::getCountryCode() is impure, add @phpstan-imp  
+         ure PHPDoc tag above its declaration. Learn more: https://phpstan.org  
+         /blog/remembering-and-forgetting-returned-values                       
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service/OAuthStorageService.php                                        
+ ------ ----------------------------------------------------------------------- 
+  17     Method App\Service\OAuthStorageService::save() has parameter $data     
+         with no value type specified in iterable type array.                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  28     Method App\Service\OAuthStorageService::get() return type has no       
+         value type specified in iterable type array.                           
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Traits/FormValidationTrait.php (in context of class                    
+         App\Controller\Admin\ManagerController)                                
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Controller\Admin\ManagerController::$validationErrors     
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  172    Parameter #1 $string of function strlen expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  234    Method App\Controller\Admin\ManagerController::validateNumber() has    
+         parameter $value with no type specified.                               
+         🪪  missingType.parameter                                              
+  335    Method App\Controller\Admin\ManagerController::validateSelection()     
+         has parameter $allowedOptions with no value type specified in          
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  356    Method App\Controller\Admin\ManagerController::getValidationErrors()   
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Traits/FormValidationTrait.php (in context of class                    
+         App\Controller\Admin\MarketController)                                 
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Controller\Admin\MarketController::$validationErrors      
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  172    Parameter #1 $string of function strlen expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  234    Method App\Controller\Admin\MarketController::validateNumber() has     
+         parameter $value with no type specified.                               
+         🪪  missingType.parameter                                              
+  335    Method App\Controller\Admin\MarketController::validateSelection() has  
+         parameter $allowedOptions with no value type specified in iterable     
+         type array.                                                            
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  356    Method App\Controller\Admin\MarketController::getValidationErrors()    
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Traits/FormValidationTrait.php (in context of class                    
+         App\Controller\Admin\ProductCategoryController)                        
+ ------ ----------------------------------------------------------------------- 
+  15     Property                                                               
+         App\Controller\Admin\ProductCategoryController::$validationErrors      
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  172    Parameter #1 $string of function strlen expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  234    Method                                                                 
+         App\Controller\Admin\ProductCategoryController::validateNumber() has   
+         parameter $value with no type specified.                               
+         🪪  missingType.parameter                                              
+  335    Method                                                                 
+         App\Controller\Admin\ProductCategoryController::validateSelection()    
+         has parameter $allowedOptions with no value type specified in          
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  356    Method                                                                 
+         App\Controller\Admin\ProductCategoryController::getValidationErrors()  
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Traits/FormValidationTrait.php (in context of class                    
+         App\Controller\Admin\ProfileController)                                
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Controller\Admin\ProfileController::$validationErrors     
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  172    Parameter #1 $string of function strlen expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  234    Method App\Controller\Admin\ProfileController::validateNumber() has    
+         parameter $value with no type specified.                               
+         🪪  missingType.parameter                                              
+  335    Method App\Controller\Admin\ProfileController::validateSelection()     
+         has parameter $allowedOptions with no value type specified in          
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  356    Method App\Controller\Admin\ProfileController::getValidationErrors()   
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Traits/FormValidationTrait.php (in context of class                    
+         App\Controller\User\UserProfileController)                             
+ ------ ----------------------------------------------------------------------- 
+  15     Property App\Controller\User\UserProfileController::$validationErrors  
+         type has no value type specified in iterable type array.               
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  172    Parameter #1 $string of function strlen expects string, string|null    
+         given.                                                                 
+         🪪  argument.type                                                      
+  234    Method App\Controller\User\UserProfileController::validateNumber()     
+         has parameter $value with no type specified.                           
+         🪪  missingType.parameter                                              
+  335    Method App\Controller\User\UserProfileController::validateSelection()  
+         has parameter $allowedOptions with no value type specified in          
+         iterable type array.                                                   
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  356    Method                                                                 
+         App\Controller\User\UserProfileController::getValidationErrors()       
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/CurrentUserAvatarExtension.php                                    
+ ------ ----------------------------------------------------------------------- 
+  19     Property App\Twig\CurrentUserAvatarExtension::$requestStack is never   
+         read, only written.                                                    
+         🪪  property.onlyWritten                                               
+         💡  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Twig/CurrentUserNotificationExtension.php                              
+ ------ ----------------------------------------------------------------------- 
+  16     Property App\Twig\CurrentUserNotificationExtension::$recentCache type  
+         has no value type specified in iterable type array.                    
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  36     Method                                                                 
+         App\Twig\CurrentUserNotificationExtension::getCurrentNotifications()   
+         return type has no value type specified in iterable type array.        
+         🪪  missingType.iterableValue                                          
+         💡  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 165 errors                                                       
+

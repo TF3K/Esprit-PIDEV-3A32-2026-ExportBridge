@@ -16,58 +16,102 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Product[] Returns an array of Product objects with relations loaded
+     */
+    public function findAllWithRelations(int $page = 1, int $pageSize = 50): array
+    {
+        // First query: Get paginated product IDs
+        $ids = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->orderBy('p.created_at', 'DESC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getSingleColumnResult();
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
-    public function getCountByDay(): array
-{
-    $last7Days = new \DateTime('-6 days');
-    $last7Days->setTime(0, 0, 0);
-
-    $results = $this->createQueryBuilder('p')
-        ->select("SUBSTRING(p.created_at, 1, 10) as dateOnly, COUNT(p.id) as total")
-        ->where('p.created_at >= :date')
-        ->setParameter('date', $last7Days)
-        ->groupBy('dateOnly')
-        ->orderBy('dateOnly', 'ASC')
-        ->getQuery()
-        ->getResult();
-
-    $chartData = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = new \DateTime("-$i days");
-        $formattedDate = $date->format('Y-m-d');
-        
-        $count = 0;
-        foreach ($results as $row) {
-            if ($row['dateOnly'] === $formattedDate) {
-                $count = (int)$row['total'];
-                break;
-            }
+        if (empty($ids)) {
+            return [];
         }
-        $chartData[] = $count;
+
+        // Second query: Get products with all relations (no LIMIT on joins)
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.company', 'c')
+            ->leftJoin('p.productCategory', 'cat')
+            ->addSelect('c', 'cat')
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
-    return $chartData;
-}
+
+    /**
+     * @return Product[] Returns products with company relation loaded
+     */
+    public function findAllWithCompany(int $page = 1, int $pageSize = 50): array
+    {
+        // First query: Get paginated product IDs
+        $ids = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->orderBy('p.created_at', 'DESC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Second query: Get products with company (no LIMIT on join)
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.company', 'c')
+            ->addSelect('c')
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Product[] Returns products with category relation loaded
+     */
+    public function findAllWithCategory(int $page = 1, int $pageSize = 50): array
+    {
+        // First query: Get paginated product IDs
+        $ids = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->orderBy('p.created_at', 'DESC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Second query: Get products with category (no LIMIT on join)
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.productCategory', 'cat')
+            ->addSelect('cat')
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('p.created_at', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get total count of products for pagination
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

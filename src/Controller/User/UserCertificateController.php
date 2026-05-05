@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Manager;
 use App\Repository\CertificateRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,9 @@ class UserCertificateController extends AbstractController
     #[Route('', name: 'app_user_certificates')]
     public function index(CertificateRepository $certRepo): Response
     {
-        $company = $this->getUser()->getCompany();
+        $manager = $this->getUser();
+        assert($manager instanceof Manager);
+        $company = $manager->getCompany();
 
         $certificates = $company
             ? $certRepo->findBy(['company' => $company], ['created_at' => 'DESC'])

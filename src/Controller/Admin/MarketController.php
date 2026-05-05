@@ -40,11 +40,11 @@ class MarketController extends AbstractController
         $old    = [];
 
         if ($request->isMethod('POST')) {
-            $name           = trim($request->request->get('name') ?? '');
-            $countryCode    = strtoupper(trim($request->request->get('country_code') ?? ''));
-            $region         = trim($request->request->get('region') ?? '');
-            $description    = trim($request->request->get('description') ?? '');
-            $tradeAgreement = trim($request->request->get('trade_agreement') ?? '');
+            $name           = trim((string) $request->request->get('name', ''));
+            $countryCode    = strtoupper(trim((string) $request->request->get('country_code', '')));
+            $region         = trim((string) $request->request->get('region', ''));
+            $description    = trim((string) $request->request->get('description', ''));
+            $tradeAgreement = trim((string) $request->request->get('trade_agreement', ''));
 
             $old = compact('name', 'countryCode', 'region', 'description', 'tradeAgreement');
 
@@ -101,11 +101,11 @@ class MarketController extends AbstractController
         $old    = [];
 
         if ($request->isMethod('POST')) {
-            $name           = trim($request->request->get('name') ?? '');
-            $countryCode    = strtoupper(trim($request->request->get('country_code') ?? ''));
-            $region         = trim($request->request->get('region') ?? '');
-            $description    = trim($request->request->get('description') ?? '');
-            $tradeAgreement = trim($request->request->get('trade_agreement') ?? '');
+            $name           = trim((string) $request->request->get('name', ''));
+            $countryCode    = strtoupper(trim((string) $request->request->get('country_code', '')));
+            $region         = trim((string) $request->request->get('region', ''));
+            $description    = trim((string) $request->request->get('description', ''));
+            $tradeAgreement = trim((string) $request->request->get('trade_agreement', ''));
 
             $old = compact('name', 'countryCode', 'region', 'description', 'tradeAgreement');
 

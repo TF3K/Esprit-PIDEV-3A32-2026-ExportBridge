@@ -38,6 +38,31 @@ class ContactHistoryRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Get paginated contact history
+     * @return array<int, ContactHistory>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('c')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all contact history records
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return ContactHistory[] Returns an array of ContactHistory objects
     //     */

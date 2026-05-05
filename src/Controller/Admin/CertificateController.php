@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Certificate;
+use App\Entity\Signature;
 use App\Repository\CertificateRepository;
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,13 +98,13 @@ class CertificateController extends AbstractController
         Request $request,
         EntityManagerInterface $em
     ): Response {
-        $signature = new \App\Entity\Signature();
+        $signature = new Signature();
         $signature->setCertificate($certificate);
-        $signature->setSignatoryName($request->request->get('signatory_name'));
-        $signature->setSignatoryTitle($request->request->get('signatory_title'));
-        $signature->setType($request->request->get('type'));
-        $signature->setDigitalSignature($request->request->get('digital_signature'));
-        $signature->setSignedDate(new \DateTime($request->request->get('signed_date')));
+        $signature->setSignatoryName((string) $request->request->get('signatory_name', ''));
+        $signature->setSignatoryTitle($request->request->get('signatory_title') !== null ? (string) $request->request->get('signatory_title') : null);
+        $signature->setType((string) $request->request->get('type', ''));
+        $signature->setDigitalSignature($request->request->get('digital_signature') !== null ? (string) $request->request->get('digital_signature') : null);
+        $signature->setSignedDate(new \DateTime((string) $request->request->get('signed_date', 'now')));
 
         $em->persist($signature);
         $em->flush();
@@ -120,7 +121,7 @@ class CertificateController extends AbstractController
     ): Response {
         $signature = $em->getRepository(\App\Entity\Signature::class)->find($signatureId);
 
-        if ($signature && $signature->getCertificate()->getId() === $certificate->getId()) {
+        if ($signature && ($signatureCertificate = $signature->getCertificate()) && $signatureCertificate->getId() === $certificate->getId()) {
             $em->remove($signature);
             $em->flush();
             $this->addFlash('success', 'Signature removed.');
@@ -134,18 +135,18 @@ class CertificateController extends AbstractController
         Request $request,
         CompanyRepository $companyRepo
     ): void {
-        $certificate->setType($request->request->get('type'));
-        $certificate->setCertificateNumber($request->request->get('certificate_number'));
-        $certificate->setStatus($request->request->get('status'));
-        $certificate->setCountryOfOrigin($request->request->get('country_of_origin'));
-        $certificate->setIssuingAuthority($request->request->get('issuing_authority'));
-        $certificate->setDocumentFile($request->request->get('document_file'));
+        $certificate->setType((string) $request->request->get('type', ''));
+        $certificate->setCertificateNumber((string) $request->request->get('certificate_number', ''));
+        $certificate->setStatus((string) $request->request->get('status', ''));
+        $certificate->setCountryOfOrigin($request->request->get('country_of_origin') !== null ? (string) $request->request->get('country_of_origin') : null);
+        $certificate->setIssuingAuthority($request->request->get('issuing_authority') !== null ? (string) $request->request->get('issuing_authority') : null);
+        $certificate->setDocumentFile($request->request->get('document_file') !== null ? (string) $request->request->get('document_file') : null);
 
         $issueDate = $request->request->get('issue_date');
-        $certificate->setIssueDate($issueDate ? new \DateTime($issueDate) : null);
+        $certificate->setIssueDate($issueDate !== null && $issueDate !== '' ? new \DateTime((string) $issueDate) : null);
 
         $expiryDate = $request->request->get('expiry_date');
-        $certificate->setExpiryDate($expiryDate ? new \DateTime($expiryDate) : null);
+        $certificate->setExpiryDate($expiryDate !== null && $expiryDate !== '' ? new \DateTime((string) $expiryDate) : null);
 
         $companyId = $request->request->get('company_id');
         $certificate->setCompany($companyId ? $companyRepo->find($companyId) : null);

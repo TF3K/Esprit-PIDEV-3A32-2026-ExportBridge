@@ -9,6 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/** @phpstan-ignore-next-line */
 class ManagerFixtures extends Fixture implements DependentFixtureInterface
 {
     private UserPasswordHasherInterface $passwordHasher;

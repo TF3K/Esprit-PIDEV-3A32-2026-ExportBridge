@@ -19,38 +19,50 @@ class ManagerRepository extends ServiceEntityRepository
     /**
      * @return list<Manager>
      */
-    public function findNonAdmins(): array
+    public function findNonAdmins(int $page = 1, int $pageSize = 50): array
     {
+        // First query: Get paginated manager IDs
+        $ids = $this->createQueryBuilder('m')
+            ->select('m.id')
+            ->orderBy('m.id', 'ASC')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Second query: Get managers with their settings (no LIMIT on join)
+        $managers = $this->createQueryBuilder('m')
+            ->leftJoin('m.setting', 's')
+            ->addSelect('s')
+            ->where('m.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('m.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+
         return array_values(array_filter(
-            $this->findAll(),
+            $managers,
             static fn(Manager $manager): bool => !\in_array('ROLE_ADMIN', $manager->getRoles(), true)
         ));
     }
 
-    //    /**
-    //     * @return Manager[] Returns an array of Manager objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('m.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Manager
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Count all managers
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    /**
+     * @return list<int>
+     */
     public function getCountByDay(): array
     {
         // On définit le point de départ : il y a 6 jours à minuit

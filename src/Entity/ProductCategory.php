@@ -70,6 +70,7 @@ class ProductCategory
         return $this;
     }
 
+    /** @var Collection<int, Product> */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'productCategory')]
     private Collection $products;
 
@@ -83,9 +84,6 @@ class ProductCategory
      */
     public function getProducts(): Collection
     {
-        if (!$this->products instanceof Collection) {
-            $this->products = new ArrayCollection();
-        }
         return $this->products;
     }
 
@@ -102,5 +100,4 @@ class ProductCategory
         $this->getProducts()->removeElement($product);
         return $this;
     }
-
 }

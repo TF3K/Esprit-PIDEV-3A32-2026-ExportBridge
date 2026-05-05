@@ -15,32 +15,32 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthController extends AbstractController
 {
-#[Route('/login', name: 'app_login')]
-public function login(AuthenticationUtils $authenticationUtils): Response
-{
-    $user = $this->getUser();
+    #[Route('/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        $user = $this->getUser();
 
-    if ($user) {
-        $userId = $user->getId();
+        if ($user instanceof Manager) {
+            $userId = $user->getId();
 
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->redirectToRoute('app_admin_dashboard', ['id' => $userId]);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('app_admin_dashboard', ['id' => $userId]);
+            }
+
+            return $this->redirectToRoute('app_dashboard', ['id' => $userId]);
         }
-        
-        return $this->redirectToRoute('app_dashboard', ['id' => $userId]);
+
+        // Récupère l'erreur si elle existe
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // Récupère le dernier identifiant (email) saisi par l'utilisateur
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render('auth/login.html.twig', [
+            'last_username' => $lastUsername, // On garde le nom standard Symfony pour le formulaire
+            'error' => $error,
+        ]);
     }
-
-    // Récupère l'erreur si elle existe
-    $error = $authenticationUtils->getLastAuthenticationError();
-    
-    // Récupère le dernier identifiant (email) saisi par l'utilisateur
-    $lastUsername = $authenticationUtils->getLastUsername();
-
-    return $this->render('auth/login.html.twig', [
-        'last_username' => $lastUsername, // On garde le nom standard Symfony pour le formulaire
-        'error' => $error,
-    ]);
-}
 
     #[Route('/register', name: 'app_register')]
     public function register(

@@ -16,6 +16,31 @@ class SignatureRepository extends ServiceEntityRepository
         parent::__construct($registry, Signature::class);
     }
 
+    /**
+     * Get paginated signatures
+     * @return array<int, Signature>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('s')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all signatures
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Signature[] Returns an array of Signature objects
     //     */

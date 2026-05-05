@@ -1,15 +1,20 @@
 <?php
+
 namespace App\Security;
 
 use App\Entity\Manager;
 use App\Service\OAuthStorageService;
 use Doctrine\ORM\EntityManagerInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @implements UserProviderInterface<Manager>
+ */
 class GoogleOAuthUserProvider implements OAuthAwareUserProviderInterface, UserProviderInterface
 {
     public function __construct(
@@ -19,7 +24,11 @@ class GoogleOAuthUserProvider implements OAuthAwareUserProviderInterface, UserPr
 
     public function loadUserByOAuthUserResponse(UserResponseInterface $response): UserInterface
     {
-        $email     = $response->getEmail();
+        $email     = (string) $response->getEmail();
+        if ($email === '') {
+            throw new AccountNotLinkedException();
+        }
+
         $googleId  = $response->getUsername();
         $imageUrl  = $response->getProfilePicture();
         $firstName = $response->getFirstName();
@@ -35,7 +44,7 @@ class GoogleOAuthUserProvider implements OAuthAwareUserProviderInterface, UserPr
         ]);
 
         $manager = $this->em->getRepository(Manager::class)
-                            ->findOneBy(['email' => $email]);
+            ->findOneBy(['email' => $email]);
 
         if (!$manager) {
             $manager = new Manager();
@@ -56,10 +65,10 @@ class GoogleOAuthUserProvider implements OAuthAwareUserProviderInterface, UserPr
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         $manager = $this->em->getRepository(Manager::class)
-                            ->findOneBy(['email' => $identifier]);
+            ->findOneBy(['email' => $identifier]);
 
         if (!$manager) {
-            throw new \HWI\Bundle\OAuthBundle\Security\Core\Exception\OAuthAwareExceptionInterface('User not found.');
+            throw new AccountNotLinkedException();
         }
 
         return $manager;

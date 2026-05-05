@@ -4,7 +4,6 @@ namespace App\Twig;
 
 use App\Service\OAuthStorageService;
 use Symfony\Component\Asset\Packages;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Extension\AbstractExtension;
@@ -16,7 +15,6 @@ class CurrentUserAvatarExtension extends AbstractExtension
         private Security $security,
         private OAuthStorageService $oauthStorage,
         private Packages $assets,
-        private RequestStack $requestStack,
     ) {}
 
     public function getFunctions(): array

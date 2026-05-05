@@ -142,6 +142,7 @@ class Partnership
         return $this;
     }
 
+    /** @var Collection<int, Collaboration> */
     #[ORM\OneToMany(targetEntity: Collaboration::class, mappedBy: 'partnership')]
     private Collection $collaborations;
 
@@ -155,9 +156,6 @@ class Partnership
      */
     public function getCollaborations(): Collection
     {
-        if (!$this->collaborations instanceof Collection) {
-            $this->collaborations = new ArrayCollection();
-        }
         return $this->collaborations;
     }
 
@@ -174,5 +172,4 @@ class Partnership
         $this->getCollaborations()->removeElement($collaboration);
         return $this;
     }
-
 }

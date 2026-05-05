@@ -40,35 +40,38 @@ class PartnershipRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    /**
+     * @return list<int>
+     */
     public function getCountByDay(): array
-{
-    $last7Days = new \DateTime('-6 days');
-    $last7Days->setTime(0, 0, 0);
+    {
+        $last7Days = new \DateTime('-6 days');
+        $last7Days->setTime(0, 0, 0);
 
-    $results = $this->createQueryBuilder('p')
-        ->select("SUBSTRING(p.created_at, 1, 10) as dateOnly, COUNT(p.id) as total")
-        ->where('p.created_at >= :date')
-        ->setParameter('date', $last7Days)
-        ->groupBy('dateOnly')
-        ->orderBy('dateOnly', 'ASC')
-        ->getQuery()
-        ->getResult();
+        $results = $this->createQueryBuilder('p')
+            ->select("SUBSTRING(p.created_at, 1, 10) as dateOnly, COUNT(p.id) as total")
+            ->where('p.created_at >= :date')
+            ->setParameter('date', $last7Days)
+            ->groupBy('dateOnly')
+            ->orderBy('dateOnly', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-    $chartData = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = new \DateTime("-$i days");
-        $formattedDate = $date->format('Y-m-d');
-        
-        $count = 0;
-        foreach ($results as $row) {
-            if ($row['dateOnly'] === $formattedDate) {
-                $count = (int)$row['total'];
-                break;
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = new \DateTime("-$i days");
+            $formattedDate = $date->format('Y-m-d');
+
+            $count = 0;
+            foreach ($results as $row) {
+                if ($row['dateOnly'] === $formattedDate) {
+                    $count = (int)$row['total'];
+                    break;
+                }
             }
+            $chartData[] = $count;
         }
-        $chartData[] = $count;
-    }
 
-    return $chartData;
-}
+        return $chartData;
+    }
 }

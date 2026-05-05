@@ -100,17 +100,17 @@ class PartnershipController extends AbstractController
     ): Response {
         $collaboration = new Collaboration();
         $collaboration->setPartnership($partnership);
-        $collaboration->setTitle($request->request->get('title'));
-        $collaboration->setDescription($request->request->get('description'));
-        $collaboration->setStatus($request->request->get('status'));
+        $collaboration->setTitle((string) $request->request->get('title', ''));
+        $collaboration->setDescription($request->request->get('description') !== null ? (string) $request->request->get('description') : null);
+        $collaboration->setStatus((string) $request->request->get('status', ''));
         $collaboration->setCreatedAt(new \DateTime());
         $collaboration->setLastUpdated(new \DateTime());
 
         $startDate = $request->request->get('start_date');
-        $collaboration->setStartDate($startDate ? new \DateTime($startDate) : null);
+        $collaboration->setStartDate($startDate !== null && $startDate !== '' ? new \DateTime((string) $startDate) : null);
 
         $endDate = $request->request->get('end_date');
-        $collaboration->setEndDate($endDate ? new \DateTime($endDate) : null);
+        $collaboration->setEndDate($endDate !== null && $endDate !== '' ? new \DateTime((string) $endDate) : null);
 
         $em->persist($collaboration);
         $em->flush();
@@ -127,7 +127,7 @@ class PartnershipController extends AbstractController
     ): Response {
         $collaboration = $em->getRepository(Collaboration::class)->find($collaborationId);
 
-        if ($collaboration && $collaboration->getPartnership()->getId() === $partnership->getId()) {
+        if ($collaboration && ($currentPartnership = $collaboration->getPartnership()) && $currentPartnership->getId() === $partnership->getId()) {
             $em->remove($collaboration);
             $em->flush();
             $this->addFlash('success', 'Collaboration removed.');
@@ -141,15 +141,15 @@ class PartnershipController extends AbstractController
         Request $request,
         CompanyRepository $companyRepo
     ): void {
-        $partnership->setStatus($request->request->get('status'));
-        $partnership->setType($request->request->get('type'));
-        $partnership->setNotes($request->request->get('notes'));
+        $partnership->setStatus((string) $request->request->get('status', ''));
+        $partnership->setType($request->request->get('type') !== null ? (string) $request->request->get('type') : null);
+        $partnership->setNotes($request->request->get('notes') !== null ? (string) $request->request->get('notes') : null);
 
         $establishedDate = $request->request->get('established_date');
-        $partnership->setEstablishedDate($establishedDate ? new \DateTime($establishedDate) : null);
+        $partnership->setEstablishedDate($establishedDate !== null && $establishedDate !== '' ? new \DateTime((string) $establishedDate) : null);
 
         $terminatedDate = $request->request->get('terminated_date');
-        $partnership->setTerminatedDate($terminatedDate ? new \DateTime($terminatedDate) : null);
+        $partnership->setTerminatedDate($terminatedDate !== null && $terminatedDate !== '' ? new \DateTime((string) $terminatedDate) : null);
 
         $companyId = $request->request->get('company_id');
         $partnership->setCompany($companyId ? $companyRepo->find($companyId) : null);

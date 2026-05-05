@@ -12,12 +12,12 @@ class MarketManager
     public function validate(Market $market): bool
     {
         // 1. Nom obligatoire
-        if (empty($market->getName())) {
+        if ($market->getName() === '') {
             throw new \InvalidArgumentException('Le nom du marché est obligatoire');
         }
 
         // 2. country_code obligatoire
-        if (empty($market->getCountryCode())) {
+        if ($market->getCountryCode() === '') {
             throw new \InvalidArgumentException('Le code pays est obligatoire');
         }
 

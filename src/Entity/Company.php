@@ -238,6 +238,10 @@ class Company
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'company')]
     private Collection $products;
 
+    #[ORM\ManyToOne(targetEntity: Market::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(name: 'market_id', referencedColumnName: 'id', nullable: true)]
+    private ?Market $market = null;
+
     /**
      * @var Collection<int, ContactHistory>
      */
@@ -346,5 +350,27 @@ class Company
     public function getContactHistory(): Collection
     {
         return $this->contactHistory;
+    }
+
+    public function getPartnership(): ?Partnership
+    {
+        return $this->partnership;
+    }
+
+    public function setPartnership(?Partnership $partnership): self
+    {
+        $this->partnership = $partnership;
+        return $this;
+    }
+
+    public function getMarket(): ?Market
+    {
+        return $this->market;
+    }
+
+    public function setMarket(?Market $market): self
+    {
+        $this->market = $market;
+        return $this;
     }
 }

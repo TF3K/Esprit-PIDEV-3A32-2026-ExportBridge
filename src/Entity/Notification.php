@@ -31,17 +31,28 @@ class Notification
 
     #[ORM\ManyToOne(targetEntity: Manager::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(name: 'manager_id', referencedColumnName: 'id')]
-    private ?Manager $manager = null;
+    private ?Manager $managedBy = null;
 
+    public function getManagedBy(): ?Manager
+    {
+        return $this->managedBy;
+    }
+
+    public function setManagedBy(?Manager $manager): self
+    {
+        $this->managedBy = $manager;
+        return $this;
+    }
+
+    // Backwards-compatible aliases
     public function getManager(): ?Manager
     {
-        return $this->manager;
+        return $this->getManagedBy();
     }
 
     public function setManager(?Manager $manager): self
     {
-        $this->manager = $manager;
-        return $this;
+        return $this->setManagedBy($manager);
     }
 
     #[ORM\Column(type: 'string', nullable: false)]
@@ -99,5 +110,4 @@ class Notification
         $this->created_at = $created_at;
         return $this;
     }
-
 }

@@ -183,6 +183,7 @@ class Certificate
         return $this;
     }
 
+    /** @var Collection<int, Signature> */
     #[ORM\OneToMany(targetEntity: Signature::class, mappedBy: 'certificate')]
     private Collection $signatures;
 
@@ -196,9 +197,6 @@ class Certificate
      */
     public function getSignatures(): Collection
     {
-        if (!$this->signatures instanceof Collection) {
-            $this->signatures = new ArrayCollection();
-        }
         return $this->signatures;
     }
 
@@ -215,5 +213,4 @@ class Certificate
         $this->getSignatures()->removeElement($signature);
         return $this;
     }
-
 }

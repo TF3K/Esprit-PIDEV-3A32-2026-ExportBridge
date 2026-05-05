@@ -38,6 +38,31 @@ class SettingRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Get paginated settings
+     * @return array<int, Setting>
+     */
+    public function findPaginated(int $page = 1, int $pageSize = 50): array
+    {
+        return $this->createQueryBuilder('s')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Count all settings
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Setting[] Returns an array of Setting objects
     //     */

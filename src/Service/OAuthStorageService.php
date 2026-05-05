@@ -14,8 +14,14 @@ class OAuthStorageService
         }
     }
 
-    public function save(string $email, array $data): void
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function save(?string $email, array $data): void
     {
+        if (!$email) {
+            return;
+        }
         $path = $this->storagePathForEmail($email);
         $payload = json_encode($data, JSON_PRETTY_PRINT);
         if ($payload === false) {
@@ -25,8 +31,14 @@ class OAuthStorageService
         file_put_contents($path, $payload, LOCK_EX);
     }
 
-    public function get(string $email): ?array
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function get(?string $email): ?array
     {
+        if (!$email) {
+            return null;
+        }
         $path = $this->storagePathForEmail($email);
         if (!file_exists($path)) {
             $legacyPath = $this->legacyStoragePathForEmail($email);

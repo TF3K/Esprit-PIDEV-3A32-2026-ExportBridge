@@ -11,7 +11,7 @@ use Twig\TwigFunction;
 class CurrentUserNotificationExtension extends AbstractExtension
 {
     /**
-     * @var array<int, array>
+     * @var array<int, list<array<string, mixed>>>
      */
     private array $recentCache = [];
     private ?int $unreadCountCache = null;
@@ -19,8 +19,7 @@ class CurrentUserNotificationExtension extends AbstractExtension
     public function __construct(
         private Security $security,
         private NotificationRepository $notificationRepository,
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {
@@ -31,7 +30,7 @@ class CurrentUserNotificationExtension extends AbstractExtension
     }
 
     /**
-     * @return array
+     * @return list<array<string, mixed>>
      */
     public function getCurrentNotifications(int $limit = 6): array
     {

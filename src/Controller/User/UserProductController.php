@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Manager;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,9 @@ class UserProductController extends AbstractController
     #[Route('', name: 'app_user_products')]
     public function index(ProductRepository $productRepo): Response
     {
-        $company = $this->getUser()->getCompany();
+        $manager = $this->getUser();
+        assert($manager instanceof Manager);
+        $company = $manager->getCompany();
 
         $products = $company
             ? $productRepo->findBy(['company' => $company], ['created_at' => 'DESC'])

@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Manager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class UserProfileController extends AbstractController
     public function index(Request $request, EntityManagerInterface $em, OAuthStorageService $oauthStorage): Response
     {
         $manager = $this->getUser();
+        assert($manager instanceof Manager);
         $oauthData = $oauthStorage->get($manager->getEmail());
         $error = null;
         $success = null;
