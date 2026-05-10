@@ -14,36 +14,35 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
 
     @Override
     public Partnership create(Partnership partnership) throws SQLException {
-        String sql = "INSERT INTO partnerships (source_company_id, target_company_id, status, type, " +
+        String sql = "INSERT INTO partnerships (source_company_id, status, type, " +
                 "established_date, terminated_date, notes) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setLong(1, partnership.getSourceCompanyId());
-            stmt.setLong(2, partnership.getTargetCompanyId());
-            stmt.setString(3, partnership.getStatus().name());
+            stmt.setString(2, partnership.getStatus().name());
 
             if (partnership.getType() != null) {
-                stmt.setString(4, partnership.getType().name());
+                stmt.setString(3, partnership.getType().name());
             } else {
-                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(3, Types.VARCHAR);
             }
 
             if (partnership.getEstablishedDate() != null) {
-                stmt.setDate(5, Date.valueOf(partnership.getEstablishedDate().toLocalDate()));
+                stmt.setDate(4, Date.valueOf(partnership.getEstablishedDate().toLocalDate()));
+            } else {
+                stmt.setNull(4, Types.DATE);
+            }
+
+            if (partnership.getTerminatedDate() != null) {
+                stmt.setDate(5, Date.valueOf(partnership.getTerminatedDate().toLocalDate()));
             } else {
                 stmt.setNull(5, Types.DATE);
             }
 
-            if (partnership.getTerminatedDate() != null) {
-                stmt.setDate(6, Date.valueOf(partnership.getTerminatedDate().toLocalDate()));
-            } else {
-                stmt.setNull(6, Types.DATE);
-            }
-
-            stmt.setString(7, partnership.getNotes());
+            stmt.setString(6, partnership.getNotes());
 
             stmt.executeUpdate();
 
@@ -69,7 +68,7 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         String sql = "SELECT * FROM partnerships WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -89,8 +88,8 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         List<Partnership> partnerships = new ArrayList<>();
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 partnerships.add(mapResultSetToEntity(rs));
@@ -102,37 +101,36 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
 
     @Override
     public boolean update(Partnership partnership) throws SQLException {
-        String sql = "UPDATE partnerships SET source_company_id = ?, target_company_id = ?, " +
+        String sql = "UPDATE partnerships SET source_company_id = ?, " +
                 "status = ?, type = ?, established_date = ?, terminated_date = ?, notes = ? " +
                 "WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, partnership.getSourceCompanyId());
-            stmt.setLong(2, partnership.getTargetCompanyId());
-            stmt.setString(3, partnership.getStatus().name());
+            stmt.setString(2, partnership.getStatus().name());
 
             if (partnership.getType() != null) {
-                stmt.setString(4, partnership.getType().name());
+                stmt.setString(3, partnership.getType().name());
             } else {
-                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(3, Types.VARCHAR);
             }
 
             if (partnership.getEstablishedDate() != null) {
-                stmt.setDate(5, Date.valueOf(partnership.getEstablishedDate().toLocalDate()));
+                stmt.setDate(4, Date.valueOf(partnership.getEstablishedDate().toLocalDate()));
+            } else {
+                stmt.setNull(4, Types.DATE);
+            }
+
+            if (partnership.getTerminatedDate() != null) {
+                stmt.setDate(5, Date.valueOf(partnership.getTerminatedDate().toLocalDate()));
             } else {
                 stmt.setNull(5, Types.DATE);
             }
 
-            if (partnership.getTerminatedDate() != null) {
-                stmt.setDate(6, Date.valueOf(partnership.getTerminatedDate().toLocalDate()));
-            } else {
-                stmt.setNull(6, Types.DATE);
-            }
-
-            stmt.setString(7, partnership.getNotes());
-            stmt.setLong(8, partnership.getId());
+            stmt.setString(6, partnership.getNotes());
+            stmt.setLong(7, partnership.getId());
 
             return stmt.executeUpdate() > 0;
         }
@@ -143,7 +141,7 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         String sql = "DELETE FROM partnerships WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
             return stmt.executeUpdate() > 0;
@@ -155,7 +153,7 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         String sql = "SELECT COUNT(*) FROM partnerships WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -174,8 +172,8 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         String sql = "SELECT COUNT(*) FROM partnerships";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getLong(1);
@@ -187,15 +185,14 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
 
     public List<Partnership> findByCompanyId(Long companyId) throws SQLException {
         String sql = "SELECT * FROM partnerships " +
-                "WHERE source_company_id = ? OR target_company_id = ? " +
+                "WHERE source_company_id = ? " +
                 "ORDER BY created_at DESC";
         List<Partnership> partnerships = new ArrayList<>();
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, companyId);
-            stmt.setLong(2, companyId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -212,7 +209,7 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         List<Partnership> partnerships = new ArrayList<>();
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, status.name());
 
@@ -228,17 +225,16 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
 
     public List<Partnership> findActiveByCompanyId(Long companyId) throws SQLException {
         String sql = "SELECT * FROM partnerships " +
-                "WHERE (source_company_id = ? OR target_company_id = ?) " +
+                "WHERE source_company_id = ? " +
                 "AND status = 'ACTIVE' " +
                 "AND (terminated_date IS NULL OR terminated_date > NOW()) " +
                 "ORDER BY established_date DESC";
         List<Partnership> partnerships = new ArrayList<>();
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, companyId);
-            stmt.setLong(2, companyId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -251,18 +247,17 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
     }
 
     public Partnership findByCompanies(Long sourceId, Long targetId) throws SQLException {
+        // With single-company relationship, a partnership is tied to one company only.
+        // We treat this as finding any partnership where source_company_id equals
+        // either id.
         String sql = "SELECT * FROM partnerships " +
-                "WHERE (source_company_id = ? AND target_company_id = ?) " +
-                "OR (source_company_id = ? AND target_company_id = ?) " +
+                "WHERE source_company_id = ? " +
                 "ORDER BY created_at DESC LIMIT 1";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, sourceId);
-            stmt.setLong(2, targetId);
-            stmt.setLong(3, targetId);
-            stmt.setLong(4, sourceId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -279,7 +274,7 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
                 "WHERE source_company_id = ? OR target_company_id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, companyId);
             stmt.setLong(2, companyId);
@@ -298,7 +293,6 @@ public class PartnershipDAO implements GenericDAO<Partnership, Long> {
         Partnership partnership = new Partnership();
         partnership.setId(rs.getLong("id"));
         partnership.setSourceCompanyId(rs.getLong("source_company_id"));
-        partnership.setTargetCompanyId(rs.getLong("target_company_id"));
         partnership.setStatus(PartnershipStatus.valueOf(rs.getString("status")));
 
         String typeStr = rs.getString("type");

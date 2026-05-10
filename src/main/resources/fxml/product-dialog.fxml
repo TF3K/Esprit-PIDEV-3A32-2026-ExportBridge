@@ -6,11 +6,7 @@
 <?import javafx.scene.text.Text?>
 
 <VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="GUI.ProductDialogController"
-      styleClass="dialog-container"
-      spacing="20"
-      prefWidth="500">
+    xmlns:fx="http://javafx.com/fxml" fx:controller="GUI.ProductDialogController" styleClass="dialog-container" spacing="20" prefWidth="500">
 
     <padding>
         <Insets top="24" right="24" bottom="24" left="24"/>
@@ -22,23 +18,26 @@
         <Label text="Product Name *" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="form-label"/>
         <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="form-field" promptText="e.g., Premium Olive Oil"/>
 
-        <Label text="Category *" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
-        <ComboBox fx:id="categoryField" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-field" promptText="Select category" maxWidth="Infinity"/>
+        <Label text="Slug" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="form-label"/>
+        <TextField fx:id="slugField" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-field" promptText="auto-generated" editable="false"/>
 
-        <Label text="HS Code" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
-        <TextField fx:id="hsCodeField" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="form-field" promptText="e.g., 1509.10"/>
+        <Label text="Category *" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="form-label"/>
+        <ComboBox fx:id="categoryField" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="form-field" promptText="Select category" maxWidth="Infinity"/>
 
-        <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
-        <TextArea fx:id="descriptionField" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="form-field" promptText="Product description..." prefRowCount="3"/>
+        <Label text="HS Code" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="form-label"/>
+        <TextField fx:id="hsCodeField" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="form-field" promptText="e.g., 1509.10"/>
 
-        <Label text="Quantity *" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
-        <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <Label text="Description" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="form-label"/>
+        <TextArea fx:id="descriptionField" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="form-field" promptText="Product description..." prefRowCount="3"/>
+
+        <Label text="Quantity *" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="form-label"/>
+        <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="5">
             <TextField fx:id="quantityField" styleClass="form-field" promptText="1000" HBox.hgrow="ALWAYS"/>
             <TextField fx:id="unitField" styleClass="form-field" promptText="liters" prefWidth="100"/>
         </HBox>
 
-        <Label text="Unit Price *" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="form-label"/>
-        <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <Label text="Unit Price *" GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="form-label"/>
+        <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="6">
             <TextField fx:id="priceField" styleClass="form-field" promptText="25.50" HBox.hgrow="ALWAYS"/>
             <ComboBox fx:id="currencyField" styleClass="form-field" prefWidth="100"/>
         </HBox>

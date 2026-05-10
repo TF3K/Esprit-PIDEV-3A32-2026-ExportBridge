@@ -2,6 +2,7 @@ package DAO;
 
 import Entities.Product;
 import Entities.ProductCategory;
+import DAO.ProductCategoryDAO;
 import Utils.DatabasePlugin;
 
 import java.sql.*;
@@ -12,25 +13,68 @@ public class ProductDAO implements GenericDAO<Product, Long> {
 
     @Override
     public Product create(Product product) throws SQLException {
+        System.out.println("[DEBUG] ProductDAO.create called for product object: " + product);
         String sql = "INSERT INTO products (company_id, name, description, hs_code, " +
-                "category, quantity, unit, unit_price, currency, origin_criteria) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "category_id, quantity, unit, unit_price, currency, origin_criteria, created_at, last_updated) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        ProductCategoryDAO pcDao = new ProductCategoryDAO();
+        // ensure category exists and get id BEFORE preparing statement to avoid
+        // reconnects
+        Long categoryId = null;
+        if (product.getCategory() != null) {
+            if (product.getCategory().getId() != null) {
+                categoryId = product.getCategory().getId();
+            } else {
+                ProductCategory found = pcDao.findByName(product.getCategory().getName());
+                if (found != null)
+                    categoryId = found.getId();
+                else {
+                    ProductCategory created = pcDao.create(product.getCategory());
+                    categoryId = created.getId();
+                    // set back id on product category
+                    product.getCategory().setId(categoryId);
+                }
+            }
+        }
+
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            System.out.println("[DEBUG] Prepared statement created for INSERT; conn=" + conn);
 
             stmt.setLong(1, product.getCompanyId());
             stmt.setString(2, product.getName());
-            stmt.setString(3, product.getDescription());
+            stmt.setString(3, product.getDescription() != null ? product.getDescription() : "");
             stmt.setString(4, product.getHsCode());
-            stmt.setString(5, product.getCategory().name());
+
+            if (categoryId != null)
+                stmt.setLong(5, categoryId);
+            else
+                stmt.setNull(5, Types.BIGINT);
             stmt.setDouble(6, product.getQuantity() != null ? product.getQuantity() : 0);
-            stmt.setString(7, product.getUnit());
+            stmt.setString(7, product.getUnit() != null ? product.getUnit() : "");
             stmt.setDouble(8, product.getUnitPrice() != null ? product.getUnitPrice() : 0);
             stmt.setString(9, product.getCurrency() != null ? product.getCurrency() : "TND");
-            stmt.setString(10, product.getOriginCriteria());
+            stmt.setString(10, product.getOriginCriteria() != null ? product.getOriginCriteria() : "");
 
-            stmt.executeUpdate();
+            // DEBUG: print values used for insert BEFORE executing
+            System.out.println("[DEBUG] Executing INSERT SQL=" + sql + " params=[1=" + product.getCompanyId() + ",2='"
+                    + product.getName() + "',3='" + (product.getDescription() != null ? product.getDescription() : "")
+                    + "',4='" + product.getHsCode() + "',5='" + categoryId + "',6='"
+                    + (product.getQuantity() != null ? product.getQuantity() : 0) + "',7='"
+                    + (product.getUnit() != null ? product.getUnit() : "") + "',8='"
+                    + (product.getUnitPrice() != null ? product.getUnitPrice() : 0) + "',9='"
+                    + (product.getCurrency() != null ? product.getCurrency() : "TND") + "',10='"
+                    + (product.getOriginCriteria() != null ? product.getOriginCriteria() : "") + "']");
+
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException ex) {
+                System.out.println("[ERROR] INSERT failed, printing stacktrace and values");
+                ex.printStackTrace();
+                throw ex;
+            }
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -46,8 +90,8 @@ public class ProductDAO implements GenericDAO<Product, Long> {
     public Product findById(Long id) throws SQLException {
         String sql = "SELECT * FROM products WHERE id = ?";
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -66,9 +110,9 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         String sql = "SELECT * FROM products ORDER BY name";
         List<Product> products = new ArrayList<>();
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 products.add(mapResultSetToEntity(rs));
@@ -80,26 +124,73 @@ public class ProductDAO implements GenericDAO<Product, Long> {
 
     @Override
     public boolean update(Product product) throws SQLException {
+        System.out.println("[DEBUG] ProductDAO.update called for id=" + product.getId() + " product=" + product);
         String sql = "UPDATE products SET company_id = ?, name = ?, description = ?, " +
-                "hs_code = ?, category = ?, quantity = ?, unit = ?, " +
-                "unit_price = ?, currency = ?, origin_criteria = ? WHERE id = ?";
+                "hs_code = ?, category_id = ?, quantity = ?, unit = ?, " +
+                "unit_price = ?, currency = ?, origin_criteria = ?, last_updated = NOW() WHERE id = ?";
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        ProductCategoryDAO pcDao = new ProductCategoryDAO();
+
+        // ensure category exists and get id BEFORE preparing statement to avoid
+        // reconnects
+        Long categoryId = null;
+        if (product.getCategory() != null) {
+            if (product.getCategory().getId() != null)
+                categoryId = product.getCategory().getId();
+            else {
+                ProductCategory found = pcDao.findByName(product.getCategory().getName());
+                if (found != null)
+                    categoryId = found.getId();
+                else {
+                    ProductCategory created = pcDao.create(product.getCategory());
+                    categoryId = created.getId();
+                    product.getCategory().setId(categoryId);
+                }
+            }
+        }
+
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            System.out.println("[DEBUG] Prepared statement created for UPDATE; conn=" + conn);
 
             stmt.setLong(1, product.getCompanyId());
             stmt.setString(2, product.getName());
-            stmt.setString(3, product.getDescription());
+            stmt.setString(3, product.getDescription() != null ? product.getDescription() : "");
             stmt.setString(4, product.getHsCode());
-            stmt.setString(5, product.getCategory().name());
-            stmt.setDouble(6, product.getQuantity());
-            stmt.setString(7, product.getUnit());
-            stmt.setDouble(8, product.getUnitPrice());
-            stmt.setString(9, product.getCurrency());
-            stmt.setString(10, product.getOriginCriteria());
+            if (categoryId != null)
+                stmt.setLong(5, categoryId);
+            else
+                stmt.setNull(5, Types.BIGINT);
+            stmt.setDouble(6, product.getQuantity() != null ? product.getQuantity() : 0);
+            stmt.setString(7, product.getUnit() != null ? product.getUnit() : "");
+            stmt.setDouble(8, product.getUnitPrice() != null ? product.getUnitPrice() : 0);
+            stmt.setString(9, product.getCurrency() != null ? product.getCurrency() : "TND");
+            stmt.setString(10, product.getOriginCriteria() != null ? product.getOriginCriteria() : "");
             stmt.setLong(11, product.getId());
 
-            return stmt.executeUpdate() > 0;
+            System.out.println("[DEBUG] Executing UPDATE SQL=" + sql + " params=[1=" + product.getCompanyId() + ",2='"
+                    + product.getName() + "',3='" + (product.getDescription() != null ? product.getDescription() : "")
+                    + "',4='" + product.getHsCode() + "',5='" + categoryId + "',6='"
+                    + (product.getQuantity() != null ? product.getQuantity() : 0) + "',7='"
+                    + (product.getUnit() != null ? product.getUnit() : "") + "',8='"
+                    + (product.getUnitPrice() != null ? product.getUnitPrice() : 0) + "',9='"
+                    + (product.getCurrency() != null ? product.getCurrency() : "TND") + "',10='"
+                    + (product.getOriginCriteria() != null ? product.getOriginCriteria() : "") + "',11='"
+                    + product.getId() + "']");
+
+            boolean updated;
+            try {
+                updated = stmt.executeUpdate() > 0;
+            } catch (SQLException ex) {
+                System.out.println("[ERROR] UPDATE failed, printing stacktrace and values");
+                ex.printStackTrace();
+                throw ex;
+            }
+
+            System.out.println("[DEBUG] Updating product id=" + product.getId() + " => updated=" + updated);
+
+            return updated;
         }
     }
 
@@ -108,7 +199,7 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         String sql = "DELETE FROM products WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
             return stmt.executeUpdate() > 0;
@@ -120,7 +211,7 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         String sql = "SELECT COUNT(*) FROM products WHERE id = ?";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
 
@@ -139,8 +230,8 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         String sql = "SELECT COUNT(*) FROM products";
 
         try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getLong(1);
@@ -154,8 +245,8 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         String sql = "SELECT * FROM products WHERE company_id = ? ORDER BY name";
         List<Product> products = new ArrayList<>();
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, companyId);
 
@@ -170,13 +261,22 @@ public class ProductDAO implements GenericDAO<Product, Long> {
     }
 
     public List<Product> findByCategory(ProductCategory category) throws SQLException {
-        String sql = "SELECT * FROM products WHERE category = ? ORDER BY name";
+        String sql = "SELECT * FROM products WHERE category_id = ? ORDER BY name";
         List<Product> products = new ArrayList<>();
 
-        try (Connection conn = DatabasePlugin.getInstance().getConn();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = DatabasePlugin.getInstance().getConn();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, category.name());
+            Long catId = category.getId();
+            if (catId == null) {
+                ProductCategoryDAO pcDao = new ProductCategoryDAO();
+                ProductCategory found = pcDao.findByName(category.getName());
+                if (found != null)
+                    catId = found.getId();
+            }
+            if (catId == null)
+                return products;
+            stmt.setLong(1, catId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -193,14 +293,23 @@ public class ProductDAO implements GenericDAO<Product, Long> {
         product.setId(rs.getLong("id"));
         product.setCompanyId(rs.getLong("company_id"));
         product.setName(rs.getString("name"));
-        product.setDescription(rs.getString("description"));
+        product.setDescription(rs.getString("description") != null ? rs.getString("description") : "");
         product.setHsCode(rs.getString("hs_code"));
-        product.setCategory(ProductCategory.valueOf(rs.getString("category")));
-        product.setQuantity(rs.getDouble("quantity"));
-        product.setUnit(rs.getString("unit"));
-        product.setUnitPrice(rs.getDouble("unit_price"));
-        product.setCurrency(rs.getString("currency"));
-        product.setOriginCriteria(rs.getString("origin_criteria"));
+        long catId = rs.getLong("category_id");
+        if (!rs.wasNull() && catId > 0) {
+            ProductCategoryDAO pcDao = new ProductCategoryDAO();
+            ProductCategory pc = pcDao.findById(catId);
+            product.setCategory(pc != null ? pc : ProductCategory.valueOf("OTHER"));
+        } else {
+            product.setCategory(ProductCategory.valueOf("OTHER"));
+        }
+        double qty = rs.getDouble("quantity");
+        product.setQuantity(!rs.wasNull() ? qty : 0.0);
+        product.setUnit(rs.getString("unit") != null ? rs.getString("unit") : "");
+        double up = rs.getDouble("unit_price");
+        product.setUnitPrice(!rs.wasNull() ? up : 0.0);
+        product.setCurrency(rs.getString("currency") != null ? rs.getString("currency") : "TND");
+        product.setOriginCriteria(rs.getString("origin_criteria") != null ? rs.getString("origin_criteria") : "");
         return product;
     }
 }

@@ -13,11 +13,16 @@ import lombok.Setter;
 
 public class CreatePartnershipDialogController {
 
-    @FXML private Text partnerCompanyName;
-    @FXML private Text companyDetails;
-    @FXML private ComboBox<String> typeField;
-    @FXML private TextArea notesField;
-    @FXML private Label errorLabel;
+    @FXML
+    private Text partnerCompanyName;
+    @FXML
+    private Text companyDetails;
+    @FXML
+    private ComboBox<String> typeField;
+    @FXML
+    private TextArea notesField;
+    @FXML
+    private Label errorLabel;
 
     private PartnershipController partnershipController;
     private CompanyController companyController;
@@ -45,7 +50,8 @@ public class CreatePartnershipDialogController {
     }
 
     private void populateCompanyInfo() {
-        if (partnerCompany == null) return;
+        if (partnerCompany == null)
+            return;
 
         partnerCompanyName.setText("Partner with " + partnerCompany.getCompanyName());
 
@@ -84,10 +90,8 @@ public class CreatePartnershipDialogController {
 
             Partnership partnership = partnershipController.createPartnership(
                     sourceCompanyId,
-                    targetCompanyId,
                     type,
-                    notes
-            );
+                    notes);
 
             if (partnership != null) {
                 if (onSuccessCallback != null) {
@@ -107,8 +111,7 @@ public class CreatePartnershipDialogController {
     private Long ensureCompanyExists(Company company) {
         Company existing = companyController.findByNameAndCountry(
                 company.getCompanyName(),
-                company.getCountry()
-        );
+                company.getCountry());
 
         if (existing != null) {
             System.out.println("✓ Partner company already exists in database: " + existing.getId());
@@ -123,8 +126,7 @@ public class CreatePartnershipDialogController {
                 company.getAddress(),
                 company.getContactEmail(),
                 company.getContactPhone(),
-                null
-        );
+                null);
 
         if (created != null) {
             created.setCountry(company.getCountry());

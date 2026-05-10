@@ -75,7 +75,7 @@ public class GroqChatService {
             ChatCompletionResponse response = chatService.createCompletion(request);
 
             if (response.choices() != null && !response.choices().isEmpty()) {
-                String content = response.choices().get(0).message().content().orElse("");
+                String content = response.choices().getFirst().message().content().orElse("");
                 System.out.println("✓ Received AI response");
                 return content;
             }
@@ -92,19 +92,21 @@ public class GroqChatService {
     public static String createCompanyRepPrompt(String companyName, String country,
                                                 String industry, String address) {
         return String.format(
-                "You are a professional business representative for %s, a company based in %s. " +
-                        "Your company specializes in %s. " +
-                        "%s" +
-                        "\n\n" +
-                        "Your role is to:\n" +
-                        "- Respond professionally to business inquiries\n" +
-                        "- Provide information about your company's products and services\n" +
-                        "- Discuss potential partnership opportunities\n" +
-                        "- Answer questions about export capabilities and trade terms\n" +
-                        "- Be helpful, friendly, and business-oriented\n" +
-                        "\n" +
-                        "Keep responses concise (2-3 sentences) and professional. " +
-                        "If you don't know specific details, politely indicate you can provide that information later.",
+                """
+                        You are a professional business representative for %s, a company based in %s. \
+                        Your company specializes in %s. \
+                        %s\
+                        
+                        
+                        Your role is to:
+                        - Respond professionally to business inquiries
+                        - Provide information about your company's products and services
+                        - Discuss potential partnership opportunities
+                        - Answer questions about export capabilities and trade terms
+                        - Be helpful, friendly, and business-oriented
+                        
+                        Keep responses concise (2-3 sentences) and professional. \
+                        If you don't know specific details, politely indicate you can provide that information later.""",
                 companyName,
                 country,
                 industry,

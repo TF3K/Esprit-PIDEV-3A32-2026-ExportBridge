@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class Partnership {
     private Long id;
     private Long sourceCompanyId;
-    private Long targetCompanyId;
     private PartnershipStatus status;
     private PartnershipType type;
     private LocalDateTime establishedDate;
@@ -24,5 +23,14 @@ public class Partnership {
     public boolean isActive() {
         return status == PartnershipStatus.ACTIVE &&
                 (terminatedDate == null || terminatedDate.isAfter(LocalDateTime.now()));
+    }
+
+    // Backwards-compatible accessors for legacy code that used source/target fields
+    public Long getSourceCompanyId() {
+        return this.sourceCompanyId;
+    }
+
+    public void setSourceCompanyId(Long id) {
+        this.sourceCompanyId = id;
     }
 }

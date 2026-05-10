@@ -67,18 +67,27 @@ import java.util.stream.Collectors;
 
 public class ProductsViewController {
 
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> categoryFilter;
-    @FXML private Text resultCount;
-    @FXML private GridPane productsGrid;
-    @FXML private VBox emptyState;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> categoryFilter;
+    @FXML
+    private Text resultCount;
+    @FXML
+    private GridPane productsGrid;
+    @FXML
+    private VBox emptyState;
 
-    // Statistics labels
-    @FXML private Text statTotalProducts;
-    @FXML private Text statCategories;
-    @FXML private Text statTotalValue;
-    @FXML private Text statAvgPrice;
-    @FXML private Text statTotalStock;
+    @FXML
+    private Text statTotalProducts;
+    @FXML
+    private Text statCategories;
+    @FXML
+    private Text statTotalValue;
+    @FXML
+    private Text statAvgPrice;
+    @FXML
+    private Text statTotalStock;
 
     private ProductController productController;
     private List<Product> allProducts;
@@ -115,9 +124,6 @@ public class ProductsViewController {
         displayProducts(allProducts);
     }
 
-    // ==============================
-    // STATISTICS
-    // ==============================
     private void updateStatistics() {
         if (allProducts == null || allProducts.isEmpty()) {
             statTotalProducts.setText("0");
@@ -162,9 +168,6 @@ public class ProductsViewController {
         return String.format("%.0f", value);
     }
 
-    // ==============================
-    // DISPLAY PRODUCTS
-    // ==============================
     private void displayProducts(List<Product> products) {
         productsGrid.getChildren().clear();
 
@@ -205,7 +208,6 @@ public class ProductsViewController {
         card.setPrefWidth(350);
         card.setAlignment(Pos.TOP_LEFT);
 
-        // Product icon/image placeholder
         StackPane imagePlaceholder = new StackPane();
         imagePlaceholder.getStyleClass().add("product-image");
         imagePlaceholder.setPrefHeight(180);
@@ -213,21 +215,18 @@ public class ProductsViewController {
         emoji.setStyle("-fx-font-size: 64px;");
         imagePlaceholder.getChildren().add(emoji);
 
-        // Product name
         Text name = new Text(product.getName());
         name.getStyleClass().add("product-name");
         name.setWrappingWidth(330);
 
         card.getChildren().addAll(imagePlaceholder, name);
 
-        // SKU
         if (product.getHsCode() != null && !product.getHsCode().isEmpty()) {
             Text sku = new Text("SKU: " + product.getHsCode());
             sku.getStyleClass().add("product-sku");
             card.getChildren().add(sku);
         }
 
-        // Description
         if (product.getDescription() != null && !product.getDescription().isEmpty()) {
             Text description = new Text(product.getDescription());
             description.getStyleClass().add("product-description");
@@ -235,7 +234,6 @@ public class ProductsViewController {
             card.getChildren().add(description);
         }
 
-        // Price and stock info
         HBox infoRow = new HBox(20);
         infoRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -267,13 +265,11 @@ public class ProductsViewController {
 
         infoRow.getChildren().addAll(priceBox, stockBox, totalBox);
 
-        // Category badge
         HBox categoryBox = new HBox();
         Label categoryBadge = new Label(formatCategoryName(product.getCategory().name()));
         categoryBadge.getStyleClass().add("category-badge");
         categoryBox.getChildren().add(categoryBadge);
 
-        // Action buttons row 1: Edit / Delete
         HBox buttonRow1 = new HBox(8);
         buttonRow1.setAlignment(Pos.CENTER_LEFT);
 
@@ -287,7 +283,6 @@ public class ProductsViewController {
 
         buttonRow1.getChildren().addAll(editBtn, deleteBtn);
 
-        // Action buttons row 2: QR Code / Email / PDF
         HBox buttonRow2 = new HBox(8);
         buttonRow2.setAlignment(Pos.CENTER_LEFT);
 
@@ -318,15 +313,11 @@ public class ProductsViewController {
         return card;
     }
 
-    // ==============================
-    // QR CODE (JavaFX Native)
-    // ==============================
     private void handleShowQRCode(Product product) {
         try {
             String qrContent = buildProductQRContent(product);
             WritableImage qrImage = generateQRCodeImageFX(qrContent, 300, 300);
 
-            // Build dialog
             Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setTitle("QR Code - " + product.getName());
@@ -368,18 +359,19 @@ public class ProductsViewController {
     private String buildProductQRContent(Product product) {
         StringBuilder sb = new StringBuilder();
         sb.append("PRODUCT: ").append(product.getName()).append("\n");
-        if (product.getHsCode() != null) sb.append("HS Code: ").append(product.getHsCode()).append("\n");
-        if (product.getCategory() != null) sb.append("Category: ").append(formatCategoryName(product.getCategory().name())).append("\n");
-        if (product.getDescription() != null) sb.append("Description: ").append(product.getDescription()).append("\n");
-        sb.append("Price: ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency())).append("\n");
+        if (product.getHsCode() != null)
+            sb.append("HS Code: ").append(product.getHsCode()).append("\n");
+        if (product.getCategory() != null)
+            sb.append("Category: ").append(formatCategoryName(product.getCategory().name())).append("\n");
+        if (product.getDescription() != null)
+            sb.append("Description: ").append(product.getDescription()).append("\n");
+        sb.append("Price: ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency()))
+                .append("\n");
         sb.append("Stock: ").append(String.format("%.0f %s", product.getQuantity(), product.getUnit())).append("\n");
         sb.append("Total Value: ").append(String.format("%.2f", product.getTotalValue()));
         return sb.toString();
     }
 
-    /**
-     * Generate QR Code as JavaFX WritableImage (no SwingFX needed)
-     */
     private WritableImage generateQRCodeImageFX(String text, int width, int height) throws WriterException {
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, width, height);
@@ -407,7 +399,6 @@ public class ProductsViewController {
 
         if (file != null) {
             try {
-                // Convert JavaFX Image to BufferedImage for saving
                 BufferedImage bufferedImage = convertToBufferedImage(qrImage);
                 ImageIO.write(bufferedImage, "PNG", file);
                 showSuccess("QR code saved to " + file.getName());
@@ -418,9 +409,6 @@ public class ProductsViewController {
         }
     }
 
-    /**
-     * Convert JavaFX WritableImage to BufferedImage for file saving
-     */
     private BufferedImage convertToBufferedImage(WritableImage fxImage) {
         int width = (int) fxImage.getWidth();
         int height = (int) fxImage.getHeight();
@@ -429,9 +417,9 @@ public class ProductsViewController {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Color fxColor = fxImage.getPixelReader().getColor(x, y);
-                int rgb = ((int)(fxColor.getRed() * 255) << 16) |
-                        ((int)(fxColor.getGreen() * 255) << 8) |
-                        (int)(fxColor.getBlue() * 255);
+                int rgb = ((int) (fxColor.getRed() * 255) << 16) |
+                        ((int) (fxColor.getGreen() * 255) << 8) |
+                        (int) (fxColor.getBlue() * 255);
                 bufferedImage.setRGB(x, y, rgb);
             }
         }
@@ -439,9 +427,6 @@ public class ProductsViewController {
         return bufferedImage;
     }
 
-    // ==============================
-    // WHATSAPP PRODUCT INFO
-    // ==============================
     private void handleWhatsAppProduct(Product product) {
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -454,14 +439,13 @@ public class ProductsViewController {
         Text title = new Text("Send Product Info via WhatsApp");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700; -fx-fill: #25D366;");
 
-        // Phone number
         Label phoneLabel = new Label("Recipient Phone Number *");
         phoneLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextField phoneField = new TextField();
         phoneField.setPromptText("+216 XX XXX XXX (with country code)");
-        phoneField.setStyle("-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
+        phoneField.setStyle(
+                "-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Additional message
         Label msgLabel = new Label("Additional Message");
         msgLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextArea msgField = new TextArea();
@@ -469,9 +453,9 @@ public class ProductsViewController {
         msgField.setPrefRowCount(3);
         msgField.setStyle("-fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Product preview
         VBox previewBox = new VBox(4);
-        previewBox.setStyle("-fx-background-color: #f0fdf4; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #bbf7d0; -fx-border-radius: 8;");
+        previewBox.setStyle(
+                "-fx-background-color: #f0fdf4; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #bbf7d0; -fx-border-radius: 8;");
         Text previewTitle = new Text("Message Preview:");
         previewTitle.setStyle("-fx-font-size: 12px; -fx-fill: #6b7280;");
         Text previewContent = new Text(buildWhatsAppMessage(product, ""));
@@ -479,7 +463,6 @@ public class ProductsViewController {
         previewContent.setWrappingWidth(420);
         previewBox.getChildren().addAll(previewTitle, previewContent);
 
-        // Update preview when message changes
         msgField.textProperty().addListener((obs, oldVal, newVal) -> {
             previewContent.setText(buildWhatsAppMessage(product, newVal));
         });
@@ -488,7 +471,6 @@ public class ProductsViewController {
         errorLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 13px;");
         errorLabel.setVisible(false);
 
-        // Buttons
         HBox btnBox = new HBox(12);
         btnBox.setAlignment(Pos.CENTER_RIGHT);
         Button cancelBtn = new Button("Cancel");
@@ -544,18 +526,20 @@ public class ProductsViewController {
         sb.append("📦 *Product Information*\n\n");
         sb.append("*Name:* ").append(product.getName()).append("\n");
         sb.append("*Category:* ").append(formatCategoryName(product.getCategory().name())).append("\n");
-        if (product.getHsCode() != null) sb.append("*HS Code:* ").append(product.getHsCode()).append("\n");
-        if (product.getDescription() != null) sb.append("*Description:* ").append(product.getDescription()).append("\n");
-        sb.append("*Unit Price:* ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency())).append("\n");
-        sb.append("*Available Stock:* ").append(String.format("%.0f %s", product.getQuantity(), product.getUnit())).append("\n");
-        sb.append("*Total Value:* ").append(String.format("%.2f %s", product.getTotalValue(), product.getCurrency())).append("\n");
+        if (product.getHsCode() != null)
+            sb.append("*HS Code:* ").append(product.getHsCode()).append("\n");
+        if (product.getDescription() != null)
+            sb.append("*Description:* ").append(product.getDescription()).append("\n");
+        sb.append("*Unit Price:* ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency()))
+                .append("\n");
+        sb.append("*Available Stock:* ").append(String.format("%.0f %s", product.getQuantity(), product.getUnit()))
+                .append("\n");
+        sb.append("*Total Value:* ").append(String.format("%.2f %s", product.getTotalValue(), product.getCurrency()))
+                .append("\n");
         sb.append("\n_Sent via ExportBridge_");
         return sb.toString();
     }
 
-    // ==============================
-    // EMAIL PRODUCT INFO
-    // ==============================
     private void handleEmailProduct(Product product) {
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -568,27 +552,25 @@ public class ProductsViewController {
         Text title = new Text("Send Product Info by Email");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: 700; -fx-fill: #1a1d29;");
 
-        // Recipient
         Label toLabel = new Label("Recipient Email *");
         toLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextField toField = new TextField();
         toField.setPromptText("partner@company.com");
         toField.setStyle("-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Recipient name
         Label nameLabel = new Label("Recipient Name");
         nameLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextField nameField = new TextField();
         nameField.setPromptText("John Doe");
-        nameField.setStyle("-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
+        nameField.setStyle(
+                "-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Subject (pre-filled)
         Label subLabel = new Label("Subject");
         subLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextField subField = new TextField("Product Information: " + product.getName());
-        subField.setStyle("-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
+        subField.setStyle(
+                "-fx-padding: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Additional message
         Label msgLabel = new Label("Additional Message");
         msgLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #374151;");
         TextArea msgField = new TextArea();
@@ -596,9 +578,9 @@ public class ProductsViewController {
         msgField.setPrefRowCount(3);
         msgField.setStyle("-fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-background-radius: 8;");
 
-        // Product preview
         VBox previewBox = new VBox(4);
-        previewBox.setStyle("-fx-background-color: #f9fafb; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;");
+        previewBox.setStyle(
+                "-fx-background-color: #f9fafb; -fx-padding: 12; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;");
         Text previewTitle = new Text("Product Details (will be included):");
         previewTitle.setStyle("-fx-font-size: 12px; -fx-fill: #6b7280;");
         Text previewContent = new Text(buildProductEmailPreview(product));
@@ -634,8 +616,7 @@ public class ProductsViewController {
                 String body = buildProductEmailBody(product, msgField.getText());
                 boolean success = EmailService.sendEmailToPartner(
                         email, nameField.getText().trim(),
-                        subField.getText(), body
-                );
+                        subField.getText(), body);
 
                 javafx.application.Platform.runLater(() -> {
                     if (success) {
@@ -685,17 +666,19 @@ public class ProductsViewController {
         sb.append("--- Product Information ---\n\n");
         sb.append("Product: ").append(product.getName()).append("\n");
         sb.append("Category: ").append(formatCategoryName(product.getCategory().name())).append("\n");
-        if (product.getHsCode() != null) sb.append("HS Code: ").append(product.getHsCode()).append("\n");
-        if (product.getDescription() != null) sb.append("Description: ").append(product.getDescription()).append("\n");
-        sb.append("Unit Price: ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency())).append("\n");
-        sb.append("Available Stock: ").append(String.format("%.0f %s", product.getQuantity(), product.getUnit())).append("\n");
-        sb.append("Total Value: ").append(String.format("%.2f %s", product.getTotalValue(), product.getCurrency())).append("\n");
+        if (product.getHsCode() != null)
+            sb.append("HS Code: ").append(product.getHsCode()).append("\n");
+        if (product.getDescription() != null)
+            sb.append("Description: ").append(product.getDescription()).append("\n");
+        sb.append("Unit Price: ").append(String.format("%.2f %s", product.getUnitPrice(), product.getCurrency()))
+                .append("\n");
+        sb.append("Available Stock: ").append(String.format("%.0f %s", product.getQuantity(), product.getUnit()))
+                .append("\n");
+        sb.append("Total Value: ").append(String.format("%.2f %s", product.getTotalValue(), product.getCurrency()))
+                .append("\n");
         return sb.toString();
     }
 
-    // ==============================
-    // PDF EXPORT (single + all)
-    // ==============================
     private void handleExportSinglePdf(Product product) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export Product PDF");
@@ -704,7 +687,8 @@ public class ProductsViewController {
 
         Stage stage = (Stage) productsGrid.getScene().getWindow();
         File file = fileChooser.showSaveDialog(stage);
-        if (file == null) return;
+        if (file == null)
+            return;
 
         try {
             exportProductsToPdf(java.util.List.of(product), file);
@@ -728,7 +712,8 @@ public class ProductsViewController {
 
         Stage stage = (Stage) productsGrid.getScene().getWindow();
         File file = fileChooser.showSaveDialog(stage);
-        if (file == null) return;
+        if (file == null)
+            return;
 
         try {
             exportProductsToPdf(allProducts, file);
@@ -747,7 +732,6 @@ public class ProductsViewController {
         PdfFont regular = PdfFontFactory.createFont(StandardFonts.HELVETICA);
         DeviceRgb primary = new DeviceRgb(79, 70, 229);
 
-        // Title
         document.add(new Paragraph("ExportBridge - Product Catalog")
                 .setFont(bold).setFontSize(22).setFontColor(primary)
                 .setTextAlignment(TextAlignment.CENTER)
@@ -759,13 +743,13 @@ public class ProductsViewController {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setMarginBottom(20));
 
-        // Statistics summary (if multiple products)
         if (products.size() > 1) {
             double totalValue = products.stream().mapToDouble(Product::getTotalValue).sum();
-            double avgPrice = products.stream().mapToDouble(p -> p.getUnitPrice() != null ? p.getUnitPrice() : 0).average().orElse(0);
+            double avgPrice = products.stream().mapToDouble(p -> p.getUnitPrice() != null ? p.getUnitPrice() : 0)
+                    .average().orElse(0);
             long catCount = products.stream().map(Product::getCategory).distinct().count();
 
-            Table statsTable = new Table(UnitValue.createPercentArray(new float[]{1, 1, 1, 1}))
+            Table statsTable = new Table(UnitValue.createPercentArray(new float[] { 1, 1, 1, 1 }))
                     .useAllAvailableWidth()
                     .setMarginBottom(20);
 
@@ -777,33 +761,44 @@ public class ProductsViewController {
             document.add(statsTable);
         }
 
-        // Products table
-        Table table = new Table(UnitValue.createPercentArray(new float[]{3, 2, 1.5f, 1.5f, 1.5f, 2}))
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 3, 2, 1.5f, 1.5f, 1.5f, 2 }))
                 .useAllAvailableWidth();
 
-        // Header
-        String[] headers = {"Product", "Category", "HS Code", "Price", "Stock", "Total Value"};
+        String[] headers = { "Product", "Category", "HS Code", "Price", "Stock", "Total Value" };
         for (String h : headers) {
-            table.addHeaderCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(h).setFont(bold).setFontSize(10).setFontColor(ColorConstants.WHITE))
+            table.addHeaderCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(h).setFont(bold).setFontSize(10).setFontColor(ColorConstants.WHITE))
                     .setBackgroundColor(primary).setPadding(8));
         }
 
-        // Rows
         boolean alt = false;
         for (Product p : products) {
             DeviceRgb bg = alt ? new DeviceRgb(249, 250, 251) : new DeviceRgb(255, 255, 255);
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(p.getName()).setFont(regular).setFontSize(9)).setBackgroundColor(bg).setPadding(6));
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(formatCategoryName(p.getCategory().name())).setFont(regular).setFontSize(9)).setBackgroundColor(bg).setPadding(6));
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(p.getHsCode() != null ? p.getHsCode() : "-").setFont(regular).setFontSize(9)).setBackgroundColor(bg).setPadding(6));
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(String.format("%.2f %s", p.getUnitPrice(), p.getCurrency())).setFont(regular).setFontSize(9)).setBackgroundColor(bg).setPadding(6));
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(String.format("%.0f %s", p.getQuantity(), p.getUnit())).setFont(regular).setFontSize(9)).setBackgroundColor(bg).setPadding(6));
-            table.addCell(new com.itextpdf.layout.element.Cell().add(new Paragraph(String.format("%.2f", p.getTotalValue())).setFont(bold).setFontSize(9).setFontColor(primary)).setBackgroundColor(bg).setPadding(6));
+            table.addCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(p.getName()).setFont(regular).setFontSize(9)).setBackgroundColor(bg)
+                    .setPadding(6));
+            table.addCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(formatCategoryName(p.getCategory().name())).setFont(regular).setFontSize(9))
+                    .setBackgroundColor(bg).setPadding(6));
+            table.addCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(p.getHsCode() != null ? p.getHsCode() : "-").setFont(regular).setFontSize(9))
+                    .setBackgroundColor(bg).setPadding(6));
+            table.addCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(String.format("%.2f %s", p.getUnitPrice(), p.getCurrency())).setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg).setPadding(6));
+            table.addCell(new com.itextpdf.layout.element.Cell()
+                    .add(new Paragraph(String.format("%.0f %s", p.getQuantity(), p.getUnit())).setFont(regular)
+                            .setFontSize(9))
+                    .setBackgroundColor(bg).setPadding(6));
+            table.addCell(
+                    new com.itextpdf.layout.element.Cell().add(new Paragraph(String.format("%.2f", p.getTotalValue()))
+                            .setFont(bold).setFontSize(9).setFontColor(primary)).setBackgroundColor(bg).setPadding(6));
             alt = !alt;
         }
 
         document.add(table);
 
-        // Footer
         document.add(new Paragraph("\n© ExportBridge - International Export Management")
                 .setFont(regular).setFontSize(8).setFontColor(ColorConstants.GRAY)
                 .setTextAlignment(TextAlignment.CENTER));
@@ -814,14 +809,12 @@ public class ProductsViewController {
     private com.itextpdf.layout.element.Cell createStatCell(String label, String value, PdfFont bold, PdfFont regular) {
         return new com.itextpdf.layout.element.Cell()
                 .add(new Paragraph(value).setFont(bold).setFontSize(16).setTextAlignment(TextAlignment.CENTER))
-                .add(new Paragraph(label).setFont(regular).setFontSize(9).setFontColor(ColorConstants.GRAY).setTextAlignment(TextAlignment.CENTER))
+                .add(new Paragraph(label).setFont(regular).setFontSize(9).setFontColor(ColorConstants.GRAY)
+                        .setTextAlignment(TextAlignment.CENTER))
                 .setPadding(10)
                 .setBorder(new com.itextpdf.layout.borders.SolidBorder(new DeviceRgb(229, 231, 235), 1));
     }
 
-    // ==============================
-    // PDF IMPORT
-    // ==============================
     @FXML
     private void handleImportPdf() {
         FileChooser fileChooser = new FileChooser();
@@ -830,7 +823,8 @@ public class ProductsViewController {
 
         Stage stage = (Stage) productsGrid.getScene().getWindow();
         File file = fileChooser.showOpenDialog(stage);
-        if (file == null) return;
+        if (file == null)
+            return;
 
         try {
             List<Product> imported = importProductsFromPdf(file);
@@ -839,7 +833,6 @@ public class ProductsViewController {
                 return;
             }
 
-            // Confirm import
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Import Products");
             confirm.setHeaderText("Found " + imported.size() + " product(s)");
@@ -853,9 +846,9 @@ public class ProductsViewController {
                         Product created = productController.createProduct(
                                 currentCompanyId, p.getName(), p.getDescription(),
                                 p.getHsCode(), p.getCategory(),
-                                p.getQuantity(), p.getUnit(), p.getUnitPrice()
-                        );
-                        if (created != null) added++;
+                                p.getQuantity(), p.getUnit(), p.getUnitPrice());
+                        if (created != null)
+                            added++;
                     }
                     showSuccess(added + " product(s) imported successfully!");
                     loadProducts();
@@ -884,7 +877,8 @@ public class ProductsViewController {
 
         for (String line : lines) {
             line = line.trim();
-            if (line.isEmpty()) continue;
+            if (line.isEmpty())
+                continue;
 
             if (line.startsWith("ExportBridge") || line.startsWith("Generated") ||
                     line.startsWith("Total Products") || line.startsWith("©") ||
@@ -907,7 +901,8 @@ public class ProductsViewController {
     private Product parseProductLine(String line) {
         String[] parts = line.split("\\s{2,}");
 
-        if (parts.length < 4) return null;
+        if (parts.length < 4)
+            return null;
 
         Product p = new Product();
         p.setName(parts[0].trim());
@@ -934,28 +929,31 @@ public class ProductsViewController {
                 String[] priceParts = s.split("\\s+");
                 p.setUnitPrice(Double.parseDouble(priceParts[0]));
                 p.setCurrency(priceParts[1]);
-            }
-            else if (s.matches("\\d+\\.?\\d*\\s+[a-zA-Z]+") && p.getQuantity() == null) {
+            } else if (s.matches("\\d+\\.?\\d*\\s+[a-zA-Z]+") && p.getQuantity() == null) {
                 String[] stockParts = s.split("\\s+");
                 p.setQuantity(Double.parseDouble(stockParts[0]));
-                if (stockParts.length > 1) p.setUnit(stockParts[1]);
+                if (stockParts.length > 1)
+                    p.setUnit(stockParts[1]);
             }
         }
 
-        if (p.getUnitPrice() == null) p.setUnitPrice(0.0);
-        if (p.getQuantity() == null) p.setQuantity(0.0);
-        if (p.getUnit() == null) p.setUnit("units");
-        if (p.getCurrency() == null) p.setCurrency("TND");
-        if (p.getCategory() == null) p.setCategory(ProductCategory.OTHER);
+        if (p.getUnitPrice() == null)
+            p.setUnitPrice(0.0);
+        if (p.getQuantity() == null)
+            p.setQuantity(0.0);
+        if (p.getUnit() == null)
+            p.setUnit("units");
+        if (p.getCurrency() == null)
+            p.setCurrency("TND");
+        if (p.getCategory() == null)
+            p.setCategory(ProductCategory.OTHER);
 
-        if (p.getName() == null || p.getName().isEmpty()) return null;
+        if (p.getName() == null || p.getName().isEmpty())
+            return null;
 
         return p;
     }
 
-    // ==============================
-    // EXISTING ACTIONS
-    // ==============================
     @FXML
     private void handleAddProduct() {
         showProductDialog(null);
@@ -1059,19 +1057,21 @@ public class ProductsViewController {
     }
 
     private String getCategoryEmoji(ProductCategory category) {
-        switch (category) {
-            case OLIVE_OIL: return "🫒";
-            case DATES: return "🌴";
-            case TEXTILES: return "🧵";
-            case ELECTRONICS: return "📱";
-            case FOOD_BEVERAGE: return "🍽️";
-            case SEAFOOD: return "🐟";
-            case HANDICRAFTS: return "🎨";
-            case MACHINERY: return "⚙️";
-            case COSMETICS: return "💄";
-            case CERAMICS: return "🏺";
-            default: return "📦";
-        }
+        if (category == null)
+            return "📦";
+        return switch (category.name()) {
+            case "OLIVE_OIL" -> "🫒";
+            case "DATES" -> "🌴";
+            case "TEXTILES" -> "🧵";
+            case "ELECTRONICS" -> "📱";
+            case "FOOD_BEVERAGE" -> "🍽️";
+            case "SEAFOOD" -> "🐟";
+            case "HANDICRAFTS" -> "🎨";
+            case "MACHINERY" -> "⚙️";
+            case "COSMETICS" -> "💄";
+            case "CERAMICS" -> "🏺";
+            default -> "📦";
+        };
     }
 
     private void showSuccess(String message) {

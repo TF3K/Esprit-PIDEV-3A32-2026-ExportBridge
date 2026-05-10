@@ -13,6 +13,7 @@ public class Product {
     private String name;
     private String hsCode;
     private String description;
+    private String slug;
     private ProductCategory category;
     private Double quantity;
     private String unit;
@@ -21,7 +22,16 @@ public class Product {
     private String originCriteria;
 
     public Double getTotalValue() {
-        if (quantity == null || unitPrice == null) return 0.0;
+        if (quantity == null || unitPrice == null)
+            return 0.0;
         return quantity * unitPrice;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 }

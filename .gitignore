@@ -40,3 +40,5 @@ build/
 
 ### DotEnv ###
 .env
+
+.history/

@@ -10,19 +10,31 @@ import javafx.stage.Stage;
 
 public class ProductDialogController {
 
-    @FXML private Text dialogTitle;
-    @FXML private TextField nameField;
-    @FXML private ComboBox<String> categoryField;
-    @FXML private TextField hsCodeField;
-    @FXML private TextArea descriptionField;
-    @FXML private TextField quantityField;
-    @FXML private TextField unitField;
-    @FXML private TextField priceField;
-    @FXML private ComboBox<String> currencyField;
-    @FXML private Label errorLabel;
+    @FXML
+    private Text dialogTitle;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField slugField;
+    @FXML
+    private ComboBox<String> categoryField;
+    @FXML
+    private TextField hsCodeField;
+    @FXML
+    private TextArea descriptionField;
+    @FXML
+    private TextField quantityField;
+    @FXML
+    private TextField unitField;
+    @FXML
+    private TextField priceField;
+    @FXML
+    private ComboBox<String> currencyField;
+    @FXML
+    private Label errorLabel;
 
     private ProductController productController;
-    private Product product;  // null for new product, set for editing
+    private Product product; // null for new product, set for editing
     private Long companyId;
     private Runnable onSaveCallback;
 
@@ -38,6 +50,18 @@ public class ProductDialogController {
         // Setup currency dropdown
         currencyField.getItems().addAll("TND", "EUR", "USD");
         currencyField.setValue("TND");
+
+        // auto-generate slug from name
+        nameField.textProperty().addListener((obs, oldV, newV) -> {
+            if (newV == null || newV.isBlank()) {
+                slugField.setText("");
+            } else {
+                String s = newV.trim().toLowerCase();
+                s = s.replaceAll("[^a-z0-9\\s-]", "");
+                s = s.replaceAll("[\\s-]+", "-");
+                slugField.setText(s);
+            }
+        });
     }
 
     public void setProduct(Product product) {
@@ -61,6 +85,8 @@ public class ProductDialogController {
 
     private void populateFields() {
         nameField.setText(product.getName());
+        if (product.getSlug() != null)
+            slugField.setText(product.getSlug());
         categoryField.setValue(formatCategoryName(product.getCategory().name()));
         hsCodeField.setText(product.getHsCode());
         descriptionField.setText(product.getDescription());
@@ -93,12 +119,12 @@ public class ProductDialogController {
                 // Create new product
                 Product newProduct = productController.createProduct(
                         companyId, name, description, hsCode, category,
-                        quantity, unit, price
-                );
+                        quantity, unit, price);
                 success = newProduct != null;
             } else {
                 // Update existing product
                 product.setName(name);
+                product.setSlug(slugField.getText());
                 product.setCategory(category);
                 product.setHsCode(hsCode);
                 product.setDescription(description);

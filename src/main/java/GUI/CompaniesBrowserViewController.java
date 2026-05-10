@@ -5,7 +5,6 @@ import Entities.Company;
 import Entities.Market;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,18 +17,25 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CompaniesBrowserViewController {
 
-    @FXML private Button backButton;
-    @FXML private Text flagText;
-    @FXML private Text countryName;
-    @FXML private Text companyCount;
-    @FXML private TextField searchField;
-    @FXML private Text resultCount;
-    @FXML private VBox companiesList;
-    @FXML private VBox emptyState;
+    @FXML
+    private Button backButton;
+    @FXML
+    private Text flagText;
+    @FXML
+    private Text countryName;
+    @FXML
+    private Text companyCount;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Text resultCount;
+    @FXML
+    private VBox companiesList;
+    @FXML
+    private VBox emptyState;
 
     private CompanySeedController seedController;
     private Market currentMarket;
@@ -57,12 +63,16 @@ public class CompaniesBrowserViewController {
     }
 
     private void loadMarketCompanies() {
-        if (currentMarket == null) return;
+        if (currentMarket == null)
+            return;
 
-        flagText.setText(getCountryFlag(currentMarket.getCountryCode()));
+        flagText.setText(getCountryFlag(currentMarket.getCountryCode(), currentMarket.getName()));
         countryName.setText(currentMarket.getName() + " Companies");
 
-        allCompanies = seedController.getCompaniesForCountry(currentMarket.getName());
+        allCompanies = seedController.getMergedCompaniesForMarketCountry(
+                currentMarket.getCountryCode(),
+                currentMarket.getName(),
+                currentMarket.getRegion());
 
         if (allCompanies == null || allCompanies.isEmpty()) {
             showEmptyState();
@@ -100,7 +110,6 @@ public class CompaniesBrowserViewController {
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPrefHeight(90);
 
-        // Company icon based on industry
         StackPane iconBox = new StackPane();
         iconBox.getStyleClass().add("company-icon");
         iconBox.setPrefSize(60, 60);
@@ -109,21 +118,18 @@ public class CompaniesBrowserViewController {
         icon.setStyle("-fx-font-size: 28px;");
         iconBox.getChildren().add(icon);
 
-        // Company info
         VBox infoBox = new VBox(6);
         HBox.setHgrow(infoBox, Priority.ALWAYS);
 
         Text name = new Text(company.getCompanyName());
         name.getStyleClass().add("company-name");
 
-        // Industry badge (domain)
         if (company.getDomain() != null && !company.getDomain().isEmpty()) {
             Label industryBadge = new Label(company.getDomain());
             industryBadge.getStyleClass().add("industry-badge");
             infoBox.getChildren().add(industryBadge);
         }
 
-        // Contact info row
         HBox contactRow = new HBox(20);
 
         if (company.getContactEmail() != null && !company.getContactEmail().isEmpty()) {
@@ -142,7 +148,6 @@ public class CompaniesBrowserViewController {
             infoBox.getChildren().add(contactRow);
         }
 
-        // Address if available
         if (company.getAddress() != null && !company.getAddress().isEmpty()) {
             Text address = new Text("📍 " + truncate(company.getAddress(), 80));
             address.getStyleClass().add("company-detail");
@@ -151,7 +156,6 @@ public class CompaniesBrowserViewController {
 
         infoBox.getChildren().add(0, name);
 
-        // Action buttons
         VBox actionBox = new VBox(8);
         actionBox.setAlignment(Pos.CENTER_RIGHT);
         actionBox.setPrefWidth(140);
@@ -188,7 +192,6 @@ public class CompaniesBrowserViewController {
                 reloadCompaniesBrowser();
             });
 
-            // Navigate to chat view
             contentArea.getChildren().clear();
             contentArea.getChildren().add(chatView);
 
@@ -220,27 +223,25 @@ public class CompaniesBrowserViewController {
         }
     }
 
-    /**
-     * Get icon for industry
-     */
     private String getIndustryIcon(String domain) {
-        if (domain == null) return "🏢";
+        if (domain == null)
+            return "🏢";
 
-        switch (domain) {
-            case "Food & Agriculture": return "🌾";
-            case "Pharmaceuticals & Healthcare": return "💊";
-            case "Technology & Electronics": return "💻";
-            case "Textiles & Fashion": return "👔";
-            case "Automotive & Transport": return "🚗";
-            case "Construction & Engineering": return "🏗️";
-            case "Energy & Resources": return "⚡";
-            case "Chemicals & Materials": return "🧪";
-            case "Import/Export & Trade": return "📦";
-            case "Manufacturing": return "🏭";
-            case "Retail & Distribution": return "🛒";
-            case "Business Services": return "💼";
-            default: return "🏢";
-        }
+        return switch (domain) {
+            case "Food & Agriculture" -> "🌾";
+            case "Pharmaceuticals & Healthcare" -> "💊";
+            case "Technology & Electronics" -> "💻";
+            case "Textiles & Fashion" -> "👔";
+            case "Automotive & Transport" -> "🚗";
+            case "Construction & Engineering" -> "🏗️";
+            case "Energy & Resources" -> "⚡";
+            case "Chemicals & Materials" -> "🧪";
+            case "Import/Export & Trade" -> "📦";
+            case "Manufacturing" -> "🏭";
+            case "Retail & Distribution" -> "🛒";
+            case "Business Services" -> "💼";
+            default -> "🏢";
+        };
     }
 
     private void showCompanyDetails(Company company) {
@@ -315,7 +316,7 @@ public class CompaniesBrowserViewController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to open partnership dialog");
+            showError();
         }
     }
 
@@ -327,11 +328,11 @@ public class CompaniesBrowserViewController {
         alert.showAndWait();
     }
 
-    private void showError(String message) {
+    private void showError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText("Failed to open partnership dialog");
         alert.showAndWait();
     }
 
@@ -344,10 +345,11 @@ public class CompaniesBrowserViewController {
             return;
         }
 
-        List<Company> filtered = allCompanies.stream()
-                .filter(c -> c.getCompanyName().toLowerCase().contains(query) ||
-                        (c.getAddress() != null && c.getAddress().toLowerCase().contains(query)))
-                .collect(Collectors.toList());
+        List<Company> filtered = seedController.searchMergedCompanies(
+                query,
+                currentMarket.getName() != null && !currentMarket.getName().isBlank()
+                        ? currentMarket.getName()
+                        : currentMarket.getCountryCode());
 
         displayCompanies(filtered);
     }
@@ -400,11 +402,11 @@ public class CompaniesBrowserViewController {
         if (contentArea == null) {
             System.err.println("✗ #contentArea not found in scene");
 
-            // Debug: print all nodes with fx:id
             System.out.println("⚙ Searching for nodes with IDs...");
             backButton.getScene().getRoot().lookupAll("*").forEach(node -> {
                 if (node.getId() != null) {
-                    System.out.println("  Found node with ID: " + node.getId() + " (" + node.getClass().getSimpleName() + ")");
+                    System.out.println(
+                            "  Found node with ID: " + node.getId() + " (" + node.getClass().getSimpleName() + ")");
                 }
             });
         } else {
@@ -423,42 +425,74 @@ public class CompaniesBrowserViewController {
         resultCount.setText("0 companies");
     }
 
-    private String getCountryFlag(String countryCode) {
-        switch (countryCode.toUpperCase()) {
-            case "FR": return "🇫🇷";
-            case "DE": return "🇩🇪";
-            case "IT": return "🇮🇹";
-            case "ES": return "🇪🇸";
-            case "BE": return "🇧🇪";
-            case "NL": return "🇳🇱";
-            case "PT": return "🇵🇹";
-            case "GR": return "🇬🇷";
-            case "AT": return "🇦🇹";
-            case "PL": return "🇵🇱";
-            case "SE": return "🇸🇪";
-            case "DK": return "🇩🇰";
-            case "UK": case "GB": return "🇬🇧";
-            default: return "🌍";
+    private String getCountryFlag(String countryCode, String countryName) {
+        if (countryCode != null && !countryCode.isEmpty()) {
+            return switch (countryCode.toUpperCase()) {
+                case "FR" -> "🇫🇷";
+                case "DE" -> "🇩🇪";
+                case "IT" -> "🇮🇹";
+                case "ES" -> "🇪🇸";
+                case "BE" -> "🇧🇪";
+                case "NL" -> "🇳🇱";
+                case "PT" -> "🇵🇹";
+                case "GR" -> "🇬🇷";
+                case "AT" -> "🇦🇹";
+                case "PL" -> "🇵🇱";
+                case "SE" -> "🇸🇪";
+                case "DK" -> "🇩🇰";
+                case "UK", "GB" -> "🇬🇧";
+                default -> "🌍";
+            };
         }
+
+        if (countryName == null || countryName.isEmpty()) {
+            return "🌍";
+        }
+
+        return switch (countryName) {
+            case "France" -> "🇫🇷";
+            case "Germany" -> "🇩🇪";
+            case "Italy" -> "🇮🇹";
+            case "Spain" -> "🇪🇸";
+            case "Belgium" -> "🇧🇪";
+            case "Netherlands" -> "🇳🇱";
+            case "Portugal" -> "🇵🇹";
+            case "Greece" -> "🇬🇷";
+            case "Austria" -> "🇦🇹";
+            case "Poland" -> "🇵🇱";
+            case "Sweden" -> "🇸🇪";
+            case "Denmark" -> "🇩🇰";
+            case "United Kingdom" -> "🇬🇧";
+            default -> "🌍";
+        };
     }
 
     private String getCompanyIcon(String companyName) {
         String name = companyName.toUpperCase();
 
-        if (name.contains("FOOD") || name.contains("AGRI")) return "🌾";
-        if (name.contains("TECH") || name.contains("DIGITAL")) return "💻";
-        if (name.contains("EXPORT") || name.contains("TRADE")) return "📦";
-        if (name.contains("PHARMA") || name.contains("MEDICAL")) return "💊";
-        if (name.contains("FASHION") || name.contains("TEXTILE")) return "👔";
-        if (name.contains("AUTO") || name.contains("MOTOR")) return "🚗";
-        if (name.contains("CONSTRUCTION") || name.contains("BUILD")) return "🏗️";
-        if (name.contains("ENERGY")) return "⚡";
+        if (name.contains("FOOD") || name.contains("AGRI"))
+            return "🌾";
+        if (name.contains("TECH") || name.contains("DIGITAL"))
+            return "💻";
+        if (name.contains("EXPORT") || name.contains("TRADE"))
+            return "📦";
+        if (name.contains("PHARMA") || name.contains("MEDICAL"))
+            return "💊";
+        if (name.contains("FASHION") || name.contains("TEXTILE"))
+            return "👔";
+        if (name.contains("AUTO") || name.contains("MOTOR"))
+            return "🚗";
+        if (name.contains("CONSTRUCTION") || name.contains("BUILD"))
+            return "🏗️";
+        if (name.contains("ENERGY"))
+            return "⚡";
 
-        return "🏢"; // Default
+        return "🏢";
     }
 
     private String truncate(String text, int maxLength) {
-        if (text == null) return "";
+        if (text == null)
+            return "";
         return text.length() > maxLength ? text.substring(0, maxLength) + "..." : text;
     }
 }

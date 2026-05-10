@@ -14,10 +14,25 @@ public class PartnershipController {
         this.partnershipService = new PartnershipService();
     }
 
-    public Partnership createPartnership(Long sourceCompanyId, Long targetCompanyId,
-                                         PartnershipType type, String notes) {
+    public Partnership createPartnership(Long companyId, PartnershipType type, String notes) {
         try {
-            return partnershipService.createPartnership(sourceCompanyId, targetCompanyId, type, notes);
+            return partnershipService.createPartnership(companyId, type, notes);
+        } catch (SQLException e) {
+            System.err.println("Database error: " + e.getMessage());
+            return null;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Validation error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Backwards-compatible overload for callers that still provide source+target
+    // company IDs.
+    public Partnership createPartnership(Long sourceCompanyId, Long targetCompanyId, PartnershipType type,
+            String notes) {
+        try {
+            // Use sourceCompanyId as the representative companyId in the new model
+            return partnershipService.createPartnership(sourceCompanyId, type, notes);
         } catch (SQLException e) {
             System.err.println("Database error: " + e.getMessage());
             return null;

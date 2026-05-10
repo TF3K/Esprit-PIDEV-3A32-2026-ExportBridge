@@ -105,8 +105,8 @@ public class PartnersViewController {
         card.setPrefHeight(100);
 
         Long partnerCompanyId = partnership.getSourceCompanyId().equals(currentCompanyId)
-                ? partnership.getTargetCompanyId()
-                : partnership.getSourceCompanyId();
+                ? partnership.getSourceCompanyId()
+                : null;
 
         Company partnerCompany = companyController.getCompany(partnerCompanyId);
 
@@ -326,8 +326,8 @@ public class PartnersViewController {
         List<Partnership> filtered = allPartnerships.stream()
                 .filter(p -> {
                     Long partnerId = p.getSourceCompanyId().equals(currentCompanyId)
-                            ? p.getTargetCompanyId()
-                            : p.getSourceCompanyId();
+                            ? p.getSourceCompanyId()
+                            : null;
                     Company partner = companyController.getCompany(partnerId);
                     return partner != null &&
                             partner.getCompanyName().toLowerCase().contains(query);

@@ -16,25 +16,19 @@ public class PartnershipService {
         this.partnershipDAO = new PartnershipDAO();
     }
 
-    public Partnership createPartnership(Long sourceCompanyId, Long targetCompanyId,
-                                         PartnershipType type, String notes) throws SQLException {
+    public Partnership createPartnership(Long companyId, PartnershipType type, String notes) throws SQLException {
 
-        if (sourceCompanyId == null || targetCompanyId == null) {
-            throw new IllegalArgumentException("Both companies are required");
+        if (companyId == null) {
+            throw new IllegalArgumentException("Company is required");
         }
 
-        if (sourceCompanyId.equals(targetCompanyId)) {
-            throw new IllegalArgumentException("Cannot create partnership with same company");
-        }
-
-        Partnership existing = partnershipDAO.findByCompanies(sourceCompanyId, targetCompanyId);
+        Partnership existing = partnershipDAO.findByCompanies(companyId, companyId);
         if (existing != null && existing.getStatus() != PartnershipStatus.TERMINATED) {
-            throw new IllegalArgumentException("Partnership already exists between these companies");
+            throw new IllegalArgumentException("Partnership already exists for this company");
         }
 
         Partnership partnership = new Partnership();
-        partnership.setSourceCompanyId(sourceCompanyId);
-        partnership.setTargetCompanyId(targetCompanyId);
+        partnership.setSourceCompanyId(companyId);
         partnership.setStatus(PartnershipStatus.PENDING);
         partnership.setType(type);
         partnership.setNotes(notes);

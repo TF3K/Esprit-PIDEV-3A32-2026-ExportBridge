@@ -1,10 +1,12 @@
 package Services;
 
+import DAO.CompanyDAO;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import Entities.Company;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class CompanySeedService {
 
+    private final CompanyDAO companyDAO = new CompanyDAO();
     private static final Map<String, List<Company>> companiesCache = new ConcurrentHashMap<>();
     private static boolean isDataLoaded = false;
 
@@ -23,39 +26,71 @@ public class CompanySeedService {
             "/data/Import_Export_Trade_Data_Africa.csv"
     };
 
-    private static final Map<String, String> COUNTRY_MAPPING = new HashMap<>() {{
-        put("NETHERLANDS", "Netherlands");
-        put("GERMANY", "Germany");
-        put("FRANCE", "France");
-        put("ITALY", "Italy");
-        put("SPAIN", "Spain");
-        put("BELGIUM", "Belgium");
-        put("PORTUGAL", "Portugal");
-        put("GREECE", "Greece");
-        put("UNITED KINGDOM", "United Kingdom");
-        put("UK", "United Kingdom");
-        put("AUSTRIA", "Austria");
-        put("POLAND", "Poland");
-        put("SWEDEN", "Sweden");
-        put("DENMARK", "Denmark");
+    private static final Map<String, String> COUNTRY_MAPPING = new HashMap<>() {
+        {
+            put("FR", "France");
+            put("DE", "Germany");
+            put("IT", "Italy");
+            put("ES", "Spain");
+            put("BE", "Belgium");
+            put("NL", "Netherlands");
+            put("PT", "Portugal");
+            put("GR", "Greece");
+            put("AT", "Austria");
+            put("PL", "Poland");
+            put("SE", "Sweden");
+            put("DK", "Denmark");
+            put("GB", "United Kingdom");
+            put("UK", "United Kingdom");
+            put("US", "United States");
+            put("ZA", "South Africa");
+            put("AE", "United Arab Emirates");
+            put("TN", "Tunisia");
+            put("TUNISIA", "Tunisia");
+            put("TUNISIE", "Tunisia");
+            put("CN", "China");
+            put("JP", "Japan");
+            put("SG", "Singapore");
+            put("TH", "Thailand");
+            put("MY", "Malaysia");
+            put("ID", "Indonesia");
+            put("IN", "India");
+            put("TW", "Taiwan");
+            put("KR", "South Korea");
 
-        put("CHINA", "China");
-        put("JAPAN", "Japan");
-        put("SINGAPORE", "Singapore");
-        put("THAILAND", "Thailand");
-        put("MALAYSIA", "Malaysia");
-        put("INDONESIA", "Indonesia");
-        put("VIETNAM", "Vietnam");
-        put("INDIA", "India");
-        put("TAIWAN", "Taiwan");
-        put("SOUTH KOREA", "South Korea");
+            put("NETHERLANDS", "Netherlands");
+            put("GERMANY", "Germany");
+            put("FRANCE", "France");
+            put("ITALY", "Italy");
+            put("SPAIN", "Spain");
+            put("BELGIUM", "Belgium");
+            put("PORTUGAL", "Portugal");
+            put("GREECE", "Greece");
+            put("UNITED KINGDOM", "United Kingdom");
+            put("UK", "United Kingdom");
+            put("AUSTRIA", "Austria");
+            put("POLAND", "Poland");
+            put("SWEDEN", "Sweden");
+            put("DENMARK", "Denmark");
 
-        put("UNITED STATES", "United States");
-        put("USA", "United States");
-        put("SOUTH AFRICA", "South Africa");
-        put("UNITED ARAB EMIRATES", "United Arab Emirates");
-        put("UAE", "United Arab Emirates");
-    }};
+            put("CHINA", "China");
+            put("JAPAN", "Japan");
+            put("SINGAPORE", "Singapore");
+            put("THAILAND", "Thailand");
+            put("MALAYSIA", "Malaysia");
+            put("INDONESIA", "Indonesia");
+            put("VIETNAM", "Vietnam");
+            put("INDIA", "India");
+            put("TAIWAN", "Taiwan");
+            put("SOUTH KOREA", "South Korea");
+
+            put("UNITED STATES", "United States");
+            put("USA", "United States");
+            put("SOUTH AFRICA", "South Africa");
+            put("UNITED ARAB EMIRATES", "United Arab Emirates");
+            put("UAE", "United Arab Emirates");
+        }
+    };
 
     public CompanySeedService() {
         loadAllCompaniesFromCSV();
@@ -108,7 +143,7 @@ public class CompanySeedService {
             }
 
             try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-                 CSVReader reader = new CSVReader(isr)) {
+                    CSVReader reader = new CSVReader(isr)) {
 
                 System.out.println("⚙ Loading: " + csvPath);
 
@@ -137,7 +172,8 @@ public class CompanySeedService {
                     return 0;
                 }
 
-                System.out.println("✓ Found columns - Supplier: [" + supplierNameIdx + "], Country: [" + exportCountryIdx + "], Product: [" + productDescIdx + "]");
+                System.out.println("✓ Found columns - Supplier: [" + supplierNameIdx + "], Country: ["
+                        + exportCountryIdx + "], Product: [" + productDescIdx + "]");
 
                 // Process records
                 for (int i = 1; i < records.size(); i++) {
@@ -198,7 +234,8 @@ public class CompanySeedService {
                     }
                 }
 
-                System.out.println("✓ Loaded " + loaded + " unique companies from " + csvPath.substring(csvPath.lastIndexOf("/") + 1));
+                System.out.println("✓ Loaded " + loaded + " unique companies from "
+                        + csvPath.substring(csvPath.lastIndexOf("/") + 1));
             }
 
         } catch (IOException | CsvException e) {
@@ -254,7 +291,7 @@ public class CompanySeedService {
             String prefix = country != null && country.length() >= 2
                     ? country.substring(0, 2).toUpperCase()
                     : "XX";
-            long random = (long)(Math.random() * 1000000000);
+            long random = (long) (Math.random() * 1000000000);
             return prefix + String.format("%09d", random);
         } catch (Exception e) {
             return "XX000000000";
@@ -262,7 +299,7 @@ public class CompanySeedService {
     }
 
     private String generateRegistrationNumber() {
-        return "REG" + String.format("%08d", (int)(Math.random() * 100000000));
+        return "REG" + String.format("%08d", (int) (Math.random() * 100000000));
     }
 
     private String determineBusinessDomain(String companyName, String productDescription) {
@@ -378,9 +415,7 @@ public class CompanySeedService {
 
     public Map<String, Integer> getCompanyCountByCountry() {
         Map<String, Integer> counts = new HashMap<>();
-        companiesCache.forEach((country, companies) ->
-                counts.put(country, companies.size())
-        );
+        companiesCache.forEach((country, companies) -> counts.put(country, companies.size()));
         return counts;
     }
 
@@ -404,5 +439,316 @@ public class CompanySeedService {
         return companiesCache.values().stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    public List<Company> getMergedCompaniesForCountry(String country) {
+        String normalizedCountry = resolveCountryLabel(country);
+        if (normalizedCountry.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Company> merged = new LinkedHashMap<>();
+
+        for (Company seedCompany : getCompaniesByCountry(normalizedCountry)) {
+            merged.put(companyKey(seedCompany), copyCompany(seedCompany));
+        }
+
+        for (Company databaseCompany : getDatabaseCompaniesByCountry(normalizedCountry)) {
+            merged.merge(companyKey(databaseCompany), copyCompany(databaseCompany), this::mergeCompanyRecords);
+        }
+
+        return new ArrayList<>(merged.values());
+    }
+
+    public List<Company> getMergedRandomCompaniesForCountry(String country, int count) {
+        List<Company> companies = getMergedCompaniesForCountry(country);
+
+        if (companies.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Collections.shuffle(companies);
+        return companies.subList(0, Math.min(count, companies.size()));
+    }
+
+    public List<Company> getMergedAllCompanies() {
+        Map<String, Company> merged = new LinkedHashMap<>();
+
+        for (Company seedCompany : getAllCompanies()) {
+            merged.put(companyKey(seedCompany), copyCompany(seedCompany));
+        }
+
+        for (Company databaseCompany : getDatabaseCompanies()) {
+            merged.merge(companyKey(databaseCompany), copyCompany(databaseCompany), this::mergeCompanyRecords);
+        }
+
+        return new ArrayList<>(merged.values());
+    }
+
+    public List<String> getMergedAvailableCountries() {
+        return getMergedAllCompanies().stream()
+                .map(Company::getCountry)
+                .map(this::resolveCountryLabel)
+                .filter(country -> !country.isEmpty())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Integer> getMergedCompanyCountByCountry() {
+        Map<String, Integer> counts = new LinkedHashMap<>();
+
+        for (Company company : getMergedAllCompanies()) {
+            String country = resolveCountryLabel(company.getCountry());
+            if (country.isEmpty()) {
+                continue;
+            }
+            counts.merge(country, 1, Integer::sum);
+        }
+
+        return counts.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        Integer::sum,
+                        LinkedHashMap::new));
+    }
+
+    public int getMergedTotalCompaniesCount() {
+        return getMergedAllCompanies().size();
+    }
+
+    public List<Company> searchMergedCompanies(String query, String country) {
+        List<Company> companies = country != null && !country.trim().isEmpty()
+                ? getMergedCompaniesForCountry(country)
+                : getMergedAllCompanies();
+
+        if (query == null || query.trim().isEmpty()) {
+            return companies;
+        }
+
+        String lowerQuery = query.toLowerCase(Locale.ROOT).trim();
+        return companies.stream()
+                .filter(c -> containsIgnoreCase(c.getCompanyName(), lowerQuery)
+                        || containsIgnoreCase(c.getAddress(), lowerQuery)
+                        || containsIgnoreCase(c.getDomain(), lowerQuery)
+                        || containsIgnoreCase(c.getCountry(), lowerQuery))
+                .limit(50)
+                .collect(Collectors.toList());
+    }
+
+    public List<Company> getMergedCompaniesForMarketCountry(String countryCode, String countryName) {
+        return getMergedCompaniesForMarket(countryCode, countryName, null);
+    }
+
+    public List<Company> getMergedCompaniesForMarket(String countryCode, String countryName, String region) {
+        String lookup = resolveCountryLabel(countryName);
+
+        if (lookup.isEmpty()) {
+            lookup = resolveCountryLabel(countryCode);
+        }
+
+        if (lookup.isEmpty()) {
+            lookup = countryName != null ? countryName.trim() : "";
+        }
+
+        if (lookup.isEmpty() && countryCode != null) {
+            lookup = countryCode.trim();
+        }
+
+        List<Company> companies = getMergedCompaniesForCountry(lookup);
+        if (!companies.isEmpty()) {
+            return companies;
+        }
+
+        if (region != null && !region.trim().isEmpty()) {
+            companies = getMergedCompaniesForRegion(region);
+            if (!companies.isEmpty()) {
+                return companies;
+            }
+        }
+
+        return companies;
+    }
+
+    public List<Company> getMergedCompaniesForRegion(String region) {
+        if (region == null || region.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String lowerRegion = region.trim().toLowerCase(Locale.ROOT);
+
+        return getMergedAllCompanies().stream()
+                .filter(company -> lowerRegion
+                        .equals(resolveRegionForCountry(company.getCountry()).toLowerCase(Locale.ROOT)))
+                .collect(Collectors.toList());
+    }
+
+    private List<Company> getDatabaseCompanies() {
+        try {
+            return companyDAO.findAll();
+        } catch (SQLException e) {
+            System.err.println("✗ Failed to load companies from database: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private List<Company> getDatabaseCompaniesByCountry(String country) {
+        try {
+            List<Company> byCountry = companyDAO.findByCountry(country);
+            if (!byCountry.isEmpty()) {
+                return byCountry;
+            }
+        } catch (SQLException e) {
+            System.err.println(
+                    "✗ Failed to load companies from database for country '" + country + "': " + e.getMessage());
+        }
+
+        String normalizedCountry = normalizeCountry(country);
+        if (normalizedCountry.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return getDatabaseCompanies().stream()
+                .filter(company -> normalizeCountry(company.getCountry()).equals(normalizedCountry))
+                .collect(Collectors.toList());
+    }
+
+    private Company mergeCompanyRecords(Company existing, Company incoming) {
+        Company merged = copyCompany(existing);
+        if (incoming == null) {
+            return merged;
+        }
+
+        if (!isBlank(incoming.getCompanyName()))
+            merged.setCompanyName(incoming.getCompanyName());
+        if (!isBlank(incoming.getDomain()))
+            merged.setDomain(incoming.getDomain());
+        if (!isBlank(incoming.getTaxNumber()))
+            merged.setTaxNumber(incoming.getTaxNumber());
+        if (!isBlank(incoming.getRegistrationNumber()))
+            merged.setRegistrationNumber(incoming.getRegistrationNumber());
+        if (!isBlank(incoming.getCountry()))
+            merged.setCountry(incoming.getCountry());
+        if (!isBlank(incoming.getAddress()))
+            merged.setAddress(incoming.getAddress());
+        if (!isBlank(incoming.getContactEmail()))
+            merged.setContactEmail(incoming.getContactEmail());
+        if (!isBlank(incoming.getContactPhone()))
+            merged.setContactPhone(incoming.getContactPhone());
+        if (incoming.getRating() != null)
+            merged.setRating(incoming.getRating());
+        if (incoming.getWarnings() != null)
+            merged.setWarnings(incoming.getWarnings());
+        merged.setBanned(incoming.isBanned());
+        if (incoming.getCompanyManagerId() != null)
+            merged.setCompanyManagerId(incoming.getCompanyManagerId());
+        if (incoming.getCreatedAt() != null)
+            merged.setCreatedAt(incoming.getCreatedAt());
+        if (incoming.getLastUpdated() != null)
+            merged.setLastUpdated(incoming.getLastUpdated());
+        if (incoming.getId() != null)
+            merged.setId(incoming.getId());
+
+        return merged;
+    }
+
+    private Company copyCompany(Company source) {
+        if (source == null) {
+            return new Company();
+        }
+
+        Company copy = new Company();
+        copy.setId(source.getId());
+        copy.setCompanyName(source.getCompanyName());
+        copy.setDomain(source.getDomain());
+        copy.setTaxNumber(source.getTaxNumber());
+        copy.setRegistrationNumber(source.getRegistrationNumber());
+        copy.setCountry(source.getCountry());
+        copy.setAddress(source.getAddress());
+        copy.setContactEmail(source.getContactEmail());
+        copy.setContactPhone(source.getContactPhone());
+        copy.setRating(source.getRating());
+        copy.setWarnings(source.getWarnings());
+        copy.setBanned(source.isBanned());
+        copy.setCompanyManagerId(source.getCompanyManagerId());
+        copy.setCreatedAt(source.getCreatedAt());
+        copy.setLastUpdated(source.getLastUpdated());
+        return copy;
+    }
+
+    private String companyKey(Company company) {
+        return normalizeKey(company != null ? company.getCompanyName() : null) + "|"
+                + normalizeKey(company != null ? company.getCountry() : null);
+    }
+
+    private String normalizeKey(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String normalizeCountry(String country) {
+        return resolveCountryLabel(country).trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String resolveCountryLabel(String country) {
+        if (country == null) {
+            return "";
+        }
+
+        String trimmed = country.trim();
+        if (trimmed.isEmpty()) {
+            return "";
+        }
+
+        return COUNTRY_MAPPING.getOrDefault(trimmed.toUpperCase(Locale.ROOT), trimmed);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private boolean containsIgnoreCase(String value, String lowerQuery) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(lowerQuery);
+    }
+
+    private String resolveRegionForCountry(String country) {
+        if (country == null) {
+            return "International";
+        }
+
+        if (country.equals("France") || country.equals("Belgium") ||
+                country.equals("Netherlands") || country.equals("United Kingdom")) {
+            return "Western Europe";
+        }
+
+        if (country.equals("Italy") || country.equals("Spain") ||
+                country.equals("Portugal") || country.equals("Greece")) {
+            return "Southern Europe";
+        }
+
+        if (country.equals("Germany") || country.equals("Austria") || country.equals("Poland")) {
+            return "Central Europe";
+        }
+
+        if (country.equals("China") || country.equals("Japan") || country.equals("Singapore") ||
+                country.equals("Thailand") || country.equals("Malaysia") || country.equals("Indonesia") ||
+                country.equals("India") || country.equals("Taiwan") || country.equals("South Korea")) {
+            return "Asia";
+        }
+
+        if (country.equals("United States")) {
+            return "North America";
+        }
+
+        if (country.equals("South Africa") || country.equals("Tunisia")) {
+            return "Africa";
+        }
+
+        if (country.equals("United Arab Emirates")) {
+            return "Middle East";
+        }
+
+        return "International";
     }
 }

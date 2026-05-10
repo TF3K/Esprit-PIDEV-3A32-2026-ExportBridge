@@ -6,7 +6,6 @@ import Entities.CertificateStatus;
 import Entities.CertificateType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -41,7 +40,6 @@ import com.itextpdf.layout.borders.SolidBorder;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 
 public class CertificationsViewController {
 
@@ -300,7 +298,6 @@ public class CertificationsViewController {
                             newExpiry.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
                     success_alert.showAndWait();
 
-                    // Reload certificates
                     loadCertificates();
                 } else {
                     Alert error = new Alert(Alert.AlertType.ERROR);
@@ -332,7 +329,7 @@ public class CertificationsViewController {
     private void filterExpiringSoon() {
         setActiveFilter(expiringCard);
         List<Certificate> filtered = allCertificates.stream()
-                .filter(Certificate::isExpiringSoon) // Use built-in method
+                .filter(Certificate::isExpiringSoon)
                 .collect(Collectors.toList());
         displayCertificates(filtered);
     }
@@ -486,7 +483,6 @@ public class CertificationsViewController {
         PdfDocument pdfDoc = new PdfDocument(writer);
         Document document = new Document(pdfDoc);
 
-        // Fonts
         PdfFont bold = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
         PdfFont regular = PdfFontFactory.createFont(StandardFonts.HELVETICA);
         DeviceRgb primary = new DeviceRgb(79, 70, 229);
@@ -494,7 +490,6 @@ public class CertificationsViewController {
         DeviceRgb red = new DeviceRgb(239, 68, 68);
         DeviceRgb orange = new DeviceRgb(245, 158, 11);
 
-        // Title
         document.add(new Paragraph("ExportBridge - Certificates Report")
                 .setFont(bold)
                 .setFontSize(24)
@@ -517,7 +512,6 @@ public class CertificationsViewController {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setMarginBottom(20));
 
-        // Statistics summary (if multiple certificates)
         if (certificates.size() > 1) {
             int total = certificates.size();
             long active = certificates.stream()
@@ -542,16 +536,12 @@ public class CertificationsViewController {
             document.add(statsTable);
         }
 
-        // Certificates table
         if (certificates.size() > 1) {
-            // Compact table for multiple certificates
             addCompactCertificatesTable(document, certificates, bold, regular, primary);
         } else {
-            // Detailed view for single certificate
             addDetailedCertificateView(document, certificates.get(0), bold, regular, primary);
         }
 
-        // Footer
         document.add(new Paragraph("\n© " + java.time.Year.now().getValue() +
                 " ExportBridge - International Export Management")
                 .setFont(regular)
@@ -570,7 +560,6 @@ public class CertificationsViewController {
                 new float[]{3, 2, 2, 2, 2, 1.5f}))
                 .useAllAvailableWidth();
 
-        // Header
         String[] headers = {"Type", "Number", "Authority", "Country", "Expiry Date", "Status"};
         for (String h : headers) {
             table.addHeaderCell(new Cell()
@@ -579,14 +568,12 @@ public class CertificationsViewController {
                     .setPadding(8));
         }
 
-        // Rows
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         boolean alt = false;
 
         for (Certificate cert : certificates) {
             DeviceRgb bg = alt ? new DeviceRgb(249, 250, 251) : new DeviceRgb(255, 255, 255);
 
-            // Type
             table.addCell(new Cell()
                     .add(new Paragraph(formatCertificateType(cert.getType()))
                             .setFont(regular)
@@ -594,7 +581,6 @@ public class CertificationsViewController {
                     .setBackgroundColor(bg)
                     .setPadding(6));
 
-            // Number
             table.addCell(new Cell()
                     .add(new Paragraph(cert.getCertificateNumber())
                             .setFont(regular)
@@ -602,7 +588,6 @@ public class CertificationsViewController {
                     .setBackgroundColor(bg)
                     .setPadding(6));
 
-            // Authority
             table.addCell(new Cell()
                     .add(new Paragraph(cert.getIssuingAuthority() != null ?
                             cert.getIssuingAuthority() : "-")
@@ -611,7 +596,6 @@ public class CertificationsViewController {
                     .setBackgroundColor(bg)
                     .setPadding(6));
 
-            // Country
             table.addCell(new Cell()
                     .add(new Paragraph(cert.getCountryOfOrigin() != null ?
                             cert.getCountryOfOrigin() : "-")
@@ -620,7 +604,6 @@ public class CertificationsViewController {
                     .setBackgroundColor(bg)
                     .setPadding(6));
 
-            // Expiry Date
             String expiryStr = cert.getExpiryDate() != null ?
                     cert.getExpiryDate().format(dateFormat) : "No expiry";
             table.addCell(new Cell()
@@ -630,7 +613,6 @@ public class CertificationsViewController {
                     .setBackgroundColor(bg)
                     .setPadding(6));
 
-            // Status
             DeviceRgb statusColor = getStatusColor(cert.getStatus());
             table.addCell(new Cell()
                     .add(new Paragraph(cert.getStatus().toString())
@@ -651,7 +633,6 @@ public class CertificationsViewController {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm");
 
-        // Certificate header
         document.add(new Paragraph(formatCertificateType(cert.getType()))
                 .setFont(bold)
                 .setFontSize(18)
@@ -664,7 +645,6 @@ public class CertificationsViewController {
                 .setFontColor(ColorConstants.GRAY)
                 .setMarginBottom(20));
 
-        // Status badge
         DeviceRgb statusBg = getStatusBackgroundColor(cert.getStatus());
         DeviceRgb statusColor = getStatusColor(cert.getStatus());
 
@@ -684,7 +664,6 @@ public class CertificationsViewController {
 
         document.add(statusTable);
 
-        // Details table
         Table detailsTable = new Table(UnitValue.createPercentArray(new float[]{1, 2}))
                 .useAllAvailableWidth()
                 .setMarginBottom(20);
@@ -701,7 +680,6 @@ public class CertificationsViewController {
             addDetailRow(detailsTable, "Expiry Date",
                     cert.getExpiryDate().format(dateFormat), bold, regular);
 
-            // Days until expiry
             if (cert.getStatus() == CertificateStatus.VALID) {
                 long daysLeft = ChronoUnit.DAYS.between(
                         java.time.LocalDateTime.now(),
@@ -722,7 +700,6 @@ public class CertificationsViewController {
 
         document.add(detailsTable);
 
-        // Certificate icon/seal
         document.add(new Paragraph("🏆")
                 .setFontSize(64)
                 .setTextAlignment(TextAlignment.CENTER)

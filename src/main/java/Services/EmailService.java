@@ -23,7 +23,7 @@ public class EmailService {
             .load();
 
     private static final String MAILTRAP_TOKEN = dotenv.get("MAILTRAP_API_KEY");
-    private static final Long MAILTRAP_INBOX_ID = 4403511L; // Your inbox ID
+    private static final Long MAILTRAP_INBOX_ID = 4403511L;
     private static final String FROM_EMAIL = "noreply@exportbridge.com";
     private static final String FROM_NAME = "ExportBridge";
 
@@ -35,10 +35,6 @@ public class EmailService {
     static {
         loadAllTokens();
     }
-
-    // ==============================
-    // PASSWORD RESET EMAIL
-    // ==============================
 
     public static boolean sendPasswordResetEmail(String toEmail, String resetToken) {
         if (MAILTRAP_TOKEN == null || MAILTRAP_TOKEN.isEmpty()) {
@@ -80,10 +76,6 @@ public class EmailService {
         }
     }
 
-    // ==============================
-    // PARTNER EMAIL (Products, General)
-    // ==============================
-
     public static boolean sendEmailToPartner(String toEmail, String toName, String subject, String body) {
         if (MAILTRAP_TOKEN == null || MAILTRAP_TOKEN.isEmpty()) {
             System.err.println("✗ Mailtrap not configured! Set MAILTRAP_API_KEY in .env");
@@ -109,7 +101,7 @@ public class EmailService {
                     .to(List.of(to))
                     .subject(subject)
                     .html(htmlBody)
-                    .text(body) // Plain text fallback
+                    .text(body)
                     .build();
 
             client.send(mail);
@@ -124,16 +116,9 @@ public class EmailService {
         }
     }
 
-    /**
-     * Check if email service is properly configured
-     */
     public static boolean isEmailConfigured() {
         return MAILTRAP_TOKEN != null && !MAILTRAP_TOKEN.isEmpty();
     }
-
-    // ==============================
-    // TOKEN MANAGEMENT
-    // ==============================
 
     public static String generateResetToken(String email, Long managerId) {
         String token = generateShortToken();
@@ -215,10 +200,6 @@ public class EmailService {
             return expired;
         });
     }
-
-    // ==============================
-    // DISK PERSISTENCE
-    // ==============================
 
     private static void saveTokenToDisk(PasswordResetToken token) {
         try {
@@ -325,10 +306,6 @@ public class EmailService {
         }
     }
 
-    // ==============================
-    // EMAIL TEMPLATES
-    // ==============================
-
     private static String createResetEmailBody(String token) {
         return "<!DOCTYPE html>" +
                 "<html>" +
@@ -373,7 +350,7 @@ public class EmailService {
                 "<p>If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.</p>" +
                 "</div>" +
                 "<div class='footer'>" +
-                "<p><strong>© 2024 ExportBridge</strong></p>" +
+                "<p><strong>© 2026 ExportBridge</strong></p>" +
                 "<p>International Export Documentation Management</p>" +
                 "<p style='margin-top: 15px; font-size: 12px;'>This is an automated email. Please do not reply.</p>" +
                 "</div>" +
@@ -423,10 +400,6 @@ public class EmailService {
                 "</body>" +
                 "</html>";
     }
-
-    // ==============================
-    // DATA CLASSES
-    // ==============================
 
     @Data
     public static class PasswordResetToken implements Serializable {

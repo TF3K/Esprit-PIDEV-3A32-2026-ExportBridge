@@ -15,8 +15,8 @@ public class ProductService {
     }
 
     public Product createProduct(Long companyId, String name, String description,
-                                 String hsCode, ProductCategory category,
-                                 Double quantity, String unit, Double unitPrice) throws SQLException {
+            String hsCode, ProductCategory category,
+            Double quantity, String unit, Double unitPrice) throws SQLException {
 
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Product name is required");
@@ -34,6 +34,7 @@ public class ProductService {
         product.setCompanyId(companyId);
         product.setName(name);
         product.setDescription(description);
+        product.setSlug(generateSlug(name));
         product.setHsCode(hsCode);
         product.setCategory(category);
         product.setQuantity(quantity != null ? quantity : 0.0);
@@ -69,7 +70,18 @@ public class ProductService {
             throw new IllegalArgumentException("Product name is required");
         }
 
+        product.setSlug(generateSlug(product.getName()));
+
         return productDAO.update(product);
+    }
+
+    private static String generateSlug(String input) {
+        if (input == null)
+            return null;
+        String s = input.trim().toLowerCase();
+        s = s.replaceAll("[^a-z0-9\\s-]", "");
+        s = s.replaceAll("[\\s-]+", "-");
+        return s;
     }
 
     public boolean deleteProduct(Long productId) throws SQLException {

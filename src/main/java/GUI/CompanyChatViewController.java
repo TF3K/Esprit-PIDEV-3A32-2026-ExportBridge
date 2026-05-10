@@ -54,7 +54,6 @@ public class CompanyChatViewController {
             return;
         }
 
-        // Auto-scroll to bottom when new messages added
         messagesContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             chatScrollPane.setVvalue(1.0);
         });
@@ -221,50 +220,50 @@ public class CompanyChatViewController {
     }
 
     private String getCountryFlag(String country) {
-        switch (country) {
-            case "France": return "🇫🇷";
-            case "Germany": return "🇩🇪";
-            case "Italy": return "🇮🇹";
-            case "Spain": return "🇪🇸";
-            case "Belgium": return "🇧🇪";
-            case "Netherlands": return "🇳🇱";
-            case "Portugal": return "🇵🇹";
-            case "Greece": return "🇬🇷";
-            case "United Kingdom": return "🇬🇧";
-            case "China": return "🇨🇳";
-            case "Singapore": return "🇸🇬";
-            case "Thailand": return "🇹🇭";
-            case "Malaysia": return "🇲🇾";
-            case "Indonesia": return "🇮🇩";
-            case "India": return "🇮🇳";
-            case "Taiwan": return "🇹🇼";
-            case "South Africa": return "🇿🇦";
-            case "United Arab Emirates": return "🇦🇪";
-            default: return "🌍";
-        }
+        return switch (country) {
+            case "France" -> "🇫🇷";
+            case "Germany" -> "🇩🇪";
+            case "Italy" -> "🇮🇹";
+            case "Spain" -> "🇪🇸";
+            case "Belgium" -> "🇧🇪";
+            case "Netherlands" -> "🇳🇱";
+            case "Portugal" -> "🇵🇹";
+            case "Greece" -> "🇬🇷";
+            case "United Kingdom" -> "🇬🇧";
+            case "China" -> "🇨🇳";
+            case "Singapore" -> "🇸🇬";
+            case "Thailand" -> "🇹🇭";
+            case "Malaysia" -> "🇲🇾";
+            case "Indonesia" -> "🇮🇩";
+            case "India" -> "🇮🇳";
+            case "Taiwan" -> "🇹🇼";
+            case "South Africa" -> "🇿🇦";
+            case "United Arab Emirates" -> "🇦🇪";
+            default -> "🌍";
+        };
     }
 
     private String getCountryCodeFromName(String country) {
-        switch (country) {
-            case "France": return "FR";
-            case "Germany": return "DE";
-            case "Italy": return "IT";
-            case "Spain": return "ES";
-            case "Belgium": return "BE";
-            case "Netherlands": return "NL";
-            case "Portugal": return "PT";
-            case "Greece": return "GR";
-            case "United Kingdom": return "GB";
-            case "China": return "CN";
-            case "Singapore": return "SG";
-            case "Thailand": return "TH";
-            case "Malaysia": return "MY";
-            case "Indonesia": return "ID";
-            case "India": return "IN";
-            case "Taiwan": return "TW";
-            case "South Africa": return "ZA";
-            case "United Arab Emirates": return "AE";
-            default: return "XX";
-        }
+        return switch (country) {
+            case "France" -> "FR";
+            case "Germany" -> "DE";
+            case "Italy" -> "IT";
+            case "Spain" -> "ES";
+            case "Belgium" -> "BE";
+            case "Netherlands" -> "NL";
+            case "Portugal" -> "PT";
+            case "Greece" -> "GR";
+            case "United Kingdom" -> "GB";
+            case "China" -> "CN";
+            case "Singapore" -> "SG";
+            case "Thailand" -> "TH";
+            case "Malaysia" -> "MY";
+            case "Indonesia" -> "ID";
+            case "India" -> "IN";
+            case "Taiwan" -> "TW";
+            case "South Africa" -> "ZA";
+            case "United Arab Emirates" -> "AE";
+            default -> "XX";
+        };
     }
 }

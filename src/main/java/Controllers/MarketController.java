@@ -7,6 +7,7 @@ import Services.MarketService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class MarketController {
     private final MarketService marketService;
@@ -16,7 +17,7 @@ public class MarketController {
     }
 
     public Market createMarket(String countryCode, String name, String region,
-                               boolean isEU, String description, String tradeAgreement) {
+            boolean isEU, String description, String tradeAgreement) {
         try {
             return marketService.createMarket(countryCode, name, region,
                     isEU, description, tradeAgreement);
@@ -44,6 +45,51 @@ public class MarketController {
         } catch (SQLException e) {
             System.err.println("Error fetching markets: " + e.getMessage());
             return List.of();
+        }
+    }
+
+    public List<Market> getMergedMarkets() {
+        try {
+            return marketService.getMergedMarkets();
+        } catch (SQLException e) {
+            System.err.println("Error fetching markets: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public List<String> getMergedAvailableCountries() {
+        try {
+            return marketService.getMergedAvailableCountries();
+        } catch (Exception e) {
+            System.err.println("Error fetching merged countries: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public Map<String, Integer> getMergedCompanyCountByCountry() {
+        try {
+            return marketService.getMergedCompanyCountByCountry();
+        } catch (Exception e) {
+            System.err.println("Error fetching merged country counts: " + e.getMessage());
+            return Map.of();
+        }
+    }
+
+    public int getMergedCompanyCountForMarket(String countryCode, String countryName) {
+        try {
+            return marketService.getMergedCompanyCountForMarket(countryCode, countryName);
+        } catch (Exception e) {
+            System.err.println("Error fetching merged market count: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public int getMergedCompanyCountForMarket(String countryCode, String countryName, String region) {
+        try {
+            return marketService.getMergedCompanyCountForMarket(countryCode, countryName, region);
+        } catch (Exception e) {
+            System.err.println("Error fetching merged market count: " + e.getMessage());
+            return 0;
         }
     }
 
@@ -96,7 +142,7 @@ public class MarketController {
     }
 
     public List<CertificateRequirement> getRequirementsForProduct(Long marketId,
-                                                                  ProductCategory category) {
+            ProductCategory category) {
         try {
             return marketService.getRequirementsForProduct(marketId, category);
         } catch (SQLException e) {
