@@ -2,7 +2,6 @@ package DAO;
 
 import Entities.Product;
 import Entities.ProductCategory;
-import DAO.ProductCategoryDAO;
 import Utils.DatabasePlugin;
 
 import java.sql.*;

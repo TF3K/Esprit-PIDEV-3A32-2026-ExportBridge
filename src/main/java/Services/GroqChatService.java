@@ -8,7 +8,6 @@ import groq4j.services.ChatService;
 import groq4j.services.ChatServiceImpl;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroqChatService {

@@ -2,22 +2,23 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="GUI.MainWindowController"
-            styleClass="main-container">
+    xmlns:fx="http://javafx.com/fxml" fx:controller="GUI.MainWindowController" styleClass="main-container">
     <left>
         <VBox fx:id="sidebar" styleClass="sidebar" prefWidth="200">
             <HBox styleClass="sidebar-header" onMouseClicked="#toggleSidebar">
-                <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
                     <StackPane styleClass="app-logo">
-                        <Text text="EB" styleClass="logo-text"/>
+                        <ImageView fitWidth="96" fitHeight="96" preserveRatio="true">
+                            <Image url="/assets/ExportBridge.png"/>
+                        </ImageView>
                     </StackPane>
-                    <Text fx:id="appNameText" text="ExportBridge" styleClass="app-name"/>
                 </HBox>
             </HBox>
 
@@ -49,10 +50,7 @@
                     </HBox>
 
                     <HBox fx:id="navCertifications" styleClass="nav-item" onMouseClicked="#showCertifications">
-                        <SVGPath content="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z"
-                                 fill="white"
-                                 scaleX="0.85"
-                                 scaleY="0.85"/>
+                        <SVGPath content="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2zm0-4h5v2H8V7z" fill="white" scaleX="0.85" scaleY="0.85"/>
                         <Text fx:id="navCertificationsText" text="Certifications" styleClass="nav-text"/>
                     </HBox>
 

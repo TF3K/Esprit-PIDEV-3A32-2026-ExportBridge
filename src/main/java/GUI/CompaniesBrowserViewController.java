@@ -467,28 +467,28 @@ public class CompaniesBrowserViewController {
         };
     }
 
-    private String getCompanyIcon(String companyName) {
-        String name = companyName.toUpperCase();
+    // private String getCompanyIcon(String companyName) {
+    //     String name = companyName.toUpperCase();
 
-        if (name.contains("FOOD") || name.contains("AGRI"))
-            return "🌾";
-        if (name.contains("TECH") || name.contains("DIGITAL"))
-            return "💻";
-        if (name.contains("EXPORT") || name.contains("TRADE"))
-            return "📦";
-        if (name.contains("PHARMA") || name.contains("MEDICAL"))
-            return "💊";
-        if (name.contains("FASHION") || name.contains("TEXTILE"))
-            return "👔";
-        if (name.contains("AUTO") || name.contains("MOTOR"))
-            return "🚗";
-        if (name.contains("CONSTRUCTION") || name.contains("BUILD"))
-            return "🏗️";
-        if (name.contains("ENERGY"))
-            return "⚡";
+    //     if (name.contains("FOOD") || name.contains("AGRI"))
+    //         return "🌾";
+    //     if (name.contains("TECH") || name.contains("DIGITAL"))
+    //         return "💻";
+    //     if (name.contains("EXPORT") || name.contains("TRADE"))
+    //         return "📦";
+    //     if (name.contains("PHARMA") || name.contains("MEDICAL"))
+    //         return "💊";
+    //     if (name.contains("FASHION") || name.contains("TEXTILE"))
+    //         return "👔";
+    //     if (name.contains("AUTO") || name.contains("MOTOR"))
+    //         return "🚗";
+    //     if (name.contains("CONSTRUCTION") || name.contains("BUILD"))
+    //         return "🏗️";
+    //     if (name.contains("ENERGY"))
+    //         return "⚡";
 
-        return "🏢";
-    }
+    //     return "🏢";
+    // }
 
     private String truncate(String text, int maxLength) {
         if (text == null)

@@ -2,7 +2,6 @@ package Services;
 
 import DAO.MarketDAO;
 import DAO.CertificateRequirementDAO;
-import Entities.Company;
 import Entities.Market;
 import Entities.CertificateRequirement;
 import Entities.ProductCategory;

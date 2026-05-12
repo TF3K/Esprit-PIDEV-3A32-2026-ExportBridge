@@ -57,6 +57,7 @@ public class CompanySeedService {
             put("IN", "India");
             put("TW", "Taiwan");
             put("KR", "South Korea");
+            put("TS", "Test Market");
 
             put("NETHERLANDS", "Netherlands");
             put("GERMANY", "Germany");
@@ -253,14 +254,14 @@ public class CompanySeedService {
         return field != null ? field.trim() : "";
     }
 
-    private int findColumnIndex(String[] header, String columnName) {
-        for (int i = 0; i < header.length; i++) {
-            if (header[i].trim().equalsIgnoreCase(columnName)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+    // private int findColumnIndex(String[] header, String columnName) {
+    //     for (int i = 0; i < header.length; i++) {
+    //         if (header[i].trim().equalsIgnoreCase(columnName)) {
+    //             return i;
+    //         }
+    //     }
+    //     return -1;
+    // }
 
     private void extractContactInfo(Company company, String address) {
         if (address == null || address.isEmpty()) {

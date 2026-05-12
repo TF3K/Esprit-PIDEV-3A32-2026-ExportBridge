@@ -1,7 +1,6 @@
 package Controllers;
 
 import Entities.Certificate;
-import Entities.CertificateStatus;
 import Entities.CertificateType;
 import Services.CertificateService;
 
